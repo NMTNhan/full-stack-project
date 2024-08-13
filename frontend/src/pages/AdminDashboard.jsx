@@ -1,8 +1,8 @@
 import React from 'react';
 import NavBar from '../components/NavBar';
-import UserManagement from '../components/Admin/UserManagement';
-import GroupManagement from '../components/Admin/GroupManagement';
-import PostManagement from '../components/Admin/PostManagement';
+import UserManagement from "../components/admin/UserManagement";
+import PostManagement from "../components/admin/PostManagement";
+import GroupManagement from "../components/admin/GroupManagement";
 
 const AdminDashboard = () => {
   return (
