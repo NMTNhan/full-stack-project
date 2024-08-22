@@ -11,16 +11,26 @@ const postSchema = new mongoose.Schema({
     required: true,
   },
   imageStatus: {
-    type: String, // URL of the image
+    type: String, // URL of the image, optional
   },
-  totalLike: {
-    type: Number,
-    default: 0,
-  },
-  totalComment: {
-    type: Number,
-    default: 0,
-  },
+  likes: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+  }],
+  comments: [{
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+    },
+    text: {
+      type: String,
+      required: true,
+    },
+    createdAt: {
+      type: Date,
+      default: Date.now,
+    }
+  }],
   createdAt: {
     type: Date,
     default: Date.now,
