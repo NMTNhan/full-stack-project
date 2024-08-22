@@ -6,15 +6,19 @@ export default function UserProfile() {
         <>
             <div>
                 <NavBar/>
-                <div className={'border-b-2 border-gray-300 border-opacity-50'}>
+                <div className={'bg-white border-b-2 border-gray-300 border-opacity-50'}>
                     {/*Avatar*/}
                     <div >
-                        <img className=" absolute rounded-full bg-red-500 ml-5 mt-44 w-40 h-40" src="https://img.freepik.com/premium-vector/cute-boy-smiling-cartoon-kawaii-boy-illustration-boy-avatar-happy-kid_1001605-3447.jpg"/>
+                        <img className=" absolute rounded-full bg-red-500 ml-5 mt-44 w-40 h-40"
+                             src="https://img.freepik.com/premium-vector/cute-boy-smiling-cartoon-kawaii-boy-illustration-boy-avatar-happy-kid_1001605-3447.jpg"
+                             alt={'img'}
+                        />
                     </div>
                     {/*Cover picture*/}
                     <div>
                         <img className="object-cover w-full h-56 place-items-end justify-end"
-                             src="https://png.pngtree.com/thumb_back/fh260/background/20230615/pngtree-landscape-landscape-photo-image_2902263.jpg"/>
+                             src="https://png.pngtree.com/thumb_back/fh260/background/20230615/pngtree-landscape-landscape-photo-image_2902263.jpg"
+                            alt={'img'}/>
                     </div>
                     <div className={'flex justify-between w-full h-32 '}>
                         <div className={'inline-block ml-48 pt-7 font-bold text-black text-4xl'}>User Name</div>

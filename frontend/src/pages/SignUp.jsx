@@ -50,7 +50,7 @@ export default function SignUp({hideIcon, setHideIcon, pwdInputType, setPwdInput
                          src="https://img.freepik.com/free-vector/blue-pink-halftone-background_53876-144365.jpg?t=st=1724341655~exp=1724345255~hmac=ace77f146c20e45804647f51d5e8a32e16a6a63847c890d4766d41ada9cc190f&w=1380"
                          alt={'img'}/>
                 </div>
-                <div className={'w-4/12 content-center'}>
+                <div className={'w-4/12 content-center bg-white'}>
                     <div className={'m-3'}>
                         <h2 className={'text-[28px] font-bold text-black mb-6 text-center'}>Sign Up</h2>
                         <form className={'flex flex-col'}>
