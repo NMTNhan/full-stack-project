@@ -1,5 +1,6 @@
 import {useState} from "react";
 import {Link} from 'react-router-dom'
+import {FaEye, FaEyeSlash} from "react-icons/fa";
 
 
 export default function SignUp({hideIcon, setHideIcon, pwdInputType, setPwdInputType}) {
@@ -32,57 +33,74 @@ export default function SignUp({hideIcon, setHideIcon, pwdInputType, setPwdInput
 
     return (
         <div>
-            <div className="flex flex-col items-center justify-center h-screen w-full">
-                <div
-                    className="w-full max-w-md bg-gradient-to-r from-sky-400 to-sky-200 rounded-xl shadow-md py-8 px-8">
-                    <h2 className={'text-[28px] font-bold text-black mb-6 text-center'}>Sign Up</h2>
-                    <form className={'flex flex-col'}>
-                        <div className={'flex space-x-4 mb-4'}>
-                            <input placeholder={'First Name'}
-                                   className={'bg-cyan-100 text-black border-0 rounded-md p-2 w-1/2 focus:outline-none transition ease-in duration-150 placeholder-gray-500 border-sky-600 border-2'}
-                                   type='text'/>
-                            <input placeholder={'Last Name'}
-                                   className={'bg-cyan-100 text-black border-0 rounded-md p-2 w-1/2 focus:outline-none transition ease-in duration-150 placeholder-gray-500 border-sky-600 border-2'}
-                                   type='text'/>
+            <div className={'flex h-dvh columns-2'}>
+                <div className={'relative'}>
+                    <div className={'w-full h-full absolute text-4xl text-blue-950 font-bold m-4'}>
+                        ShitBook
+                    </div>
+                    <div className={'w-full h-full absolute text-center place-content-center'}>
+                        <div className={'text-blue-950 font-bold text-6xl text-center'}>
+                            Create new account page
                         </div>
-                        <input placeholder={'Email'}
-                               className={'bg-cyan-100 text-black border-0 rounded-md p-2 mb-4 focus:outline-none transition ease-in duration-150 placeholder-gray-500 border-sky-600 border-2'}
-                               type='text'/>
-                        <input placeholder={'Username'}
-                               className={'bg-cyan-100 text-black border-0 rounded-md p-2 mb-4 focus:outline-none transition ease-in duration-150 placeholder-gray-500 border-sky-600 border-2'}
-                               type='text'
-                               name={'username'}
-                               onChange={ev => {
-                                   updateAccountInfo(ev)
-                               }}/>
-                        <div className={'flex space-x-4'}>
-                            <input placeholder={'Password'}
-                                   className={'bg-cyan-100 text-black border-0 rounded-md p-2 mb-4 w-11/12 focus:outline-none transition ease-in duration-150 placeholder-gray-500 border-sky-600 border-2'}
-                                   type={`${pwdInputType}`}
-                                   name={'password'}
+                        <div className={'text-blue-950 font-bold text-center text-2xl mt-10'}>
+                            You need to create your account to use our service
+                        </div>
+                    </div>
+                    <img className={'w-full h-full'}
+                         src="https://img.freepik.com/free-vector/blue-pink-halftone-background_53876-144365.jpg?t=st=1724341655~exp=1724345255~hmac=ace77f146c20e45804647f51d5e8a32e16a6a63847c890d4766d41ada9cc190f&w=1380"
+                         alt={'img'}/>
+                </div>
+                <div className={'w-4/12 content-center'}>
+                    <div className={'m-3'}>
+                        <h2 className={'text-[28px] font-bold text-black mb-6 text-center'}>Sign Up</h2>
+                        <form className={'flex flex-col'}>
+                            <div className={'flex space-x-4 mb-4'}>
+                                <input placeholder={'First Name'}
+                                       className={'bg-gray-100 text-black rounded-md p-2 w-1/2 focus:outline-none transition ease-in duration-150 placeholder-gray-500'}
+                                       type='text'/>
+                                <input placeholder={'Last Name'}
+                                       className={'bg-gray-100 text-black rounded-md p-2 w-1/2 focus:outline-none transition ease-in duration-150 placeholder-gray-500'}
+                                       type='text'/>
+                            </div>
+                            <input placeholder={'Email'}
+                                   className={'bg-gray-100 text-black rounded-md p-2 mb-4 focus:outline-none transition ease-in duration-150 placeholder-gray-500'}
+                                   type='text'/>
+                            <input placeholder={'Username'}
+                                   className={'bg-gray-100 text-black rounded-md p-2 mb-4 focus:outline-none transition ease-in duration-150 placeholder-gray-500'}
+                                   type='text'
+                                   name={'username'}
                                    onChange={ev => {
                                        updateAccountInfo(ev)
                                    }}/>
-                            <button onClick={() => handleOnClick()} type={'button'}>
-                                <span className={"material-icons text-black"}>{hideIcon}</span>
+                            <div className={'flex space-x-4'}>
+                                <input placeholder={'Password'}
+                                       className={'bg-gray-100 text-black rounded-md p-2 mb-4 w-11/12 focus:outline-none transition ease-in duration-150 placeholder-gray-500'}
+                                       type={`${pwdInputType}`}
+                                       name={'password'}
+                                       onChange={ev => {
+                                           updateAccountInfo(ev)
+                                       }}/>
+                                <button onClick={() => handleOnClick()} type={'button'}>
+                                    {hideIcon === "visibility" ? <FaEye className={'text-black text-2xl'}/> : <FaEyeSlash className={'text-black text-2xl'} />}
+                                </button>
+                            </div>
+                            <div className={'flex space-x-4'}>
+                                <input placeholder={'Confirm Password'}
+                                       className={'bg-gray-100 text-black rounded-md p-2 mb-4 w-11/12 focus:outline-none transition ease-in duration-150 placeholder-gray-500'}
+                                       type={`${pwdInputType}`}/>
+                                <button onClick={() => handleOnClick()} type={'button'}>
+                                    {hideIcon === "visibility" ? <FaEye className={'text-black text-2xl'}/> : <FaEyeSlash className={'text-black text-2xl'} />}
+                                </button>
+                            </div>
+                            <button
+                                className={'bg-gradient-to-r from-indigo-500 to-blue-500 text-black font-bold py-2 rounded-md hover:bg-indigo-600 hover:to-blue-600 transition ease-in duration-200'}
+                                type={"submit"}>Submit
                             </button>
-                        </div>
-                        <div className={'flex space-x-4'}>
-                            <input placeholder={'Confirm Password'}
-                                   className={'bg-cyan-100 text-black border-0 rounded-md p-2 mb-4 w-11/12 focus:outline-none transition ease-in duration-150 placeholder-gray-500 border-sky-600 border-2'}
-                                   type={`${pwdInputType}`}/>
-                            <button onClick={() => handleOnClick()} type={'button'}>
-                                <span className={"material-icons text-black"}>{hideIcon}</span>
-                            </button>
-                        </div>
-                        <button
-                            className={'bg-gradient-to-r from-indigo-500 to-blue-500 text-black font-bold py-2 rounded-md hover:bg-indigo-600 hover:to-blue-600 transition ease-in duration-200'}
-                            type={"submit"}>Submit
-                        </button>
-                        <p className={'text-black mt-4 text-center font-bold'}>Already have an account?
-                            {/*<Link to="/login" className={'text-white-500 hover:underline mt-4'}></Link>*/}
-                        </p>
-                    </form>
+                            <p className={'text-black mt-4 text-center font-bold'}>Already have an account?
+                                {/*<Link to="/login" className={'text-white-500 hover:underline mt-4'}></Link>*/}
+                            </p>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
