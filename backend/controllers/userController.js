@@ -1,12 +1,13 @@
 const User = require('../models/User');
 
-const getUserProfile = async (req, res) => {
-  try {
-    const user = await User.findById(req.user.userId).select('-password');
-    res.json(user);
-  } catch (error) {
-    res.status(500).json({ message: 'Server error' });
-  }
-};
-
-module.exports = { getUserProfile };
+const getUserProfile = (req, res) => {
+    // At this point, req.user should be populated by the protect middleware
+    if (!req.user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+  
+    res.json(req.user);
+  };
+  
+  module.exports = { getUserProfile };
+  
