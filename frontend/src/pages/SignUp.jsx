@@ -1,42 +1,67 @@
 import {useState} from "react";
-import {Link} from 'react-router-dom'
+import {Link, useNavigate} from 'react-router-dom'
 import {FaEye, FaEyeSlash} from "react-icons/fa";
 
 
-export default function SignUp({hideIcon, setHideIcon, pwdInputType, setPwdInputType}) {
-    const [accountInfo, setAccountInfo] = useState({username: '', password:''})
+export default function SignUp() {
+    const [accountInfo, setAccountInfo] = useState({username: '', password: '', email: ''})
+    const [pwdInputType, setPwdInputType] = useState({show: false, type: 'password'})
+    const [checkConfirmPwd, setCheckConfirmPwd] = useState(true)
+    const [checkEmailPattern, setCheckEmailPattern] = useState(true)
 
-    function handleOnClick() {
-        {
-            if (hideIcon === "visibility") {
-                setHideIcon("visibility_off")
-                setPwdInputType("text")
+    const navigate = useNavigate()
+
+    const handleOnClick = ()=> {
+        if (pwdInputType.show) {
+            setPwdInputType({show: false, type: 'password'})
+        } else {
+            setPwdInputType({show: true, type: 'text'})
+        }
+    }
+
+    const updateAccountInfo = (event)=> {
+        setAccountInfo({...accountInfo, [event.target.name]: event.target.value})
+    }
+
+    const checkPassword = (pwd, confirmPwd) => {
+        setCheckConfirmPwd(pwd === confirmPwd)
+    }
+
+    const checkEmail = (ev) => {
+        const email = ev.target.value
+        const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/
+        if (email.match(emailPattern)) {
+            setCheckEmailPattern(true)
+            setAccountInfo({...accountInfo, email: email})
+        } else {
+            setCheckEmailPattern(false)
+        }
+    }
+
+    const register = async (ev) => {
+        if (checkConfirmPwd && checkEmailPattern) {
+            ev.preventDefault()
+            const response = await fetch('http://localhost:5000/api/users/register', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(accountInfo)
+            })
+            if (response.ok) {
+                navigate('/login')
             } else {
-                setHideIcon("visibility")
-                setPwdInputType("password")
+                console.log('Error')
             }
         }
     }
 
-    function updateAccountInfo(event) {
-        setAccountInfo({...accountInfo, [event.target.name]: event.target.value})
-    }
-
-    // async function register(ev) {
-    //     ev.preventDefault()
-    //     await fetch('http://localhost:3000/register', {
-    //         method: 'POST',
-    //         body: JSON.stringify(accountInfo),
-    //         headers: {'Content-Type': 'application/json'}
-    //     })
-    // }
-
     return (
-        <div>
+        <>
             <div className={'flex h-dvh columns-2'}>
                 <div className={'relative'}>
                     <div className={'w-full h-full absolute text-4xl text-blue-950 font-bold m-4'}>
-                        ShitBook
+                        SmileBook
                     </div>
                     <div className={'w-full h-full absolute text-center place-content-center'}>
                         <div className={'text-blue-950 font-bold text-6xl text-center'}>
@@ -54,17 +79,16 @@ export default function SignUp({hideIcon, setHideIcon, pwdInputType, setPwdInput
                     <div className={'m-3'}>
                         <h2 className={'text-[28px] font-bold text-black mb-6 text-center'}>Sign Up</h2>
                         <form className={'flex flex-col'}>
-                            <div className={'flex space-x-4 mb-4'}>
-                                <input placeholder={'First Name'}
-                                       className={'bg-gray-100 text-black rounded-md p-2 w-1/2 focus:outline-none transition ease-in duration-150 placeholder-gray-500'}
-                                       type='text'/>
-                                <input placeholder={'Last Name'}
-                                       className={'bg-gray-100 text-black rounded-md p-2 w-1/2 focus:outline-none transition ease-in duration-150 placeholder-gray-500'}
-                                       type='text'/>
-                            </div>
                             <input placeholder={'Email'}
-                                   className={'bg-gray-100 text-black rounded-md p-2 mb-4 focus:outline-none transition ease-in duration-150 placeholder-gray-500'}
-                                   type='text'/>
+                                   className={`bg-gray-100 text-black rounded-md p-2 focus:outline-none transition ease-in duration-150 placeholder-gray-500 ${checkEmailPattern ? 'mb-4' : 'border-red-500 border-2'}`}
+                                   type='text'
+                                   name={'email'}
+                                   onChange={ev => {
+                                       checkEmail(ev)
+                                   }}/>
+                            {!checkEmailPattern && <div>
+                                <p className={'text-red-500 text-sm mb-4'}>Invalid email format (Correct example: test@example.com)</p>
+                            </div>}
                             <input placeholder={'Username'}
                                    className={'bg-gray-100 text-black rounded-md p-2 mb-4 focus:outline-none transition ease-in duration-150 placeholder-gray-500'}
                                    type='text'
@@ -75,34 +99,40 @@ export default function SignUp({hideIcon, setHideIcon, pwdInputType, setPwdInput
                             <div className={'flex space-x-4'}>
                                 <input placeholder={'Password'}
                                        className={'bg-gray-100 text-black rounded-md p-2 mb-4 w-11/12 focus:outline-none transition ease-in duration-150 placeholder-gray-500'}
-                                       type={`${pwdInputType}`}
+                                       type={`${pwdInputType.type}`}
                                        name={'password'}
                                        onChange={ev => {
                                            updateAccountInfo(ev)
                                        }}/>
                                 <button onClick={() => handleOnClick()} type={'button'}>
-                                    {hideIcon === "visibility" ? <FaEye className={'text-black text-2xl'}/> : <FaEyeSlash className={'text-black text-2xl'} />}
+                                    {pwdInputType.show ? <FaEye className={'text-black text-2xl'}/> : <FaEyeSlash className={'text-black text-2xl'} />}
                                 </button>
                             </div>
                             <div className={'flex space-x-4'}>
                                 <input placeholder={'Confirm Password'}
-                                       className={'bg-gray-100 text-black rounded-md p-2 mb-4 w-11/12 focus:outline-none transition ease-in duration-150 placeholder-gray-500'}
-                                       type={`${pwdInputType}`}/>
+                                       className={`bg-gray-100 text-black rounded-md p-2 mb-4 w-11/12 focus:outline-none transition ease-in duration-150 placeholder-gray-500 ${checkConfirmPwd ? '' : 'border-red-500 border-2'}`}
+                                       type={`${pwdInputType.type}`}
+                                        onChange={(ev) => checkPassword(accountInfo.password, ev.target.value)}/>
                                 <button onClick={() => handleOnClick()} type={'button'}>
-                                    {hideIcon === "visibility" ? <FaEye className={'text-black text-2xl'}/> : <FaEyeSlash className={'text-black text-2xl'} />}
+                                    {pwdInputType.show ? <FaEye className={'text-black text-2xl'}/> : <FaEyeSlash className={'text-black text-2xl'} />}
                                 </button>
                             </div>
+                            {!checkConfirmPwd && <div>
+                                <p className={'text-red-500 text-sm'}>Confirm password does not match</p>
+                            </div>}
                             <button
                                 className={'bg-gradient-to-r from-indigo-500 to-blue-500 text-black font-bold py-2 rounded-md hover:bg-indigo-600 hover:to-blue-600 transition ease-in duration-200'}
-                                type={"submit"}>Submit
+                                type={"submit"}
+                                onClick={(ev) => register(ev)}
+                            >Sign Up
                             </button>
-                            <p className={'text-black mt-4 text-center font-bold'}>Already have an account?
-                                {/*<Link to="/login" className={'text-white-500 hover:underline mt-4'}></Link>*/}
-                            </p>
+                            <div className={'text-black mt-4 text-center font-bold'}>
+                                <Link to="/login" className={'text-white-500 hover:underline mt-4 hover:text-sky-500'}>Already have an account?</Link>
+                            </div>
                         </form>
                     </div>
                 </div>
             </div>
-        </div>
+        </>
     )
 }

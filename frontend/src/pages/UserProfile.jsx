@@ -1,7 +1,25 @@
 import NavBar from "../components/NavBar";
 import UserCard from "../components/UserCard";
+import PostingArea from "../components/PostingArea";
+import UserPosts from "../components/UserPosts";
+import React, {useState} from "react";
+import {initialPosts} from "../model/PostModel";
 
 export default function UserProfile() {
+    // Function to add posts
+    const [posts, setPosts] = useState(initialPosts);
+
+    // Function to add a new post
+    const DisplayPost = (content) => {
+        const newPost = {
+            id: posts.length + 1, // Auto-incrementing ID
+            content: content,
+            author: "Current User", // Replace with actual user info
+            timestamp: new Date().toLocaleString(),
+        };
+        setPosts([newPost, ...posts]);
+    };
+
     return (
         <>
             <div>
@@ -59,16 +77,9 @@ export default function UserProfile() {
                         </div>
 
                         <div className={'w-full ml-3'}>
-                            <div className={'flex w-11/12 bg-gray-50 m-8 rounded-xl divide-y'}>
-                                <button className={' bg-gray-500 hover:bg-gray-300 rounded-md w-full text-white py-4 m-3'}>
-                                    Write something here!
-                                </button>
-                                <button className={' bg-gray-500 hover:bg-gray-300 rounded-md w-full text-white m-3'}>
-                                    Add photos!
-                                </button>
-                            </div>
-                            <div className={'flex w-11/12 bg-gray-50 m-8 rounded-xl'}>
-                                Post content
+                            <div className={'grid grid-cols-1 w-11/12 m-8 rounded-xl'}>
+                                <PostingArea addPost={DisplayPost} />
+                                <UserPosts posts={posts} />
                             </div>
                         </div>
                     </div>

@@ -21,7 +21,7 @@ const PostingArea = ({ onImageUpload }) => {
   };
 
   return (
-    <div className="p-4 border">
+    <div className="p-4 border bg-white rounded-lg">
       <form onSubmit={handleSubmit}>
         <textarea
           className="w-full p-2 border border-gray-300 rounded"
