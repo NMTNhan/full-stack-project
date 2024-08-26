@@ -1,5 +1,6 @@
 import React from 'react';
 import { FaSearch, FaBell, FaUserFriends, FaUserCircle } from 'react-icons/fa';
+import {Link} from "react-router-dom";
 
 const NavBar = () => {
   return (
@@ -65,15 +66,15 @@ const NavBar = () => {
           className="menu menu-sm dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52"
         >
           <li>
-            <a href="/userprofile" className="justify-between">
+            <Link to="/userprofile" className={'justify-between'}>
               Profile
-            </a>
+            </Link>
           </li>
           <li>
-            <a href="/settings">Settings</a>
+            <Link to="/settings">Settings</Link>
           </li>
           <li>
-            <a href="/logout">Logout</a>
+            <Link to="/logout">Logout</Link>
           </li>
         </ul>
       </div>

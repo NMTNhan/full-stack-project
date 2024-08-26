@@ -8,6 +8,18 @@ const getUserProfile = (req, res) => {
   
     res.json(req.user);
   };
-  
-  module.exports = { getUserProfile };
+
+const getFriendInfoByID = async (req, res) => {
+        try {
+            const friend = await User.findById(req.params.id);
+            if (!friend) {
+                return res.status(404).json({ message: 'Friend not found' });
+            }
+            res.json(friend);
+        } catch (error) {
+            res.status(500).json({ message: 'Server error' });
+        }
+    };
+
+module.exports = { getUserProfile, getFriendInfoByID };
   

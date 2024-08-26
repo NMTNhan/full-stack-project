@@ -2,12 +2,19 @@ import NavBar from "../components/NavBar";
 import UserCard from "../components/UserCard";
 import PostingArea from "../components/PostingArea";
 import UserPosts from "../components/UserPosts";
-import React, {useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import {initialPosts} from "../model/PostModel";
+import {UserContext} from "../App";
 
 export default function UserProfile() {
     // Function to add posts
     const [posts, setPosts] = useState(initialPosts);
+    const [friendsInfo, setFriendsInfo] = useState([]);
+    const { user } = useContext(UserContext);
+
+    useEffect(() => {
+        fetchFriendsInfo();
+    }, [user.friends]);
 
     // Function to add a new post
     const DisplayPost = (content) => {
@@ -18,6 +25,25 @@ export default function UserProfile() {
             timestamp: new Date().toLocaleString(),
         };
         setPosts([newPost, ...posts]);
+    };
+
+    //Get all the friend info.
+    const fetchFriendsInfo = async () => {
+        try {
+            const friendsData = await Promise.all(
+                user.friends.map(async (friendId) => {
+                    const response = await fetch(`http://localhost:5000/api/friends/${friendId}`);
+                    if (response.ok) {
+                        return response.json();
+                    } else {
+                        throw new Error('Failed to fetch friend information');
+                    }
+                })
+            );
+            setFriendsInfo(friendsData);
+        } catch (error) {
+            console.error(error);
+        }
     };
 
     return (
@@ -39,7 +65,7 @@ export default function UserProfile() {
                             alt={'img'}/>
                     </div>
                     <div className={'flex justify-between w-full h-32 '}>
-                        <div className={'inline-block ml-48 pt-7 font-bold text-black text-4xl'}>User Name</div>
+                        <div className={'inline-block ml-48 pt-7 font-bold text-black text-4xl'}>{user.username}</div>
                         <div className={'inline-block pt-7'}>
                             <button
                                 className={'bg-sky-500 hover:bg-sky-700 mb-3 mr-3 place-items-center rounded-full w-50 h-10'}>
@@ -57,22 +83,19 @@ export default function UserProfile() {
                                 <div>
                                     <div className={'flex justify-between mt-4'}>
                                         <div className={'text-black font-bold'}>Name:</div>
-                                        <div className={'text-black'}>User Name</div>
+                                        <div className={'text-black'}>{user.username}</div>
                                     </div>
                                     <div className={'flex justify-between mt-4'}>
                                         <div className={'text-black font-bold'}>Email:</div>
-                                        <div className={'text-black'}>Email</div>
+                                        <div className={'text-black'}>{user.email}</div>
                                     </div>
                                 </div>
                             </div>
                             <div className="w-full max-w-md bg-gray-50 rounded-xl shadow-md py-8 px-8 mt-8 ml-8 mr-8">
                                 <h2 className={'text-[28px] font-bold text-black mb-6 text-center'}>Friend</h2>
-                                <div className={'grid grid-cols-3 gap-4'}>
-                                    <UserCard userName={"Hoang"}/>
-                                    <UserCard userName={"Huy"}/>
-                                    <UserCard userName={"Nhan"}/>
-                                    <UserCard userName={"The"}/>
-                                </div>
+                                {friendsInfo.map((friend) => (
+                                    <UserCard key={friend._id} user={friend} />
+                                ))}
                             </div>
                         </div>
 

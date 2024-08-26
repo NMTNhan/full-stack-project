@@ -1,11 +1,14 @@
-import {useState} from "react";
+import {useContext, useState} from "react";
 import {FaEye, FaEyeSlash} from "react-icons/fa";
 import {Link, useNavigate} from "react-router-dom";
+import {UserContext} from "../App";
 
 export default function Login() {
     const [account, setAccount] = useState({email: '', password: ''})
     const [showPassword, setShowPassword] = useState(true)
     const [pwdInputType, setPwdInputType] = useState('password')
+    const [error, setError] = useState('')
+    const { setUser } = useContext(UserContext)
 
     const navigate = useNavigate()
 
@@ -33,9 +36,11 @@ export default function Login() {
         })
 
         if (response.ok) {
+            const data = await response.json()
+            setUser(data.user)
             navigate('/')
         } else {
-            console.log('Error')
+            setError('Login failed. Email or password is incorrect. Please try again.')
         }
     }
 
@@ -73,10 +78,14 @@ export default function Login() {
                                        name={'password'}
                                        type={`${pwdInputType}`}
                                        onChange={event => updateAccountInfo(event)}/>
-                                <button type={'button'} className={'place-items-center'} onClick={() => {handleOnClick()}}>
-                                    {showPassword ? <FaEye className={'text-black text-2xl'}/> : <FaEyeSlash className={'text-black text-2xl'} />}
+                                <button type={'button'} className={'place-items-center'} onClick={() => {
+                                    handleOnClick()
+                                }}>
+                                    {showPassword ? <FaEye className={'text-black text-2xl'}/> :
+                                        <FaEyeSlash className={'text-black text-2xl'}/>}
                                 </button>
                             </div>
+                            <p className={'text-red-600 text-[12px]'}>{error}</p>
                             <button
                                 className={'bg-gradient-to-r from-indigo-500 to-blue-500 text-white font-medium py-2 rounded-md hover:bg-indigo-600 hover:to-blue-600 transition ease-in duration-200'}
                                 type={"submit"}
