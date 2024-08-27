@@ -1,43 +1,45 @@
-import {useState} from "react";
-import {FaEye, FaEyeSlash} from "react-icons/fa";
-import {Link, useNavigate} from "react-router-dom";
+import { useState } from "react";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function Login() {
-    const [account, setAccount] = useState({email: '', password: ''})
-    const [showPassword, setShowPassword] = useState(true)
-    const [pwdInputType, setPwdInputType] = useState('password')
+    const [account, setAccount] = useState({ email: '', password: '' });
+    const [showPassword, setShowPassword] = useState(true);
+    const [pwdInputType, setPwdInputType] = useState('password');
 
-    const navigate = useNavigate()
+    const navigate = useNavigate();
 
     const handleOnClick = () => {
-        setShowPassword(!showPassword)
-        if (showPassword) {
-            setPwdInputType('text')
-        } else {
-            setPwdInputType('password')
-        }
-    }
+        setShowPassword(!showPassword);
+        setPwdInputType(showPassword ? 'text' : 'password');
+    };
 
     const updateAccountInfo = (event) => {
-        setAccount({...account, [event.target.name]: event.target.value})
-    }
+        setAccount({ ...account, [event.target.name]: event.target.value });
+    };
 
     const login = async (ev) => {
-        ev.preventDefault()
-        const response = await fetch('http://localhost:5000/api/users/login', {
+        ev.preventDefault();
+        const response = await fetch('http://localhost:5000/api/auth/login', {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
             },
-            body: JSON.stringify(account)
-        })
+            body: JSON.stringify(account),
+        });
 
         if (response.ok) {
-            navigate('/')
+            const data = await response.json();
+            // Store token and user details
+            localStorage.setItem('token', data.token);
+            localStorage.setItem('user', JSON.stringify(data.user));
+
+            // Redirect to home or dashboard
+            navigate('/');
         } else {
-            console.log('Error')
+            console.log('Error: Invalid credentials or server issue');
         }
-    }
+    };
 
     return (
         <>
@@ -55,26 +57,26 @@ export default function Login() {
                         </div>
                     </div>
                     <img className={'w-full h-full'}
-                         src="https://img.freepik.com/free-vector/blue-pink-halftone-background_53876-144365.jpg?t=st=1724341655~exp=1724345255~hmac=ace77f146c20e45804647f51d5e8a32e16a6a63847c890d4766d41ada9cc190f&w=1380"
-                         alt={'img'}/>
+                        src="https://img.freepik.com/free-vector/blue-pink-halftone-background_53876-144365.jpg?t=st=1724341655~exp=1724345255~hmac=ace77f146c20e45804647f51d5e8a32e16a6a63847c890d4766d41ada9cc190f&w=1380"
+                        alt={'img'} />
                 </div>
                 <div className={'w-4/12 content-center bg-white'}>
                     <div className={'m-3'}>
                         <h2 className={'text-[28px] font-bold text-black mb-6 text-center'}>Log In</h2>
                         <form className={'flex flex-col'}>
                             <input placeholder={'Email'}
-                                   className={'bg-gray-100 text-black border-0 rounded-md p-2 mb-4 focus:outline-none transition ease-in duration-150 placeholder-gray-300'}
-                                   name={'email'}
-                                   type='text'
-                                   onChange={event => updateAccountInfo(event)}/>
+                                className={'bg-gray-100 text-black border-0 rounded-md p-2 mb-4 focus:outline-none transition ease-in duration-150 placeholder-gray-300'}
+                                name={'email'}
+                                type='text'
+                                onChange={event => updateAccountInfo(event)} />
                             <div className={'flex space-x-4'}>
                                 <input placeholder={'Password'}
-                                       className={'bg-gray-100 text-black border-0 rounded-md p-2 mb-4 w-11/12 focus:outline-none transition ease-in duration-150 placeholder-gray-300'}
-                                       name={'password'}
-                                       type={`${pwdInputType}`}
-                                       onChange={event => updateAccountInfo(event)}/>
-                                <button type={'button'} className={'place-items-center'} onClick={() => {handleOnClick()}}>
-                                    {showPassword ? <FaEye className={'text-black text-2xl'}/> : <FaEyeSlash className={'text-black text-2xl'} />}
+                                    className={'bg-gray-100 text-black border-0 rounded-md p-2 mb-4 w-11/12 focus:outline-none transition ease-in duration-150 placeholder-gray-300'}
+                                    name={'password'}
+                                    type={`${pwdInputType}`}
+                                    onChange={event => updateAccountInfo(event)} />
+                                <button type={'button'} className={'place-items-center'} onClick={() => { handleOnClick() }}>
+                                    {showPassword ? <FaEye className={'text-black text-2xl'} /> : <FaEyeSlash className={'text-black text-2xl'} />}
                                 </button>
                             </div>
                             <button
