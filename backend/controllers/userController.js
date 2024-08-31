@@ -19,7 +19,21 @@ const getFriendInfoByID = async (req, res) => {
         } catch (error) {
             res.status(500).json({ message: 'Server error' });
         }
-    };
+};
 
-module.exports = { getUserProfile, getFriendInfoByID };
+const unFriendByID = async (req, res) => {
+    try {
+        const response = await User.updateOne(
+            { _id: req.body.userID },
+            { $pull: { friends: req.params.id } }
+        );
+        if (response) {
+            res.json({ message: 'Unfriend successfully' });
+        }
+    } catch (error) {
+        res.status(500).json({message: 'Server error'});
+    }
+}
+
+module.exports = { getUserProfile, getFriendInfoByID, unFriendByID };
   

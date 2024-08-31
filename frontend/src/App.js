@@ -6,6 +6,7 @@ import UserPage from './pages/UserPage';
 import Login from './pages/Login';
 import SignUp from './pages/SignUp';
 import UserProfile from './pages/UserProfile';
+import FriendProfile from './pages/FriendProfile';
 
 export const UserContext = createContext(undefined)
 
@@ -29,6 +30,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<SignUp />} />
           <Route path="/userprofile" element={<UserProfile />} />
+          <Route path="/friend/:friendID" element={<FriendProfile />} />
         </Routes>
       </Router>
     </UserContext.Provider>
