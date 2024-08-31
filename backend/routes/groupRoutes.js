@@ -1,0 +1,216 @@
+const express = require('express');
+const Group = require('../models/Group'); 
+const User = require('../models/User');
+
+const router = express.Router();
+
+// Create a new group
+router.post('/createGroup', async (req, res) => {
+  const { name, description, status, admin } = req.body;
+
+  try {
+    const newGroup = new Group({
+      name,
+      description,
+      status,
+      admin,
+      members: [],
+      numberOfMembers: 0,
+      requestList: []
+    });
+
+    await newGroup.save();
+
+    // Return the new group object without a message
+    res.status(201).json(newGroup);
+  } catch (error) {
+    res.status(400).json({ message: 'Error creating group', error: error.message });
+  }
+});
+
+// Get all groups
+router.get('/', async (req, res) => {
+  try {
+    const groups = await Group.find();
+    res.status(200).json(groups);
+  } catch (error) {
+    res.status(500).json({ message: 'Error retrieving groups', error });
+  }
+});
+
+// Get group by ID
+router.get('/:groupId', async (req, res) => {
+  try {
+    const group = await Group.findById(req.params.groupId);
+    if (!group) {
+      return res.status(404).json({ message: 'Group not found' });
+    }
+    res.status(200).json(group);
+  } catch (error) {
+    res.status(500).json({ message: 'Error retrieving group', error });
+  }
+});
+
+// Add members to the request list in a group
+router.post('/:groupId/requests/:userId', async (req, res) => {
+  try {
+    const groupId = req.params.groupId;
+    const userId = req.params.userId;
+
+    const group = await Group.findById(groupId);
+    if (!group) {
+      return res.status(404).json({ message: 'Group not found' });
+    }
+
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    if (group.requestList.includes(userId)) {
+      return res.status(400).json({ message: 'User already on the request list' });
+    }
+
+    if (group.members.includes(userId)) {
+      return res.status(400).json({ message: 'User is already a member of the group' });
+    }
+
+    group.requestList.push(userId);
+    await group.save();
+    res.status(200).json(group);
+  } catch (error) {
+    res.status(500).json({ message: 'Error adding member to group', error });
+  }
+});
+
+// Remove a member from a group
+router.delete('/:groupId/members/:memberId', async (req, res) => {
+  try {
+    const { groupId, memberId } = req.params;
+
+    const group = await Group.findById(groupId);
+    if (!group) {
+      return res.status(404).json({ message: 'Group not found' });
+    }
+
+    const memberIndex = group.members.indexOf(memberId);
+    if (memberIndex === -1) {
+      return res.status(404).json({ message: 'Member not found in the group' });
+    }
+
+    group.members.splice(memberIndex, 1);
+    group.numberOfMembers = group.members.length;
+    await group.save();
+
+    const user = await User.findById(memberId);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    const groupIndex = user.groups.indexOf(groupId);
+    if (groupIndex !== -1) {
+      user.groups.splice(groupIndex, 1);
+      await user.save();
+    }
+
+    res.status(200).json(group);
+  } catch (error) {
+    res.status(500).json({ message: 'Error removing member from group', error });
+  }
+});
+
+// Add members from request list to a group
+router.post('/:groupId/members/:userId', async (req, res) => {
+  try {
+    const groupId = req.params.groupId;
+    const userId = req.params.userId;
+
+    const group = await Group.findById(groupId);
+    if (!group) {
+      return res.status(404).json({ message: 'Group not found' });
+    }
+
+    const userIndex = group.requestList.indexOf(userId);
+    if (userIndex === -1) {
+      return res.status(404).json({ message: 'User not found in the request list' });
+    }
+
+    group.requestList.splice(userIndex, 1);
+    group.members.push(userId);
+    group.numberOfMembers = group.members.length;
+    await group.save();
+
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    user.groups.push(groupId);
+    await user.save();
+
+    res.status(200).json(group);
+  } catch (error) {
+    res.status(500).json({ message: 'Error adding member to group', error });
+  }
+});
+
+// Remove users from request list
+router.delete('/:groupId/requests/:userId', async (req, res) => {
+  try {
+    const groupId = req.params.groupId;
+    const userId = req.params.userId;
+
+    const group = await Group.findById(groupId);
+    if (!group) {
+      return res.status(404).json({ message: 'Group not found' });
+    }
+
+    const userIndex = group.requestList.indexOf(userId);
+    if (userIndex === -1) {
+      return res.status(404).json({ message: 'User not found in the request list' });
+    }
+
+    group.requestList.splice(userIndex, 1);
+    await group.save();
+    res.status(200).json(group);
+
+  } catch (error) {
+    res.status(500).json({ message: 'Error removing member from request list', error });
+  }
+});
+
+// Get all members of a group
+router.get('/:groupId/members', async (req, res) => {
+  try {
+    const groupId = req.params.groupId;
+
+    const group = await Group.findById(groupId);
+    if (!group) {
+      return res.status(404).json({ message: 'Group not found' });
+    }
+
+    const members = await User.find({ _id: { $in: group.members } }).select('-password');
+    res.status(200).json(members);
+  } catch (error) {
+    res.status(500).json({ message: 'Error retrieving members', error });
+  }
+});
+
+// Get all requests of a group
+router.get('/:groupId/requests', async (req, res) => {
+  try {
+    const groupId = req.params.groupId;
+
+    const group = await Group.findById(groupId);
+    if (!group) {
+      return res.status(404).json({ message: 'Group not found' });
+    }
+
+    const requestedUsers = await User.find({ _id: { $in: group.requestList } }).select('-password');
+    res.status(200).json(requestedUsers);
+  } catch (error) {
+    res.status(500).json({ message: 'Error retrieving requests', error });
+  }
+});
+
+module.exports = router;
