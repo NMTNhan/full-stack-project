@@ -1,37 +1,61 @@
 import NavBar from "../components/NavBar";
 import UserCard from "../components/UserCard";
-import PostingArea from "../components/PostingArea";
 import UserPosts from "../components/UserPosts";
 import React, {useContext, useEffect, useState} from "react";
 import {initialPosts} from "../model/PostModel";
+import {useLocation} from "react-router-dom";
 import {UserContext} from "../App";
+import {UnFriendButton} from "../components/UnFriendButton";
+import {AddFriendButton} from "../components/AddFriendButton";
 
 export default function UserProfile() {
-    // Function to add posts
+    const location = useLocation();
+    const { user } = useContext(UserContext);
+    const { friendProfile} = location.state;
     const [posts, setPosts] = useState(initialPosts);
     const [friendsInfo, setFriendsInfo] = useState([]);
-    const { user } = useContext(UserContext);
+    const [isFriend, setIsFriend] = useState(false);
 
     useEffect(() => {
         fetchFriendsInfo();
-    }, [user.friends]);
+        checkIsFriend();
+    }, [friendProfile]);
 
-    // Function to add a new post
-    const DisplayPost = (content) => {
-        const newPost = {
-            id: posts.length + 1, // Auto-incrementing ID
-            content: content,
-            author: "Current User", // Replace with actual user info
-            timestamp: new Date().toLocaleString(),
-        };
-        setPosts([newPost, ...posts]);
-    };
+    // Function to check if this friend's profile is a friend's information of the current user
+    const checkIsFriend = () => {
+        if (user.friends.includes(friendProfile._id)) {
+            setIsFriend(true);
+        } else {
+            setIsFriend(false);
+        }
+    }
+
+    // Function to unfriend
+    const handleUnFriend = async () => {
+        try {
+            const response = await fetch(`http://localhost:5000/api/friends/unfriend/${friendProfile._id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ userID: user._id})
+            });
+            if (response.ok) {
+                console.log('Unfriend successfully');
+                user.friends = user.friends.filter((friendId) => friendId !== friendProfile._id);
+            } else {
+                throw new Error('Failed to unfriend');
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    }
 
     //Get all the friend info.
     const fetchFriendsInfo = async () => {
         try {
             const friendsData = await Promise.all(
-                user.friends.map(async (friendId) => {
+                friendProfile.friends.map(async (friendId) => {
                     const response = await fetch(`http://localhost:5000/api/friends/${friendId}`);
                     if (response.ok) {
                         return response.json();
@@ -64,8 +88,11 @@ export default function UserProfile() {
                              src="https://png.pngtree.com/thumb_back/fh260/background/20230615/pngtree-landscape-landscape-photo-image_2902263.jpg"
                             alt={'img'}/>
                     </div>
-                    <div className={'flex justify-between w-full h-32 '}>
-                        <div className={'inline-block ml-48 pt-7 font-bold text-black text-4xl'}>{user.username}</div>
+                    <div className={'flex justify-between w-full h-32'}>
+                        <div className={'inline-block ml-48 pt-7 font-bold text-black text-4xl'}>{friendProfile.username}</div>
+                        <div className={'max-h-24 m-5'}>
+                            {isFriend ? <UnFriendButton handleUnFriend={handleUnFriend}/> : <AddFriendButton friendID={ friendProfile._id } userID={ user._id }/>}
+                        </div>
                     </div>
                 </div>
                 <div className={'bg-gray-100'}>
@@ -77,29 +104,24 @@ export default function UserProfile() {
                                 <div>
                                     <div className={'flex justify-between mt-4'}>
                                         <div className={'text-black font-bold'}>Name:</div>
-                                        <div className={'text-black'}>{user.username}</div>
+                                        <div className={'text-black'}>{friendProfile.username}</div>
                                     </div>
                                     <div className={'flex justify-between mt-4'}>
                                         <div className={'text-black font-bold'}>Email:</div>
-                                        <div className={'text-black'}>{user.email}</div>
+                                        <div className={'text-black'}>{friendProfile.email}</div>
                                     </div>
                                 </div>
                             </div>
                             <div className="w-full max-w-md bg-gray-50 rounded-xl shadow-md py-8 px-8 mt-8 ml-8 mr-8">
                                 <h2 className={'text-[28px] font-bold text-black mb-6 text-center'}>Friend</h2>
-                                <div className={'grid grid-cols-3 gap-2'}>
-                                    {friendsInfo.map((friend) => (
-                                        <>
-                                            <UserCard key={friend.id} friend={friend}/>
-                                        </>
-                                    ))}
-                                </div>
+                                {friendsInfo.map((friend) => (
+                                    <UserCard key={friend._id} friend={friend} user={friendProfile}/>
+                                ))}
                             </div>
                         </div>
 
                         <div className={'w-full ml-3'}>
                             <div className={'grid grid-cols-1 w-11/12 m-8 rounded-xl'}>
-                                <PostingArea addPost={DisplayPost} />
                                 <UserPosts posts={posts} />
                             </div>
                         </div>

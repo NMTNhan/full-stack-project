@@ -1,7 +1,31 @@
-import React from 'react';
-import { FaBell, FaUserFriends, FaUserCircle } from 'react-icons/fa';
+import React, {useContext, useEffect, useState} from 'react';
+import { FaSearch, FaBell, FaUserFriends, FaUserCircle } from 'react-icons/fa';
+import {Link} from "react-router-dom";
+import {UserContext} from "../App";
+import FriendRequestCard from "./FriendRequestCard";
 
-const NavBar = ({ username }) => {
+const NavBar = () => {
+  const { user } = useContext(UserContext);
+  const [friendRequests, setFriendRequests]  = useState([]);
+
+  // Function to fetch all the friend request
+    const fetchFriendRequests = async () => {
+        try {
+            const response = await fetch(`http://localhost:5000/api/notifications/get/${user._id}`);
+            if (response.ok) {
+              const friendRequestsFromFetching = await response.json();
+              setFriendRequests(friendRequestsFromFetching);
+            } else {
+              throw new Error('Failed to fetch friend requests');
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+  useEffect(() => {
+    fetchFriendRequests();
+  }, [user.friends])
   return (
     <div className="navbar bg-base-100 px-4 shadow-md">
       {/* Left Side of NavBar */}
@@ -9,6 +33,25 @@ const NavBar = ({ username }) => {
         <a className="text-2xl font-bold text-black" href="/">Shitbook</a>
         <div className="relative flex items-center max-w-xs">
 
+    {/* Right Side */}
+    <div className="flex-1 flex justify-end gap-4">
+      {/* Friend Request Icon*/}
+      <div className="dropdown dropdown-end max-h-27">
+        <div tabIndex={0} className="indicator cursor-pointer">
+          <FaUserFriends className="text-2xl text-gray-500" />
+        </div>
+        {/*Friend Request Icon: Dropdown */}
+        <div
+          tabIndex={0}
+          className="dropdown-content menu p-2 shadow bg-base-100 rounded-box mt-3 overflow-auto"
+        >
+          {friendRequests && friendRequests.map((friendRequest) => {
+            return (
+                <>
+                    <FriendRequestCard friendRequest={friendRequest} />
+                </>
+            )
+          })}
         </div>
       </div>
 
@@ -55,25 +98,22 @@ const NavBar = ({ username }) => {
             </div>
           </label>
           {/* Profile Picture Icon: Dropdown */}
-          <ul
-            tabIndex={0}
-            className="menu menu-sm dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52"
-          >
-            <li>
-              <a href="/userprofile" className="justify-between">
-                Profile
-              </a>
-            </li>
-            <li>
-              <a href="/settings">Settings</a>
-            </li>
-            <li>
-              <a href="/login">Logout</a>
-            </li>
-          </ul>
-        </div>
-
-
+        <ul
+          tabIndex={0}
+          className="menu menu-sm dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52"
+        >
+          <li>
+            <Link to="/userprofile" className={'justify-between'}>
+              Profile
+            </Link>
+          </li>
+          <li>
+            <Link to="/settings">Settings</Link>
+          </li>
+          <li>
+            <Link to="/logout">Logout</Link>
+          </li>
+        </ul>
       </div>
     </div>
   );

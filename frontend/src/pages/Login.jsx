@@ -1,11 +1,14 @@
-import { useState } from "react";
-import { FaEye, FaEyeSlash } from "react-icons/fa";
-import { Link, useNavigate } from "react-router-dom";
+import {useContext, useState} from "react";
+import {FaEye, FaEyeSlash} from "react-icons/fa";
+import {Link, useNavigate} from "react-router-dom";
+import {UserContext} from "../App";
 
 export default function Login() {
-    const [account, setAccount] = useState({ email: '', password: '' });
-    const [showPassword, setShowPassword] = useState(true);
-    const [pwdInputType, setPwdInputType] = useState('password');
+    const [account, setAccount] = useState({email: '', password: ''})
+    const [showPassword, setShowPassword] = useState(true)
+    const [pwdInputType, setPwdInputType] = useState('password')
+    const [error, setError] = useState('')
+    const { setUser } = useContext(UserContext)
 
     const navigate = useNavigate();
 
@@ -29,15 +32,11 @@ export default function Login() {
         });
 
         if (response.ok) {
-            const data = await response.json();
-            // Store token and user details
-            localStorage.setItem('token', data.token);
-            localStorage.setItem('user', JSON.stringify(data.user));
-
-            // Redirect to home or dashboard
-            navigate('/');
+            const data = await response.json()
+            setUser(data.user)
+            navigate('/homepage')
         } else {
-            console.log('Error: Invalid credentials or server issue');
+            setError('Login failed. Email or password is incorrect. Please try again.')
         }
     };
 
@@ -71,14 +70,18 @@ export default function Login() {
                                 onChange={event => updateAccountInfo(event)} />
                             <div className={'flex space-x-4'}>
                                 <input placeholder={'Password'}
-                                    className={'bg-gray-100 text-black border-0 rounded-md p-2 mb-4 w-11/12 focus:outline-none transition ease-in duration-150 placeholder-gray-300'}
-                                    name={'password'}
-                                    type={`${pwdInputType}`}
-                                    onChange={event => updateAccountInfo(event)} />
-                                <button type={'button'} className={'place-items-center'} onClick={() => { handleOnClick() }}>
-                                    {showPassword ? <FaEye className={'text-black text-2xl'} /> : <FaEyeSlash className={'text-black text-2xl'} />}
+                                       className={'bg-gray-100 text-black border-0 rounded-md p-2 mb-4 w-11/12 focus:outline-none transition ease-in duration-150 placeholder-gray-300'}
+                                       name={'password'}
+                                       type={`${pwdInputType}`}
+                                       onChange={event => updateAccountInfo(event)}/>
+                                <button type={'button'} className={'place-items-center'} onClick={() => {
+                                    handleOnClick()
+                                }}>
+                                    {showPassword ? <FaEye className={'text-black text-2xl'}/> :
+                                        <FaEyeSlash className={'text-black text-2xl'}/>}
                                 </button>
                             </div>
+                            <p className={'text-red-600 text-[12px]'}>{error}</p>
                             <button
                                 className={'bg-gradient-to-r from-indigo-500 to-blue-500 text-white font-medium py-2 rounded-md hover:bg-indigo-600 hover:to-blue-600 transition ease-in duration-200'}
                                 type={"submit"}
