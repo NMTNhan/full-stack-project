@@ -2,10 +2,10 @@ import React, { useState } from 'react';
 import NavBar from '../components/NavBar';
 import PostingArea from '../components/PostingArea';
 import UserPosts from '../components/UserPosts';
-import GroupSidebar from '../components/GroupSidebar';
+// import GroupSidebar from '../components/GroupSidebar';
 import FriendSidebar from '../components/FriendSideBar';
 import {initialPosts} from '../model/PostModel'
-import { modelgroups } from '../model/GroupModel';
+// import { modelgroups } from '../model/GroupModel';
 
 const UserPage = () => {
   
@@ -28,7 +28,7 @@ const UserPage = () => {
       <NavBar />
       <div className="grid grid-cols-12 gap-4 p-4">
       <div className="col-span-3">
-          <GroupSidebar groups={modelgroups} />
+          {/* <GroupSidebar groups={modelgroups} /> */}
         </div>
 
         <div className="col-span-6">

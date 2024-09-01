@@ -12,11 +12,13 @@ const UserPosts = ({ posts }) => {
               <div className='flex items-center'>
                 <img 
                   src={post.avatar} 
+                  // src={post.author.avatar} 
                   alt={`Avartar of ${post.author}`} 
                   className="w-12 h-12 rounded-full mr-4"
                 />
                 <div>
                   <p>{post.author}</p>
+                  {/* <p>{post.author.username}</p> */}
                   
                   <div className="text-sm text-gray-500">
                     <p>{post.timestamp}</p>

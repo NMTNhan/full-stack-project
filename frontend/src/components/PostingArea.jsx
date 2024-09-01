@@ -1,25 +1,52 @@
 import React, { useState } from 'react';
 
-const PostingArea = ({ onImageUpload }) => {
+const API_BASE_URL = 'http://localhost:5000';
+
+const PostingArea = ({ onPostCreated }) => {
   const [post, setPost] = useState('');
   const [selectedImage, setSelectedImage] = useState(null);
+  const [selectedImageFile, setSelectedImageFile] = useState(null); 
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
     if (file) {
       setSelectedImage(URL.createObjectURL(file));
-      if (onImageUpload) {
-        onImageUpload(file); // Call the parent component's handler with the selected file
-      }
+      setSelectedImageFile(file);
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    alert(`Posting: ${post}`);
-    setPost('');
-  };
+    try {
+      const formData = new FormData();
+      formData.append('content', post);
+      if (selectedImageFile) {
+        formData.append('image', selectedImageFile);
+      }
 
+      const response = await fetch(`${API_BASE_URL}/api/posts`, {
+        method: 'POST',
+        body: formData,
+        // 'Content-Type': 'application/json',
+      });
+
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+
+      const data = await response.json(); // Extract JSON data from the response
+
+      // Handle post creation response
+      if (onPostCreated) {
+        onPostCreated(data);
+      }
+      setPost('');
+      setSelectedImage(null);
+      setSelectedImageFile(null); // Clear selected image file
+    } catch (error) {
+      console.error('Error creating post:', error);
+    }
+  };
   return (
     <div className="p-4 border bg-white rounded-lg">
       <form onSubmit={handleSubmit}>

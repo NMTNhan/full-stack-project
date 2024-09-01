@@ -35,7 +35,7 @@ const HomePage = () => {
       <div className="grid grid-cols-12 gap-4 p-4">
         <div className="col-span-3">
           <GroupSidebar groups={groups} /> {/* Use fetched groups here */}
-          {error && <p className="text-red-500">{error}</p>} {/* Display error message */}
+          {error && <p className="text-red-500">{error}</p>} Display error message
         </div>
         <div className="col-span-6">
           <PostingArea />

@@ -1,12 +1,16 @@
-import { FaSearch, FaBell, FaUserFriends, FaUserCircle } from 'react-icons/fa';
+import { 
+  // FaSearch,
+   FaBell, FaUserFriends, FaUserCircle } from 'react-icons/fa';
 import {Link} from "react-router-dom";
 import {UserContext} from "../App";
-import FriendRequestCard from "./FriendRequestCard";
+// import FriendRequestCard from "./FriendRequestCard";
 import {useContext, useEffect, useState} from "react";
 
 const NavBar = () => {
   const { user } = useContext(UserContext);
-  const [friendRequests, setFriendRequests]  = useState([]);
+  const [
+    // friendRequests,
+     setFriendRequests]  = useState([]);
 
   // Function to fetch all the friend request
     const fetchFriendRequests = async () => {
