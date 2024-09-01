@@ -10,6 +10,7 @@ import AboutUsPage from './pages/AboutUsPage';
 import MembersPage from './pages/MembersPage';
 import FriendProfile from './pages/FriendProfile';
 import {createContext, useEffect, useState} from "react";
+import {NotFoundPage} from "./pages/NotFoundPage";
 
 export const UserContext = createContext(undefined)
 
@@ -83,6 +84,7 @@ function App() {
                           element={<MembersPage />}
                       />
                   ))}
+                  <Route path={'*'} element={<NotFoundPage/>}/>
               </Routes>
           </Router>
       </UserContext.Provider>
