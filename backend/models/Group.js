@@ -10,6 +10,7 @@ const groupSchema = new mongoose.Schema({
   },
   status: {
     type: String,
+    default: 'pending',
   },
   admin: {
     type: mongoose.Schema.Types.ObjectId,

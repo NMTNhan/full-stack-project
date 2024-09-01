@@ -1,4 +1,5 @@
 const Post = require('../models/Post');
+const Comment = require('../models/Comment');
 
 // Create a new post
 const createPost = async (req, res) => {
@@ -139,4 +140,33 @@ const commentOnPost = async (req, res) => {
     }
 };
   
-module.exports = { getPosts, createPost, updatePost, deletePost, likePost, commentOnPost };
+
+const deletePostByAdmin = async (req, res) => {
+  try {
+      const post = await Post.findById(req.params.postId);
+      if (!post) {
+          return res.status(404).json({ message: 'Post not found' });
+      }
+      
+      await post.remove();
+      res.json({ message: 'Post deleted successfully' });
+  } catch (error) {
+      res.status(500).json({ message: 'Server error', error: error.message });
+  }
+};
+
+const deleteCommentByAdmin = async (req, res) => {
+  try {
+      const comment = await Comment.findById(req.params.commentId);
+      if (!comment) {
+          return res.status(404).json({ message: 'Comment not found' });
+      }
+      
+      await comment.remove();
+      res.json({ message: 'Comment deleted successfully' });
+  } catch (error) {
+      res.status(500).json({ message: 'Server error', error: error.message });
+  }
+};
+
+module.exports = { getPosts, createPost, updatePost, deletePost, likePost, commentOnPost, deletePostByAdmin, deleteCommentByAdmin };

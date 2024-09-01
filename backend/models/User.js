@@ -35,6 +35,10 @@ const userSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  isSuspended: {
+    type: Boolean,
+    default: false, 
+  },
 });
 
 // Hash the password before saving the user model
