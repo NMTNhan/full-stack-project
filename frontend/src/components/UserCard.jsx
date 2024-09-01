@@ -1,6 +1,6 @@
 import {useNavigate} from "react-router-dom";
 
-export default function UserCard({ friend}) {
+export default function UserCard({ friend }) {
 
     const navigate = useNavigate()
 
@@ -9,7 +9,7 @@ export default function UserCard({ friend}) {
     }
 
     return (
-        <div key={friend.id} className={'flex flex-col justify-center items-center hover:bg-gray-300 max-h-170 max-w-24'} onClick={() => handleClick()}>
+        <div key={friend.id} className={'flex flex-col justify-center items-center hover:bg-gray-300 max-h-170 max-w-24 rounded-lg'} onClick={() => handleClick()}>
             {/*Avatar*/}
             <div>
                 <img className={'h-170 w-24 rounded-lg'} src="https://avatarfiles.alphacoders.com/374/thumb-1920-374883.png" alt={'img'}/>
