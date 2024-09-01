@@ -5,6 +5,7 @@ import UserPosts from '../components/UserPosts';
 import GroupSidebar from '../components/GroupSidebar';
 import FriendSidebar from '../components/FriendSideBar';
 import {initialPosts} from '../model/PostModel'
+import { modelgroups } from '../model/GroupModel';
 
 const UserPage = () => {
   
@@ -27,7 +28,7 @@ const UserPage = () => {
       <NavBar />
       <div className="grid grid-cols-12 gap-4 p-4">
       <div className="col-span-3">
-          <GroupSidebar />
+          <GroupSidebar groups={modelgroups} />
         </div>
 
         <div className="col-span-6">

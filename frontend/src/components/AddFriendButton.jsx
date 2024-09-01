@@ -6,7 +6,6 @@ export const AddFriendButton = ({ friendID, userID }) => {
 
     useEffect(() => {
         checkIsSentFriendRequest();
-        console.log('Is sent request: ', isSentFriendRequest);
     }, []);
 
     const checkIsSentFriendRequest = async () => {

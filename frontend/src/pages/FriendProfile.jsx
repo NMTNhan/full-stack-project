@@ -3,7 +3,7 @@ import UserCard from "../components/UserCard";
 import UserPosts from "../components/UserPosts";
 import React, {useContext, useEffect, useState} from "react";
 import {initialPosts} from "../model/PostModel";
-import {useLocation} from "react-router-dom";
+import {useLocation, useNavigate} from "react-router-dom";
 import {UserContext} from "../App";
 import {UnFriendButton} from "../components/UnFriendButton";
 import {AddFriendButton} from "../components/AddFriendButton";
@@ -15,6 +15,8 @@ export default function UserProfile() {
     const [posts, setPosts] = useState(initialPosts);
     const [friendsInfo, setFriendsInfo] = useState([]);
     const [isFriend, setIsFriend] = useState(false);
+
+    const navigate = useNavigate()
 
     useEffect(() => {
         fetchFriendsInfo();
@@ -38,11 +40,12 @@ export default function UserProfile() {
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ userID: user._id})
+                body: JSON.stringify({ userID: user.id})
             });
             if (response.ok) {
                 console.log('Unfriend successfully');
                 user.friends = user.friends.filter((friendId) => friendId !== friendProfile._id);
+                navigate('/userprofile')
             } else {
                 throw new Error('Failed to unfriend');
             }
@@ -91,7 +94,7 @@ export default function UserProfile() {
                     <div className={'flex justify-between w-full h-32'}>
                         <div className={'inline-block ml-48 pt-7 font-bold text-black text-4xl'}>{friendProfile.username}</div>
                         <div className={'max-h-24 m-5'}>
-                            {isFriend ? <UnFriendButton handleUnFriend={handleUnFriend}/> : <AddFriendButton friendID={ friendProfile._id } userID={ user._id }/>}
+                            {isFriend ? <UnFriendButton handleUnFriend={handleUnFriend}/> : <AddFriendButton friendID={ friendProfile._id } userID={ user.id }/>}
                         </div>
                     </div>
                 </div>

@@ -12,6 +12,7 @@ const userRoutes = require('./routes/userRoutes');
 const postRoutes = require('./routes/postRoutes'); // Ensure this is imported
 const friendRoutes = require('./routes/friendRoutes');
 const notificationRoutes = require('./routes/notificationRoutes');
+const groupRoutes = require('./routes/groupRoutes'); // Import group routes
 
 // Middleware
 app.use(express.json()); // Parse JSON bodies
@@ -31,6 +32,7 @@ app.use('/api/users', userRoutes);
 app.use('/api/posts', postRoutes); // Ensure this is being used
 app.use('/api/friends', friendRoutes);
 app.use('/api/notifications', notificationRoutes);
+app.use('/api/groups', groupRoutes); // Use group routes
 
 // Basic route for testing
 app.get('/', (req, res) => {

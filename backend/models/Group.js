@@ -8,6 +8,9 @@ const groupSchema = new mongoose.Schema({
   description: {
     type: String,
   },
+  status: {
+    type: String,
+  },
   admin: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
@@ -17,10 +20,18 @@ const groupSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
   }],
+  numberOfMembers: {
+    type: Number,
+    default: 0,
+  },
+  requestList: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+  }],
   createdAt: {
     type: Date,
     default: Date.now,
-  },
+  }
 });
 
 const Group = mongoose.model('Group', groupSchema);
