@@ -38,7 +38,7 @@ export default function Login() {
         if (response.ok) {
             const data = await response.json()
             setUser(data.user)
-            navigate('/')
+            navigate('/homepage')
         } else {
             setError('Login failed. Email or password is incorrect. Please try again.')
         }

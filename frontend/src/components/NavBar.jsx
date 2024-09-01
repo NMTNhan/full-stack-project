@@ -1,8 +1,32 @@
-import React from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import { FaSearch, FaBell, FaUserFriends, FaUserCircle } from 'react-icons/fa';
 import {Link} from "react-router-dom";
+import {UserContext} from "../App";
+import FriendRequestCard from "./FriendRequestCard";
 
 const NavBar = () => {
+  const { user } = useContext(UserContext);
+  const [friendRequests, setFriendRequests]  = useState([]);
+
+  // Function to fetch all the friend request
+    const fetchFriendRequests = async () => {
+        try {
+            const response = await fetch(`http://localhost:5000/api/notifications/get/${user._id}`);
+            if (response.ok) {
+              const friendRequestsFromFetching = await response.json();
+              setFriendRequests(friendRequestsFromFetching);
+            } else {
+              throw new Error('Failed to fetch friend requests');
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+  useEffect(() => {
+    fetchFriendRequests();
+  }, [user.friends])
+
   return (
     <div className="navbar bg-base-100 px-4 shadow-md">
     {/* Left Side of NavBar */}
@@ -21,19 +45,23 @@ const NavBar = () => {
     {/* Right Side */}
     <div className="flex-1 flex justify-end gap-4">
       {/* Friend Request Icon*/}
-      <div className="dropdown dropdown-end">
+      <div className="dropdown dropdown-end max-h-27">
         <div tabIndex={0} className="indicator cursor-pointer">
           <FaUserFriends className="text-2xl text-gray-500" />
         </div>
         {/*Friend Request Icon: Dropdown */}
-        <ul
+        <div
           tabIndex={0}
-          className="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52 mt-3"
+          className="dropdown-content menu p-2 shadow bg-base-100 rounded-box mt-3 overflow-auto"
         >
-          <li><a>Friend Request 1</a></li>
-          <li><a>Friend Request 2</a></li>
-          <li><a>See All Friend Requests</a></li>
-        </ul>
+          {friendRequests && friendRequests.map((friendRequest) => {
+            return (
+                <>
+                    <FriendRequestCard friendRequest={friendRequest} />
+                </>
+            )
+          })}
+        </div>
       </div>
 
       {/* Notification Icon  */}

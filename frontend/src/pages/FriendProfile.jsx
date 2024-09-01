@@ -88,9 +88,11 @@ export default function UserProfile() {
                              src="https://png.pngtree.com/thumb_back/fh260/background/20230615/pngtree-landscape-landscape-photo-image_2902263.jpg"
                             alt={'img'}/>
                     </div>
-                    <div className={'flex justify-between w-full h-32 '}>
+                    <div className={'flex justify-between w-full h-32'}>
                         <div className={'inline-block ml-48 pt-7 font-bold text-black text-4xl'}>{friendProfile.username}</div>
-                        {isFriend ? <UnFriendButton handleUnFriend={handleUnFriend}/> : <AddFriendButton friendID={ friendProfile._id } userID={ user._id }/>}
+                        <div className={'max-h-24 m-5'}>
+                            {isFriend ? <UnFriendButton handleUnFriend={handleUnFriend}/> : <AddFriendButton friendID={ friendProfile._id } userID={ user._id }/>}
+                        </div>
                     </div>
                 </div>
                 <div className={'bg-gray-100'}>

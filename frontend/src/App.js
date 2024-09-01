@@ -24,10 +24,10 @@ function App() {
     <UserContext.Provider value={{ user, setUser}}>
       <Router>
         <Routes>
-          <Route path="/" element={<HomePage />} />
+          <Route path="/homepage" element={<HomePage />} />
           <Route path="/admin" element={<AdminDashboard />} />
           <Route path="/user" element={<UserPage />} />
-          <Route path="/login" element={<Login />} />
+          <Route path="/" element={<Login />} />
           <Route path="/signup" element={<SignUp />} />
           <Route path="/userprofile" element={<UserProfile />} />
           <Route path="/friend/:friendID" element={<FriendProfile />} />
