@@ -48,7 +48,7 @@ export default function SignUp() {
             const data = await response.json();
             localStorage.setItem('token', data.token);
             localStorage.setItem('user', JSON.stringify(data.user));
-            navigate('/');
+            navigate('/homepage');
         } else {
             console.log('Error: Unable to register user');
         }
