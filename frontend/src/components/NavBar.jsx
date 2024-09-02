@@ -101,9 +101,6 @@ const NavBar = () => {
                             </Link>
                         </li>
                         <li>
-                            <Link to="/settings">Settings</Link>
-                        </li>
-                        <li>
                             <Link to="/">Logout</Link>
                         </li>
                     </ul>
