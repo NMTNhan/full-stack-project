@@ -2,45 +2,12 @@ import NavBar from "../components/NavBar";
 import UserCard from "../components/UserCard";
 import PostingArea from "../components/PostingArea";
 import UserPosts from "../components/UserPosts";
-import React, {useState , useEffect} from "react";
+import React, {useState } from "react";
 
 
 export default function UserProfile() {
     
     const [posts, setPosts] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
-
-    useEffect(() => {
-        // Fetch posts on component mount
-        const fetchPosts = async (userId) => {
-            try {
-                const url = userId 
-                ? `http://localhost:5000/api/posts?userId=${userId}` 
-                : `http://localhost:5000/api/posts`;
-
-                const response = await fetch(url, {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    }
-                });
-        
-                if (!response.ok) {
-                    throw new Error(`Failed to fetch posts: HTTP error! status: ${response.status}`);
-                }
-        
-                const postsData = await response.json();
-                setPosts(postsData);
-            } catch (error) {
-                console.error(error); 
-                setError(error.message); 
-            } finally {
-                setLoading(false); 
-            }
-        };
-        fetchPosts();
-    }, []);
     
     // Function to add a new post
     const handlePostCreated = (newPost) => {
@@ -105,14 +72,8 @@ export default function UserProfile() {
 
                     <div className={'w-full ml-3'}>
                         <div className={'grid grid-cols-1 w-11/12 m-8 rounded-xl'}>
-                        <PostingArea addPost={handlePostCreated} />
-                                {loading ? (
-                                    <p className="text-center">Loading posts...</p>
-                                ) : error ? (
-                                    <p className="text-center text-red-500">{error}</p>
-                                ) : (
-                                    <UserPosts posts={posts} />
-                                )}
+                            <PostingArea addPost={handlePostCreated} />
+                            <UserPosts posts={posts} setPosts={setPosts} />
                         </div>
                     </div>
                 </div>

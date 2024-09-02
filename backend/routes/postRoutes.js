@@ -12,16 +12,16 @@ router.post('/api/posts', protect, createPost);
 // router.get('/', protect, getPosts); // Use root ('/') to be consistent with your other API routes
 router.get('/', getPosts);
 
+// Route to like a post
+router.put('/:postId/reactions', reactionOnPost);
+
 // Route to update a post
 router.put('/:postId', updatePost);
 
 // Route to delete a post
 router.delete('/:postId', deletePost);
 
-// Route to like a post
-router.put('/:postId/reaction', reactionOnPost);
-
-// Route to comment on a post
+// Rote to comment on a post
 router.post('/:postId/comment', commentOnPost);
 
 // router.delete('/:postId/admin', protect, isAdmin, deletePostByAdmin); // Admin deletion route
