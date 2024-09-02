@@ -20,41 +20,42 @@ function App() {
     const savedUser = localStorage.getItem('user');
     return savedUser ? JSON.parse(savedUser) : {};
   });
+
   const [groups, setGroups] = useState([]); 
   const [loading, setLoading] = useState(true); 
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const fetchGroups = async () => {
-      if (!checkTokenExpiry()) {
-        // Redirect to login if token is expired
-        window.location.href = '/';
-        return;
-      }
-
-      try {
-        const response = await fetch('http://localhost:5000/api/groups', {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem('token')}`,
-          },
-        });
-
-        if (!response.ok) {
-          throw new Error('Failed to fetch groups');
-        }
-
-        const data = await response.json();
-        setGroups(data); 
-      } catch (error) {
-        setError(error.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchGroups();
     localStorage.setItem('user', JSON.stringify(user));
   }, [user]);
+
+  const fetchGroups = async () => {
+    if (!checkTokenExpiry()) {
+      // Redirect to log in if token is expired
+      window.location.href = '/';
+      return;
+    }
+
+    try {
+      const response = await fetch('http://localhost:5000/api/groups', {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch groups');
+      }
+
+      const data = await response.json();
+      setGroups(data);
+    } catch (error) {
+      setError(error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   if (loading) {
     return <div>Loading...</div>;

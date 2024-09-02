@@ -17,6 +17,9 @@ const loginUser = async (req, res) => {
       user: {
         id: user._id,
         username: user.username,
+        friends: user.friends,
+        groups: user.groups,
+        avatar: user.avatar,
         email: user.email,
         isAdmin: user.isAdmin,
       },
@@ -47,6 +50,9 @@ const registerUser = async (req, res) => {
       user: {
         id: user._id,
         username: user.username,
+        friends: user.friends,
+        groups: user.groups,
+        avatar: user.avatar,
         email: user.email,
         isAdmin: user.isAdmin,
       },

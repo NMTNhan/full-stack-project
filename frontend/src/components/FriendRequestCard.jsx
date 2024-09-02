@@ -1,18 +1,68 @@
-export default function FriendRequestCard({friendRequest}) {
+import {UserContext} from "../App";
+import {useContext} from "react";
+
+export default function FriendRequestCard({ friendRequest, notifications, setNotifications }) {
+    const { user, setUser } = useContext(UserContext);
+
+    const updateNotifications = (updatedFriendRequest) => {
+        const index = notifications.findIndex(notification => notification._id === friendRequest._id);
+        notifications[index] = updatedFriendRequest;
+        setNotifications([...notifications]);
+    }
+
+    const onAccept = async () => {
+        try {
+            const response = await fetch(`http://localhost:5000/api/notifications/accept/${user.id}/${friendRequest.senderID._id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+            });
+            if (response.ok) {
+                const data = await response.json();
+                updateNotifications(data);
+                const userTemp = {...user};
+                userTemp.friends = [...user.friends, friendRequest.senderID._id];
+                setUser(userTemp);
+                console.log('Friend request accepted');
+            } else {
+                throw new Error('Failed to accept friend request');
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    const onReject = async () => {
+        try {
+            const response = await fetch(`http://localhost:5000/api/notifications/reject/${user.id}/${friendRequest.senderID._id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+            });
+            if (response.ok) {
+                const data = await response.json();
+                updateNotifications(data);
+                console.log('Friend request rejected.');
+            } else {
+                throw new Error('Failed to accept friend request');
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
     return (
-        <div className={'rounded-md w-450 bg-gray-300'}>
+        <div className={'flex-auto rounded-md w-450 bg-gray-300 mt-2 mb-2'}>
             <div className={'flex-auto justify-center items-center m-2 w-450'}>
-                <div className={'flex-auto'}>
-                    <img className={'h-9 w-9 rounded-lg'} src={`${friendRequest.senderID.avatar}`} alt={'img'}/>
-                    <p>{`${friendRequest.senderID.username} sent you a friend request.`}</p>
+                <div className={'flex items-center'}>
+                    <img className={'h-9 w-9 rounded-lg  mt-2'} src={`${friendRequest.senderID.avatar}`} alt={'img'}/>
+                    <span className={'mt-2 ml-4'}>{`${friendRequest.senderID.username} sent you a friend request.`}</span>
                 </div>
-                <div className={'block-flex'}>
-                    <div className={'inline-flex'}>
-                        <button className={'bg-green-500 text-white rounded-md p-2 hover:bg-green-900'}
-                                onClick={() => console.log('Accepted')}>Accept
+                <div className={'block-flex mt-2'}>
+                    <div className={'flex'}>
+                        <button className={'grow bg-green-500 text-white rounded-md p-2 hover:bg-green-900 mb-2'}
+                                onClick={onAccept}>Accept
                         </button>
-                        <button className={'bg-red-500 text-white rounded-md p-2 hover:bg-red-700 ml-2'}
-                                onClick={() => console.log('Declined')}>Decline
+                        <button className={'grow bg-red-500 text-white rounded-md p-2 hover:bg-red-700 ml-2 mb-2'}
+                                onClick={onReject}>Reject
                         </button>
                     </div>
                 </div>

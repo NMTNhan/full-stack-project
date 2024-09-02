@@ -1,4 +1,5 @@
 const User = require('../models/User');
+const Notification = require('../models/Notification');
 
 const getUsers = async (req, res) => {
     try {
@@ -44,6 +45,68 @@ const unFriendByID = async (req, res) => {
     }
 }
 
+const acceptFriendRequest = async (req, res) => {
+    const { senderID, receiverID } = req.params
+
+    try {
+        const sender = await User.findById(senderID)
+        const receiver = await User.findById(receiverID)
+        if (!sender || !receiver) {
+            return res.status(404).json({message: 'User not found'});
+        }
+
+        const friendRequest = await Notification.findOne({senderID, receiverID, type: 'Friend Request'}).populate('senderID', 'username avatar')
+        if (!friendRequest) {
+            return res.status(404).json({message: 'Friend request not found'});
+        }
+
+        receiver.friends = [...receiver.friends, senderID]
+        sender.friends = [...sender.friends, receiverID]
+
+        await receiver.save()
+        await sender.save()
+
+        friendRequest.type = 'Friend Request Accepted'
+        friendRequest.message = `You have accepted ${sender.username} friend request !`
+        await Notification.updateOne({senderID, receiverID, type: 'Friend Request'}, { $set: {senderID: receiverID, receiverID: senderID,type: 'Friend Request Accepted',message: `${receiver.username} accepted your friend request !`} })
+
+        res.json(friendRequest)
+    } catch (error) {
+        res.status(500).json({message: 'Server error'});
+    }
+}
+
+const rejectFriendRequest = async (req, res) => {
+    const { senderID, receiverID } = req.params
+
+    try {
+        const sender = await User.findById(senderID)
+        const receiver = await User.findById(receiverID)
+        if (!sender || !receiver) {
+            return res.status(404).json({message: 'User not found'});
+        }
+
+        const friendRequest = await Notification.findOne({senderID, receiverID, type: 'Friend Request'}).populate('senderID', 'username avatar')
+        if (!friendRequest) {
+            return res.status(404).json({message: 'Friend request not found'});
+        }
+
+        friendRequest.type = 'Friend Request Rejected'
+        friendRequest.message = `You have rejected ${sender.username} friend request !`
+
+        await Notification.updateOne({
+            senderID,
+            receiverID,
+            type: 'Friend Request'
+        }, {$set: {senderID: receiverID, receiverID: senderID,type: 'Friend Request Rejected', message: `${receiver.username} rejected your friend request !`}})
+
+        res.json(friendRequest)
+    } catch (error) {
+        res.status(500).json({message: 'Server error'});
+    }
+
+}
+
 const suspendUser = async (req, res) => {
     try {
         const user = await User.findById(req.params.userId);
@@ -60,5 +123,5 @@ const suspendUser = async (req, res) => {
     }
 };
 
-module.exports = { getUserProfile, getFriendInfoByID, unFriendByID, suspendUser, getUsers  };
+module.exports = { getUserProfile, getFriendInfoByID, unFriendByID, suspendUser, getUsers, acceptFriendRequest, rejectFriendRequest};
   

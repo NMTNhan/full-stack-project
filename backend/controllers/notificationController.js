@@ -1,12 +1,13 @@
 const Notification = require('../models/Notification');
 
 const createNotification = async (req, res) => {
-    const { senderID, type } = req.body;
+    const { senderID, type, message } = req.body;
     const {receiverID } = req.params;
     try {
         const notification = new Notification({
             senderID,
             receiverID,
+            message,
             type,
         });
         await notification.save();
