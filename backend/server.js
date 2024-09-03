@@ -8,12 +8,12 @@ dotenv.config(); // Load environment variables
 const app = express();
 const PORT = process.env.PORT || 5000;
 const authRoutes = require('./routes/authRoutes');
+const adminRoutes = require('./routes/adminRoutes');
 const userRoutes = require('./routes/userRoutes');
 const postRoutes = require('./routes/postRoutes'); // Ensure this is imported
 const friendRoutes = require('./routes/friendRoutes');
 const notificationRoutes = require('./routes/notificationRoutes');
 const groupRoutes = require('./routes/groupRoutes'); // Import group routes
-const { isAdmin } = require('./middleware/adminMiddleware'); // Import the admin middleware
 
 // Middleware
 app.use(express.json()); // Parse JSON bodies
@@ -29,6 +29,7 @@ mongoose.connect(process.env.MONGO_URI, {
 
 // Use Routes
 app.use('/api/auth', authRoutes);
+app.use('/api/admin', adminRoutes)
 app.use('/api', userRoutes);
 app.use('/api/posts', postRoutes); // Ensure this is being used
 app.use('/api/friends', friendRoutes);

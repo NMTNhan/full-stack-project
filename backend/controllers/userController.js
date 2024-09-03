@@ -107,21 +107,5 @@ const rejectFriendRequest = async (req, res) => {
 
 }
 
-const suspendUser = async (req, res) => {
-    try {
-        const user = await User.findById(req.params.userId);
-        if (!user) {
-            return res.status(404).json({ message: 'User not found' });
-        }
-        
-        user.isSuspended = !user.isSuspended; // Toggle suspension status
-        await user.save();
-        
-        res.json({ message: `User ${user.isSuspended ? 'suspended' : 'resumed'} successfully`, user });
-    } catch (error) {
-        res.status(500).json({ message: 'Server error', error: error.message });
-    }
-};
-
-module.exports = { getUserProfile, getFriendInfoByID, unFriendByID, suspendUser, getUsers, acceptFriendRequest, rejectFriendRequest};
+module.exports = { getUserProfile, getFriendInfoByID, unFriendByID, getUsers, acceptFriendRequest, rejectFriendRequest};
   
