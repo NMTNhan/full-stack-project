@@ -88,7 +88,7 @@ const deletePost = async (req, res) => {
 
 
 // Like a post
-const likePost = async (req, res) => {
+const reactionOnPost = async (req, res) => {
     const { postId } = req.params;
   
     try {
@@ -169,4 +169,4 @@ const deleteCommentByAdmin = async (req, res) => {
   }
 };
 
-module.exports = { getPosts, createPost, updatePost, deletePost, likePost, commentOnPost, deletePostByAdmin, deleteCommentByAdmin };
+module.exports = { getPosts, createPost, updatePost, deletePost, reactionOnPost, commentOnPost, deletePostByAdmin, deleteCommentByAdmin };
