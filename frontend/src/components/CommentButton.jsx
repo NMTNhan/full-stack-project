@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import PostComment from './PostComments'
 
-const CommentButton = () => {
+const CommentButton = ({ className }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleOpenModal = () => {
@@ -13,12 +13,13 @@ const CommentButton = () => {
   };
 
   const handleSubmitComment = () => {
-
+    // logic for comment
+    handleCloseModal();
   };
 
   return (
     <>
-    <button className="ml-1" onClick={handleOpenModal}>
+    <button className="mr-4 px-3 py-1 border text-black-500" onClick={handleOpenModal}>
       Comment
     </button>
     <PostComment

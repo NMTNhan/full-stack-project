@@ -1,52 +1,25 @@
 import React, { useState } from 'react';
 
-const API_BASE_URL = 'http://localhost:5000';
-
-const PostingArea = ({ onPostCreated }) => {
+const PostingArea = ({ onImageUpload }) => {
   const [post, setPost] = useState('');
   const [selectedImage, setSelectedImage] = useState(null);
-  const [selectedImageFile, setSelectedImageFile] = useState(null); 
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
     if (file) {
       setSelectedImage(URL.createObjectURL(file));
-      setSelectedImageFile(file);
+      if (onImageUpload) {
+        onImageUpload(file); // Call the parent component's handler with the selected file
+      }
     }
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    try {
-      const formData = new FormData();
-      formData.append('content', post);
-      if (selectedImageFile) {
-        formData.append('image', selectedImageFile);
-      }
-
-      const response = await fetch(`${API_BASE_URL}/api/posts`, {
-        method: 'POST',
-        body: formData,
-        'Content-Type': 'application/json',
-      });
-
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-
-      const data = await response.json(); // Extract JSON data from the response
-
-      // Handle post creation response
-      if (onPostCreated) {
-        onPostCreated(data);
-      }
-      setPost('');
-      setSelectedImage(null);
-      setSelectedImageFile(null); // Clear selected image file
-    } catch (error) {
-      console.error('Error creating post:', error);
-    }
+    alert(`Posting: ${post}`);
+    setPost('');
   };
+
   return (
     <div className="p-4 border bg-white rounded-lg">
       <form onSubmit={handleSubmit}>

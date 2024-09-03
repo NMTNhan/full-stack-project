@@ -21,7 +21,7 @@ const getUserProfile = (req, res) => {
 
 const getFriendInfoByID = async (req, res) => {
         try {
-            const friend = await User.findById(req.params.id).select('_id username friends groups avatar email isAdmin isSuspended');
+            const friend = await User.findById(req.params.id);
             if (!friend) {
                 return res.status(404).json({ message: 'Friend not found' });
             }
@@ -33,18 +33,12 @@ const getFriendInfoByID = async (req, res) => {
 
 const unFriendByID = async (req, res) => {
     try {
-        const responseFromRemovingFriendFromUserFriend = await User.updateOne(
+        const response = await User.updateOne(
             { _id: req.body.userID },
             { $pull: { friends: req.params.id } }
         );
-        const responseFromRemovingUserFromFriend = await User.updateOne(
-            { _id: req.params.id },
-            { $pull: { friends: req.body.userID } }
-        )
-        if (responseFromRemovingFriendFromUserFriend && responseFromRemovingUserFromFriend) {
+        if (response) {
             res.json({ message: 'Unfriend successfully' });
-        } else {
-            res.status(404).json({ message: 'Unfriend failed' });
         }
     } catch (error) {
         res.status(500).json({message: 'Server error'});
