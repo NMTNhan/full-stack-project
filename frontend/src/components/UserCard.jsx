@@ -1,8 +1,12 @@
 import {useNavigate} from "react-router-dom";
 
-export default function UserCard({ friend}) {
+export default function UserCard({ friend }) {
 
     const navigate = useNavigate()
+
+    if (!friend) {
+        return <div>Loading...</div>; // Handle loading or undefined friend case
+      }
 
     const handleClick = () => {
         navigate(`/friend/${friend._id}`, {state: {friendProfile: friend}});

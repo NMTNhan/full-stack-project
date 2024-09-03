@@ -7,23 +7,11 @@ import {initialPosts} from "../model/PostModel";
 import {UserContext} from "../App";
 
 export default function UserProfile() {
-    // Function to add posts
-    const [posts, setPosts] = useState(initialPosts);
-    const [friendsInfo, setFriendsInfo] = useState([]);
-    const { user } = useContext(UserContext);
 
-    useEffect(() => {
-        fetchFriendsInfo();
-    }, [user.friends]);
+    const [posts, setPosts] = useState([]);
 
     // Function to add a new post
-    const DisplayPost = (content) => {
-        const newPost = {
-            id: posts.length + 1, // Auto-incrementing ID
-            content: content,
-            author: "Current User", // Replace with actual user info
-            timestamp: new Date().toLocaleString(),
-        };
+    const handlePostCreated = (newPost) => {
         setPosts([newPost, ...posts]);
     };
 
@@ -97,15 +85,15 @@ export default function UserProfile() {
                             </div>
                         </div>
 
-                        <div className={'w-full ml-3'}>
-                            <div className={'grid grid-cols-1 w-11/12 m-8 rounded-xl'}>
-                                <PostingArea addPost={DisplayPost} />
-                                <UserPosts posts={posts} />
-                            </div>
+                    <div className={'w-full ml-3'}>
+                        <div className={'grid grid-cols-1 w-11/12 m-8 rounded-xl'}>
+                            <PostingArea addPost={handlePostCreated} />
+                            <UserPosts posts={posts} setPosts={setPosts} />
                         </div>
                     </div>
                 </div>
             </div>
-        </>
+        </div>
+    </>
     )
 }
