@@ -25,7 +25,7 @@ export const Post = (id, content, author, avatar, timestamp, imageStatus, totalL
       2,
       "Finished a great book today - highly recommend it!",
       "Jane Smith",
-      "/images/avatar1.jpg",
+      "https://img.freepik.com/premium-vector/cute-boy-smiling-cartoon-kawaii-boy-illustration-boy-avatar-happy-kid_1001605-3447.jpg",
       "2024-08-18 11:30",
       "/images/avatar2.jpg",
       1,

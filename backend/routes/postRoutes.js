@@ -1,29 +1,31 @@
 const express = require('express');
-const { createPost, getPosts, updatePost, deletePost, likePost, commentOnPost, deletePostByAdmin, deleteCommentByAdmin } = require('../controllers/postController');
+const { createPost, getPosts, updatePost, deletePost, reactionOnPost, commentOnPost, deletePostByAdmin, deleteCommentByAdmin } = require('../controllers/postController');
 const { protect } = require('../middleware/authMiddleware');
 const { isAdmin } = require('../middleware/adminMiddleware');
 
 const router = express.Router();
 
 // Route to create a post
-router.post('/', protect, createPost);
+router.post('/api/posts', protect, createPost);
 
 // Route to get posts
-router.get('/', protect, getPosts); // Use root ('/') to be consistent with your other API routes
-
-// Route to update a post
-router.put('/:postId', protect, updatePost);
-
-// Route to delete a post
-router.delete('/:postId', protect, deletePost);
+// router.get('/', protect, getPosts);
+router.get('/', getPosts);
 
 // Route to like a post
-router.put('/:postId/like', protect, likePost);
+router.put('/:postId/reactions', reactionOnPost);
 
-// Route to comment on a post
-router.post('/:postId/comment', protect, commentOnPost);
+// Route to update a post
+router.put('/:postId', updatePost);
+
+// Route to delete a post
+router.delete('/:postId', deletePost);
+
+// Rote to comment on a post
+router.post('/:postId/comment', commentOnPost);
 
 router.delete('/:postId/admin', protect, isAdmin, deletePostByAdmin); // Admin deletion route
+
 router.delete('/comments/:commentId/admin', protect, isAdmin, deleteCommentByAdmin); // Admin comment deletion route
 
 module.exports = router;
