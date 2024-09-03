@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, {useState, useEffect, useContext} from "react";
 import ReactionButton from './ReactionButton';
 import CommentButton from './CommentButton';
+import {UserContext} from "../App";
 
-const UserPosts = ({ posts, setPosts }) => {
-
+const UserPosts = ({ posts, setPosts, friendId }) => {
+  const { user } = useContext(UserContext);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -35,7 +36,11 @@ const UserPosts = ({ posts, setPosts }) => {
         setLoading(false);
       }
     };
-    fetchPosts();
+    if (friendId === undefined) {
+        fetchPosts(user.id)
+    } else {
+        fetchPosts(friendId);
+    }
   }, [setPosts]);
 
   if (loading) return <p className='text-center'>Loading posts...</p>;

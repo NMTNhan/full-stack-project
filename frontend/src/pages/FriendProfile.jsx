@@ -7,11 +7,12 @@ import {useLocation, useNavigate} from "react-router-dom";
 import {UserContext} from "../App";
 import {UnFriendButton} from "../components/UnFriendButton";
 import {AddFriendButton} from "../components/AddFriendButton";
+import PostingArea from "../components/PostingArea";
 
-export default function UserProfile() {
+export default function FriendProfile() {
     const location = useLocation();
     const { user } = useContext(UserContext);
-    const { friendProfile} = location.state;
+    const { friendProfile } = location.state;
     const [posts, setPosts] = useState(initialPosts);
     const [friendsInfo, setFriendsInfo] = useState([]);
     const [isFriend, setIsFriend] = useState(false);
@@ -98,7 +99,7 @@ export default function UserProfile() {
                         </div>
                     </div>
                 </div>
-                <div className={'bg-gray-100'}>
+                <div className={'h-screen bg-gray-100'}>
                     <div className={'flex w-full columns-2xs'}>
                         {/*Information and friend*/}
                         <div className={'w-1/2'}>
@@ -125,7 +126,14 @@ export default function UserProfile() {
 
                         <div className={'w-full ml-3'}>
                             <div className={'grid grid-cols-1 w-11/12 m-8 rounded-xl'}>
-                                <UserPosts posts={posts} />
+                                {posts.length === 0 ?
+                                    <div className={'w-full bg-gray-50 rounded-xl shadow-md py-8 px-8 mt-8'}>
+                                        <h2 className={'text-[28px] font-bold text-black mb-6 text-center'}>No
+                                            Posts</h2>
+                                    </div>
+                                    :
+                                    <UserPosts posts={posts} setPosts={setPosts} friendId={friendProfile._id}/>
+                                }
                             </div>
                         </div>
                     </div>

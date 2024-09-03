@@ -3,17 +3,21 @@ import UserCard from "../components/UserCard";
 import PostingArea from "../components/PostingArea";
 import UserPosts from "../components/UserPosts";
 import React, {useContext, useEffect, useState} from "react";
-import {initialPosts} from "../model/PostModel";
 import {UserContext} from "../App";
 
 export default function UserProfile() {
-
+    const [friendsInfo, setFriendsInfo] = useState([]);
     const [posts, setPosts] = useState([]);
+    const { user } = useContext(UserContext)
 
     // Function to add a new post
     const handlePostCreated = (newPost) => {
         setPosts([newPost, ...posts]);
     };
+
+    useEffect(() => {
+        fetchFriendsInfo();
+    }, [user.friends]);
 
     //Get all the friend info.
     const fetchFriendsInfo = async () => {
@@ -42,7 +46,7 @@ export default function UserProfile() {
                     {/*Avatar*/}
                     <div >
                         <img className=" absolute rounded-full bg-red-500 ml-5 mt-44 w-40 h-40"
-                             src="https://img.freepik.com/premium-vector/cute-boy-smiling-cartoon-kawaii-boy-illustration-boy-avatar-happy-kid_1001605-3447.jpg"
+                             src={`${user.avatar}`}
                              alt={'img'}
                         />
                     </div>
@@ -56,7 +60,7 @@ export default function UserProfile() {
                         <div className={'inline-block ml-48 pt-7 font-bold text-black text-4xl'}>{user.username}</div>
                     </div>
                 </div>
-                <div className={'bg-gray-100'}>
+                <div className={'h-screen bg-gray-100'}>
                     <div className={'flex w-full columns-2xs'}>
                         {/*Information and friend*/}
                         <div className={'w-1/2'}>
@@ -84,16 +88,21 @@ export default function UserProfile() {
                                 </div>
                             </div>
                         </div>
-
-                    <div className={'w-full ml-3'}>
-                        <div className={'grid grid-cols-1 w-11/12 m-8 rounded-xl'}>
-                            <PostingArea addPost={handlePostCreated} />
-                            <UserPosts posts={posts} setPosts={setPosts} />
+                        <div className={'w-full ml-3'}>
+                            <div className={'grid grid-cols-1 w-11/12 m-8 rounded-xl'}>
+                                <PostingArea addPost={handlePostCreated}/>
+                                {posts.length === 0 ?
+                                    <div className={'w-full bg-gray-50 rounded-xl shadow-md py-8 px-8 mt-8'}>
+                                        <h2 className={'text-[28px] font-bold text-black mb-6 text-center'}>No Posts</h2>
+                                    </div>
+                                    :
+                                    <UserPosts posts={posts} setPosts={setPosts}/>
+                                }
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </>
+        </>
     )
 }
