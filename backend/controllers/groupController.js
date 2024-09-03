@@ -201,5 +201,21 @@ const getAllRequest = async (req, res) => {
     }
 }
 
+const approveGroup = async (req, res) => {
+    try {
+        const group = await Group.findById(req.params.groupId);
+        if (!group) {
+            return res.status(404).json({ message: 'Group not found' });
+        }
 
-module.exports = {createGroup, getAllGroup, getGroupByID, addMemberToRequestList, removeMember, addMemberFromRequestListToGroup, removerUserFromRequestList, getAllMembers, getAllRequest}
+        group.status = 'approved';
+        await group.save();
+
+        res.json({ message: 'Group approved successfully', group });
+    } catch (error) {
+        res.status(500).json({ message: 'Server error', error: error.message });
+    }
+};
+
+
+module.exports = {createGroup, getAllGroup, getGroupByID, addMemberToRequestList, removeMember, addMemberFromRequestListToGroup, removerUserFromRequestList, getAllMembers, getAllRequest, approveGroup}
