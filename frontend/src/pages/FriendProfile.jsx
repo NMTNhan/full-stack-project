@@ -76,9 +76,9 @@ export default function FriendProfile() {
 
     if (user.id !== friendProfile._id) {
         button = isFriend ? <UnFriendButton handleUnFriend={handleUnFriend}/> : <AddFriendButton friendID={ friendProfile._id } userID={ user.id }/>
+    } else {
+        navigate('/userprofile')
     }
-
-
 
     return (
         <>
