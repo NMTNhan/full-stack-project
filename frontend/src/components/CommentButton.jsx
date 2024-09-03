@@ -13,7 +13,8 @@ const CommentButton = () => {
   };
 
   const handleSubmitComment = () => {
-
+    // logic for comment
+    handleCloseModal();
   };
 
   return (

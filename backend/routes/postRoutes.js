@@ -6,23 +6,23 @@ const { isAdmin } = require('../middleware/adminMiddleware');
 const router = express.Router();
 
 // Route to create a post
-router.post('/api/posts', protect, createPost);
+router.post('/', protect, createPost);
 
 // Route to get posts
-// router.get('/', protect, getPosts);
-router.get('/', getPosts);
-
-// Route to like a post
-router.put('/:postId/reactions', reactionOnPost);
+router.get('/', protect, getPosts); // Use root ('/') to be consistent with your other API routes
 
 // Route to update a post
-router.put('/:postId', updatePost);
+router.put('/:postId', protect, updatePost);
 
 // Route to delete a post
-router.delete('/:postId', deletePost);
+router.delete('/:postId', protect, deletePost);
 
-// Rote to comment on a post
-router.post('/:postId/comment', commentOnPost);
+// Route to like a post
+// router.put('/:postId/like', protect, likePost);
+router.put('/:postId/reactions', reactionOnPost); // Test without protect
+
+// Route to comment on a post
+router.post('/:postId/comment', protect, commentOnPost);
 
 router.delete('/:postId/admin', protect, isAdmin, deletePostByAdmin); // Admin deletion route
 

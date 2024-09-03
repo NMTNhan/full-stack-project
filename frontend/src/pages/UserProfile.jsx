@@ -91,13 +91,7 @@ export default function UserProfile() {
                         <div className={'w-full ml-3'}>
                             <div className={'grid grid-cols-1 w-11/12 m-8 rounded-xl'}>
                                 <PostingArea addPost={handlePostCreated}/>
-                                {posts.length === 0 ?
-                                    <div className={'w-full bg-gray-50 rounded-xl shadow-md py-8 px-8 mt-8'}>
-                                        <h2 className={'text-[28px] font-bold text-black mb-6 text-center'}>No Posts</h2>
-                                    </div>
-                                    :
-                                    <UserPosts posts={posts} setPosts={setPosts}/>
-                                }
+                                <UserPosts posts={posts} setPosts={setPosts}/>
                             </div>
                         </div>
                     </div>

@@ -8,8 +8,8 @@ const createPost = async (req, res) => {
   try {
     const post = await Post.create({
       content,
-      author: req.user.id, // The user ID is attached by the protect middleware
-      imageStatus: req.file ? req.file.path : null,
+      author: req.user._id, // The user ID is attached by the protect middleware
+      imageStatus,
     });
 
     res.status(201).json(post);
@@ -87,7 +87,7 @@ const deletePost = async (req, res) => {
 };
 
 
-// Reaction a post
+// Like a post
 const reactionOnPost = async (req, res) => {
     const { postId } = req.params;
   
@@ -101,7 +101,7 @@ const reactionOnPost = async (req, res) => {
       // Check if the post has already been liked by the user
       if (post.likes.includes(req.user._id)) {
         return res.status(400).json({ message: 'Post already liked' });
-      } 
+      }
   
       post.likes.push(req.user._id);
       await post.save();
@@ -140,6 +140,7 @@ const commentOnPost = async (req, res) => {
     }
 };
   
+
 const deletePostByAdmin = async (req, res) => {
   try {
       const post = await Post.findById(req.params.postId);

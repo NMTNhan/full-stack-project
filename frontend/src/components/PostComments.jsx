@@ -66,7 +66,7 @@ const PostComment = ({ isOpen, onClose, onSubmit, comments }) => {
               Comment
             </button>
           </div>
-          
+
         </div>
       </div>
     </div>

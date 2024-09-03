@@ -5,7 +5,7 @@ const API_BASE_URL = 'http://localhost:5000';
 const PostingArea = ({ onPostCreated }) => {
   const [post, setPost] = useState('');
   const [selectedImage, setSelectedImage] = useState(null);
-  const [selectedImageFile, setSelectedImageFile] = useState(null); 
+  const [selectedImageFile, setSelectedImageFile] = useState(null);
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
@@ -47,6 +47,7 @@ const PostingArea = ({ onPostCreated }) => {
       console.error('Error creating post:', error);
     }
   };
+
   return (
     <div className="p-4 border bg-white rounded-lg">
       <form onSubmit={handleSubmit}>

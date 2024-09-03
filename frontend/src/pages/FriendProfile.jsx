@@ -7,7 +7,6 @@ import {useLocation, useNavigate} from "react-router-dom";
 import {UserContext} from "../App";
 import {UnFriendButton} from "../components/UnFriendButton";
 import {AddFriendButton} from "../components/AddFriendButton";
-import PostingArea from "../components/PostingArea";
 
 export default function FriendProfile() {
     const location = useLocation();
@@ -16,6 +15,7 @@ export default function FriendProfile() {
     const [posts, setPosts] = useState(initialPosts);
     const [friendsInfo, setFriendsInfo] = useState([]);
     const [isFriend, setIsFriend] = useState(false);
+    let button;
 
     const navigate = useNavigate()
 
@@ -74,6 +74,12 @@ export default function FriendProfile() {
         }
     };
 
+    if (user.id !== friendProfile._id) {
+        button = isFriend ? <UnFriendButton handleUnFriend={handleUnFriend}/> : <AddFriendButton friendID={ friendProfile._id } userID={ user.id }/>
+    }
+
+
+
     return (
         <>
             <div>
@@ -95,7 +101,7 @@ export default function FriendProfile() {
                     <div className={'flex justify-between w-full h-32'}>
                         <div className={'inline-block ml-48 pt-7 font-bold text-black text-4xl'}>{friendProfile.username}</div>
                         <div className={'max-h-24 m-5'}>
-                            {isFriend ? <UnFriendButton handleUnFriend={handleUnFriend}/> : <AddFriendButton friendID={ friendProfile._id } userID={ user.id }/>}
+                            {button}
                         </div>
                     </div>
                 </div>
@@ -126,14 +132,7 @@ export default function FriendProfile() {
 
                         <div className={'w-full ml-3'}>
                             <div className={'grid grid-cols-1 w-11/12 m-8 rounded-xl'}>
-                                {posts.length === 0 ?
-                                    <div className={'w-full bg-gray-50 rounded-xl shadow-md py-8 px-8 mt-8'}>
-                                        <h2 className={'text-[28px] font-bold text-black mb-6 text-center'}>No
-                                            Posts</h2>
-                                    </div>
-                                    :
-                                    <UserPosts posts={posts} setPosts={setPosts} friendId={friendProfile._id}/>
-                                }
+                                <UserPosts posts={posts} setPosts={setPosts}/>
                             </div>
                         </div>
                     </div>
