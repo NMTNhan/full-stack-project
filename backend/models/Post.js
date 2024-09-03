@@ -13,28 +13,10 @@ const postSchema = new mongoose.Schema({
   imageStatus: {
     type: String, // URL of the image, optional
   },
-  reactions: {
-    like: [{
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'User',
-    }],
-    love: [{
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'User',
-    }],
-    funny: [{
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'User',
-    }],
-    sad: [{
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'User',
-    }],
-    angry: [{
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'User',
-    }],
-  },
+  likes: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+  }],
   comments: [{
     user: {
       type: mongoose.Schema.Types.ObjectId,
@@ -49,7 +31,7 @@ const postSchema = new mongoose.Schema({
       default: Date.now,
     }
   }],
-  timestamp: {
+  createdAt: {
     type: Date,
     default: Date.now,
   },
