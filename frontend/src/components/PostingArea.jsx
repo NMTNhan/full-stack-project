@@ -27,7 +27,7 @@ const PostingArea = ({ onPostCreated }) => {
       const response = await fetch(`${API_BASE_URL}/api/posts`, {
         method: 'POST',
         body: formData,
-        // 'Content-Type': 'application/json',
+        'Content-Type': 'application/json',
       });
 
       if (!response.ok) {

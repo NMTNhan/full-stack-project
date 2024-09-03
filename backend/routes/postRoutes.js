@@ -9,7 +9,7 @@ const router = express.Router();
 router.post('/api/posts', protect, createPost);
 
 // Route to get posts
-// router.get('/', protect, getPosts); // Use root ('/') to be consistent with your other API routes
+// router.get('/', protect, getPosts);
 router.get('/', getPosts);
 
 // Route to like a post
@@ -24,8 +24,8 @@ router.delete('/:postId', deletePost);
 // Rote to comment on a post
 router.post('/:postId/comment', commentOnPost);
 
-// router.delete('/:postId/admin', protect, isAdmin, deletePostByAdmin); // Admin deletion route
+router.delete('/:postId/admin', protect, isAdmin, deletePostByAdmin); // Admin deletion route
 
-// router.delete('/comments/:commentId/admin', protect, isAdmin, deleteCommentByAdmin); // Admin comment deletion route
+router.delete('/comments/:commentId/admin', protect, isAdmin, deleteCommentByAdmin); // Admin comment deletion route
 
 module.exports = router;
