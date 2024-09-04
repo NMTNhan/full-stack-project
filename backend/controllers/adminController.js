@@ -5,7 +5,7 @@ const Group = require('../models/Group');
 // Suspend User
 const suspendUser = async (req, res) => {
     try {
-        console.log('User ID:', req.params.id); // Log the user ID
+        console.log('User ID:', req.params.id);  // Log the user ID
         const user = await User.findById(req.params.id);
         if (user) {
             user.isSuspended = true;
@@ -15,15 +15,17 @@ const suspendUser = async (req, res) => {
             res.status(404).json({ message: 'User not found' });
         }
     } catch (error) {
+        console.error('Error suspending user:', error);  // Log the error
         res.status(500).json({ message: 'Server error' });
     }
 };
 
 
+
 // Approve Group
 const approveGroup = async (req, res) => {
     try {
-        console.log('Group ID:', req.params.id); // Log the group ID
+        console.log('Group ID:', req.params.id);  // Log the group ID
         const group = await Group.findById(req.params.id);
         if (group) {
             group.isApproved = true;
@@ -33,14 +35,15 @@ const approveGroup = async (req, res) => {
             res.status(404).json({ message: 'Group not found' });
         }
     } catch (error) {
-        console.error('Error approving group:', error); // Log the error
+        console.error('Error approving group:', error);  // Log the error
         res.status(500).json({ message: 'Server error' });
     }
 };
 
+
 const deletePostByAdmin = async (req, res) => {
     try {
-        console.log('Post ID:', req.params.id); // Log the post ID
+        console.log('Post ID:', req.params.id);  // Log the post ID
         const post = await Post.findById(req.params.id);
         if (post) {
             await post.remove();
@@ -49,10 +52,11 @@ const deletePostByAdmin = async (req, res) => {
             res.status(404).json({ message: 'Post not found' });
         }
     } catch (error) {
-        console.error('Error deleting post:', error); // Log the error
+        console.error('Error deleting post:', error);  // Log the error
         res.status(500).json({ message: 'Server error' });
     }
 };
+
 
 // Delete Comment
 const deleteCommentByAdmin = async (req, res) => {

@@ -60,25 +60,21 @@ function AdminDashboard() {
 
   const toggleSuspension = async (userId) => {
     try {
-      const response = await fetch(`http://localhost:5000/api/users/${userId}/suspend`, {
-        method: 'PUT',
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
-          'Content-Type': 'application/json',
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to update user suspension status');
-      }
-
-      setUsers(users.map(user =>
-        user._id === userId ? { ...user, isSuspended: !user.isSuspended } : user
-      ));
+        const response = await fetch(`http://localhost:5000/api/admin/users/${userId}/suspend`, {
+            method: 'PUT',
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem('token')}`,
+                'Content-Type': 'application/json',
+            },
+        });
+        if (!response.ok) {
+            throw new Error('Failed to suspend user');
+        }
     } catch (error) {
-      setError(error.message);
+        setError(error.message);
     }
   };
+
 
   const fetchPosts = async () => {
     try {
