@@ -10,6 +10,8 @@ const UserPosts = ({ posts, setPosts }) => {
         // Fetch posts on component mount
         const fetchPosts = async (userId) => {
             try {
+                const token = localStorage.getItem('token');
+
                 const url = userId
                     ? `http://localhost:5000/api/posts?userId=${userId}`
                     : `http://localhost:5000/api/posts`;
@@ -17,7 +19,8 @@ const UserPosts = ({ posts, setPosts }) => {
                 const response = await fetch(url, {
                     method: "GET",
                     headers: {
-                        "Content-Type": "application/json",
+                        'Authorization': `Bearer ${token}`,
+                    //   "Content-Type": "application/json",
                     },
                 });
 
@@ -63,18 +66,12 @@ return (
                         <div className='p-4'>
                             <div className='flex items-center'>
                                 <img
-                                    src={post.avatar}
-                                    // src={post.author.avatar}
-                                    // src={user.avatar}
-                                    alt={`Avatar of ${post.author}`}
-                                    // alt={`Avatar of ${post.author.username}`}
-                                    // alt={`Avatar of ${user.username}`}
+                                    src={post.author.avatar}
+                                    alt={`Avatar of ${post.author?.username}`}
                                     className="w-12 h-12 rounded-full mr-4"
                                 />
                                 <div>
-                                    <p>{post.author}</p>
-                                    {/* <p>{post.author.username}</p> */}
-                                    {/* <p>{user.username}</p> */}
+                                    <p>{post.author?.username}</p>
                                     <div className="text-sm text-gray-500">
                                         <p>{new Date(post.timestamp).toLocaleString()}</p>
                                     </div>

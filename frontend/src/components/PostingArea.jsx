@@ -18,16 +18,21 @@ const PostingArea = ({ onPostCreated }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      const token = localStorage.getItem('token');
+
       const formData = new FormData();
       formData.append('content', post);
       if (selectedImageFile) {
         formData.append('image', selectedImageFile);
       }
-
+  
       const response = await fetch(`${API_BASE_URL}/api/posts`, {
         method: 'POST',
         body: formData,
-        'Content-Type': 'application/json',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          // 'Content-Type': 'multipart/form-data',
+        },
       });
 
       if (!response.ok) {

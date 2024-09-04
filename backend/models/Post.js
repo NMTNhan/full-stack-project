@@ -3,7 +3,8 @@ const mongoose = require('mongoose');
 const postSchema = new mongoose.Schema({
   content: {
     type: String,
-    required: true,
+    required: [true, 'Content is required'],
+    trim: true,
   },
   author: {
     type: mongoose.Schema.Types.ObjectId,

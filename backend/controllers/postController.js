@@ -5,6 +5,15 @@ const Comment = require('../models/Comment');
 const createPost = async (req, res) => {
   const { content, imageStatus } = req.body;
 
+  // Check if content is provided
+  if (!content) {
+    return res.status(400).json({ message: 'Content is required' });
+  }
+
+  if (req.file) {
+    imageStatus = req.file.path; // Save the image path
+  }
+
   try {
     const post = await Post.create({
       content,

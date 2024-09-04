@@ -30,10 +30,10 @@
 }
 
 /* Active state styles */
-.reaction-button.active {
+/* .reaction-button.active {
     background-color: #e0e0e0;
     border-color: #b0b0b0;
-}
+} */
 
 /* Styles for the reaction popup menu */
 .reaction-popup-menu {

@@ -51,7 +51,7 @@ const ReactionButton = ({ initialCount = 0, onReaction }) => {
 
             {isHovered && (
                 <div className="reaction-popup-menu">
-                    {Object.entries(reactionStyles).map(([key, { icon, color, text }]) => (
+                    {Object.entries(reactionStyles).map(([key, { icon, color }]) => (
                         <button
                             key={key}
                             onClick={() => handleReactionClick(key)}

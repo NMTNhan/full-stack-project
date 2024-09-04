@@ -2,11 +2,13 @@ const express = require('express');
 const { createPost, getPosts, updatePost, deletePost, reactionOnPost, commentOnPost, deletePostByAdmin, deleteCommentByAdmin } = require('../controllers/postController');
 const { protect } = require('../middleware/authMiddleware');
 const { isAdmin } = require('../middleware/adminMiddleware');
+const upload = require('../middleware/uploadMiddlware');
 
 const router = express.Router();
 
 // Route to create a post
-router.post('/', protect, createPost);
+// router.post('/', protect, createPost);
+router.post('/', protect, upload.single('image'), createPost);
 
 // Route to get posts
 router.get('/', protect, getPosts); // Use root ('/') to be consistent with your other API routes
@@ -18,7 +20,7 @@ router.put('/:postId', protect, updatePost);
 router.delete('/:postId', protect, deletePost);
 
 // Route to like a post
-// router.put('/:postId/like', protect, likePost);
+// router.put('/:postId/like', protect, reactionOnPost);
 router.put('/:postId/reactions', reactionOnPost); // Test without protect
 
 // Route to comment on a post
