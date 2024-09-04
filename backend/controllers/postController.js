@@ -122,6 +122,21 @@ const reactionOnPost = async (req, res) => {
     }
 };
   
+const getCommentsForPost = async (req, res) => {
+  try {
+      const post = await Post.findById(req.params.postId).populate('comments.user', 'username');
+      if (!post) {
+          return res.status(404).json({ message: 'Post not found' });
+      }
+      res.json(post.comments);
+  } catch (error) {
+      console.error('Error fetching comments:', error);
+      res.status(500).json({ message: 'Server error' });
+  }
+};
+
+
+
 // Comment on a post
 const commentOnPost = async (req, res) => {
     const { postId } = req.params;
@@ -178,4 +193,4 @@ const deleteCommentByAdmin = async (req, res) => {
   }
 };
 
-module.exports = { getPosts, createPost, updatePost, deletePost, reactionOnPost, commentOnPost, deletePostByAdmin, deleteCommentByAdmin  };
+module.exports = { getCommentsForPost ,getPosts, createPost, updatePost, deletePost, reactionOnPost, commentOnPost, deletePostByAdmin, deleteCommentByAdmin  };
