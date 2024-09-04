@@ -33,15 +33,48 @@ const getAllGroup = async (req, res) => {
     }
 }
 
-const getGroupByID = async (req, res) => {
+const getGroupsOfUser = async (req, res) => {
     try {
-        const group = await Group.findById(req.params.groupId);
+        const userId = req.params.userId;
+        const groups = await Group.find({ members: userId });
+        res.status(200).json(groups);
+    } catch (error) {
+        res.status(500).json({ message: 'Error retrieving groups', error });
+    }
+}
+
+const getGroupById = async (req, res) => {
+    try {
+        const groups = await Group.findById(req.params.id); 
+        if (!groups) {
+            return res.status(404).json({ message: 'Group not found' });
+        }
+        res.status(200).json(groups);
+    } catch (error) {
+        res.status(500).json({ message: 'Error retrieving group', error });
+    }
+}
+
+const addMember = async (req, res) => {
+    try {
+        const groupId = req.params.groupId;
+        const userId = req.params.userId;
+
+        const group = await Group.findById(groupId);
         if (!group) {
             return res.status(404).json({ message: 'Group not found' });
         }
+
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+        group.members.push(userId);
+        group.numberOfMembers = group.members.length;
+        await group.save();
         res.status(200).json(group);
     } catch (error) {
-        res.status(500).json({ message: 'Error retrieving group', error });
+        res.status(500).json({ message: 'Error adding member to group', error });
     }
 }
 
@@ -207,15 +240,26 @@ const approveGroup = async (req, res) => {
         if (!group) {
             return res.status(404).json({ message: 'Group not found' });
         }
-
+        
         group.status = 'approved';
         await group.save();
-
+        
         res.json({ message: 'Group approved successfully', group });
     } catch (error) {
         res.status(500).json({ message: 'Server error', error: error.message });
     }
 };
 
+const getAdmin = async (req, res) => {
+    const groupID = req.params.groupID;
+    try {
+        const group = await Group.findById(groupID).select('admin');
+        res.json({ adminId: group.admin });
+    }
+    catch (error) {
+        res.status(500).json({ message: 'Error retrieving admin', error });
+    }
+};
 
-module.exports = {createGroup, getAllGroup, getGroupByID, addMemberToRequestList, removeMember, addMemberFromRequestListToGroup, removerUserFromRequestList, getAllMembers, getAllRequest, approveGroup}
+
+module.exports = {createGroup, getAllGroup, getGroupsOfUser, getGroupById, addMemberToRequestList, removeMember, addMember, addMemberFromRequestListToGroup, removerUserFromRequestList, getAllMembers, getAllRequest, approveGroup, getAdmin}
