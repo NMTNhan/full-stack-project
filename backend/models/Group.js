@@ -8,6 +8,10 @@ const groupSchema = new mongoose.Schema({
   description: {
     type: String,
   },
+  isApproved: { 
+    type: Boolean, 
+    default: false 
+  },
   status: {
     type: String,
     default: 'pending',
