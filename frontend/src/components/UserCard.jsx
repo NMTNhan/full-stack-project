@@ -12,7 +12,7 @@ export default function UserCard({ friend}) {
         <div key={friend.id} className={'flex flex-col justify-center items-center hover:bg-gray-300 max-h-170 max-w-24'} onClick={() => handleClick()}>
             {/*Avatar*/}
             <div>
-                <img className={'h-170 w-24 rounded-lg'} src="https://avatarfiles.alphacoders.com/374/thumb-1920-374883.png" alt={'img'}/>
+                <img className={'h-170 w-24 rounded-lg'} src={`${friend.avatar}`} alt={'img'}/>
             </div>
             {/*User Name*/}
             <div className={'text-black font-bold'}>
