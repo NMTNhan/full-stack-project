@@ -1,40 +1,51 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import '../styles/MembersBox.css';
+import { useParams } from 'react-router-dom';
 
 const RequestListBox = ({ group }) => {
-    const [requests, setRequests] = useState([]);
+    const { groupID } = useParams();
     const [members, setMembers] = useState([]);
+    const [error, setError] = useState(null);
+    const [requests, setRequests] = useState([]);
 
     useEffect(() => {
-        const fetchRequests = async () => {
-            try {
-                const response = await axios.get(`http://localhost:5000/api/groups/${group._id}/requests`);
-                setRequests(response.data); //
-            } catch (error) {
-                console.error('Error fetching requests:', error.response?.data?.message || error.message);
-            }
-        };
-
-        if (group._id) { 
-            fetchRequests();
-        }
-    }, [group._id]); 
-
-    // Function to fetch members
+        fetchMembers();
+        fetchRequests();
+    }, [groupID]); 
+  
     const fetchMembers = async () => {
-        try {
-            const response = await axios.get(`http://localhost:5000/api/groups/${group._id}/members`);
-            setMembers(response.data);
-        } catch (error) {
-            console.error('Error fetching members:', error.response?.data?.message || error.message);
+      try {
+        const response = await fetch(`http://localhost:5000/api/groups/${groupID}/members`);
+        if (!response.ok) {
+          throw new Error('Group not found');
         }
+        const data = await response.json();
+        setMembers(data);
+        console.log("Members:", data); 
+      } catch (error) {
+        setError(error.message);
+      }
     };
+
+    const fetchRequests = async () => {
+        try {
+          const response = await fetch(`http://localhost:5000/api/groups/${groupID}/requests`);
+          if (!response.ok) {
+            throw new Error('Group not found');
+          }
+          const data = await response.json();
+          setRequests(data);
+          console.log("Requests:", data); 
+        } catch (error) {
+          setError(error.message);
+        }
+      };
 
     // Function to accept a member
     const handleAccept = async (userId) => {
         try {
-            await axios.post(`http://localhost:5000/api/groups/${group._id}/members/${userId}`);
+            await axios.post(`http://localhost:5000/api/groups/${groupID}/members/${userId}`);
             setRequests((prevRequests) => prevRequests.filter((request) => request._id !== userId)); // Remove accepted request
             fetchMembers();
             window.location.reload();

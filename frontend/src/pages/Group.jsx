@@ -5,39 +5,34 @@ import PostingArea from '../components/PostingArea';
 import UserPosts from '../components/UserPosts';
 import { membersPosts } from '../model/memberPost';
 import GroupHeaderBox from '../components/GroupHeaderBox';
+import { useContext } from 'react';
+import { UserContext } from '../App';
 
 const Group = () => {
-  const {groupId}  = useParams(); // Get the groupId from the URL
+  const { user } = useContext(UserContext);
+  const {groupID}  = useParams(); // Get the groupId from the URL
   const [group, setGroup] = useState(null);
   const [error, setError] = useState(null);
   const [posts, setPosts] = useState(membersPosts);
 
   useEffect(() => {
-    const fetchGroup = async () => {
-      try {
-        const response = await fetch(`http://localhost:5000/api/groups/${groupId}`);
-        if (!response.ok) {
-          throw new Error('Group not found');
-        }
-        const data = await response.json();
-        setGroup(data); 
-      } catch (error) {
-        setError(error.message);
+    fetchGroup();
+  }, [user, groupID]); 
+
+  const fetchGroup = async () => {
+    try {
+      const response = await fetch(`http://localhost:5000/api/groups/get/${groupID}`);
+      if (!response.ok) {
+        throw new Error('Group not found');
       }
-    };
-
-    if (groupId) { 
-      fetchGroup();
+      const data = await response.json();
+      setGroup(data);
+      console.log("Fetched group:", data); 
+      console.log("User:", user);
+    } catch (error) {
+      setError(error.message);
     }
-  }, [groupId]); 
-
-  if (error) {
-    return <div>Error: {error}</div>;
-  }
-
-  if (!group) {
-    return <div>Loading...</div>;
-  }
+  };
 
   const DisplayPost = (content) => {
     const newPost = {

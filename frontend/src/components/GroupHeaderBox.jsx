@@ -1,9 +1,13 @@
 import React from 'react';
 import "../styles/GroupHeaderBox.css";
 import {Link} from "react-router-dom";
+import { useContext } from 'react';
+import { UserContext } from '../App';
 
 const GroupHeaderBox = ({ group }) => {
-    if (!group) return null; // Ensure group data is available
+    const { user } = useContext(UserContext);
+    if (!group) return null;
+    console.log("User in GroupHeaderBox:", user);
 
     return (
         <section className="groupHeaderBox">
@@ -17,9 +21,9 @@ const GroupHeaderBox = ({ group }) => {
                 <div>
                     <p className="statusMember">
                         <span>
-                            <Link to={`/Group/${group._id}`} className="text-blue-500 hover:text-blue-700">{group.status} Group</Link>
+                            <Link to={`/group/${group._id}`} className="text-blue-500 hover:text-blue-700">{group.status} Group</Link>
                             &nbsp; | &nbsp;
-                            <Link to={`/groupmembers/${group._id}`} className="text-blue-500 hover:text-blue-700" state={{group: group}}>{group.numberOfMembers} Members</Link>
+                            <Link to={`/members/${group._id}`} className="text-blue-500 hover:text-blue-700" state={{group: group}}>{group.numberOfMembers} Members</Link>
                             &nbsp; | &nbsp;
                             <Link to={`/aboutus/${group._id}`} className="text-blue-500 hover:text-blue-700" state={{group: group}}>About Us</Link>
                         </span>

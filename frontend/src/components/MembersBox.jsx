@@ -1,30 +1,57 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import axios from 'axios';
 import '../styles/MembersBox.css';
+import { useParams } from 'react-router-dom';
+import { UserContext } from "../App";
 
-const MembersBox = ({ group }) => {
+const MembersBox = () => {
+    const { user } = useContext(UserContext);
+    const { groupID } = useParams();
     const [members, setMembers] = useState([]);
+    const [isAdmin, setIsAdmin] = useState(false);
+    const [error, setError] = useState(null);
 
+    console.log("User in Members Box:", user);
+  
     useEffect(() => {
-        const fetchMembers = async () => {
-            try {
-                const response = await axios.get(`http://localhost:5000/api/groups/${group._id}/members`);
-                setMembers(response.data);
-            } catch (error) {
-                console.error('Error fetching members:', error.response?.data?.message || error.message);
-            }
-        };
+        fetchGroup();
+        fetchAdmin();
+    }, [user, groupID]); 
 
-        if (group._id) { 
-            fetchMembers();
+    const fetchGroup = async () => {
+        try {
+            const response = await fetch(`http://localhost:5000/api/groups/${groupID}/members`);
+            if (!response.ok) {
+                throw new Error('Group not found');
+            }
+            const data = await response.json();
+            setMembers(data);
+        } catch (error) {
+            setError(error.message);
         }
-    }, [group._id]); 
+    };
+
+    const fetchAdmin = async () => {
+        try {
+            const response = await fetch(`http://localhost:5000/api/groups/admin/${groupID}`);
+            if (!response.ok) {
+                throw new Error('Admin not found');
+            }
+            const { adminId } = await response.json();
+            setIsAdmin(user.id === adminId); // Check if the current user is the admin
+            console.log("Current User ID:", user.id);
+            console.log("Admin ID from API:", adminId);
+        } catch (error) {
+            console.error('Error fetching admin:', error.message);
+        }
+    };
+
 
     const handleRemoveMember = async (memberId) => {
         try {
-            const response = await axios.delete(`http://localhost:5000/api/groups/${group._id}/members/${memberId}`);
-            // Update local state to reflect the removal
+            const response = await axios.delete(`http://localhost:5000/api/groups/${groupID}/members/${memberId}`);
             setMembers(prevMembers => prevMembers.filter(member => member._id !== memberId));
+            window.location.reload();
         } catch (error) {
             console.error('Error removing member:', error.response?.data?.message || error.message);
         }
@@ -38,12 +65,14 @@ const MembersBox = ({ group }) => {
                     {members.map((member) => (
                         <div key={member._id} className="memberContainer">
                             <p>{member.username}</p>
-                            <button 
-                                className="removeButton1" 
-                                onClick={() => handleRemoveMember(member._id)} // Call remove function
-                            >
-                                Remove
-                            </button>
+                            {isAdmin && (
+                                <button 
+                                    className="removeButton1" 
+                                    onClick={() => handleRemoveMember(member._id)}
+                                >
+                                    Remove
+                                </button>
+                            )}
                         </div>
                     ))}
                 </div>

@@ -15,21 +15,22 @@ const HomePage = () => {
     fetchFriendsInfo()
   }, [user.friends]);
 
-    useEffect(() => {
-      fetchGroups();
-    }, []);
+  useEffect(() => {
+    fetchGroups();
+  }, [user]);
 
   const fetchGroups = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/groups/');
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-      const data = await response.json();
-      setGroups(data);
+        const response = await fetch(`http://localhost:5000/api/groups/${user.id}`);
+        if (response.ok) {
+            const groupsData = await response.json(); // Parse JSON data
+            setGroups(groupsData); // Set groups state
+        } else {
+            throw new Error('Failed to fetch groups for the user');
+        }
     } catch (error) {
-      console.error('Error fetching groups:', error);
-      setError('Failed to load groups. Please try again later.');
+        console.error(error);
+        setError('Failed to load groups. Please try again later.'); // Set error message
     }
   };
 
@@ -57,8 +58,7 @@ const HomePage = () => {
       <NavBar />
       <div className="grid grid-cols-12 gap-4 p-4">
         <div className="col-span-3">
-          <GroupSidebar groups={groups} /> {/* Use fetched groups here */}
-          {error && <p className="text-red-500">{error}</p>} {/* Display error message */}
+          <GroupSidebar groups={groups} />
         </div>
         <div className="col-span-6">
           <PostingArea />

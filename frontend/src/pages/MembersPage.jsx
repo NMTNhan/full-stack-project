@@ -1,45 +1,51 @@
 import NavBar from '../components/NavBar';
 import GroupHeaderBox from '../components/GroupHeaderBox';
 import MembersBox from '../components/MembersBox.jsx';
-import {useLocation, useParams} from 'react-router-dom';
-import React, { useEffect, useState } from 'react';
+import {useParams} from 'react-router-dom';
+import React, { useEffect, useState, useContext } from 'react';
 import RequestListBox from '../components/RequestListBox.jsx';
+import { UserContext } from "../App";
+
 
 const MembersPage = () => {
-  const { state }  = useLocation(); // Get the group from the URL
+  const { user } = useContext(UserContext);
+  const { groupID } = useParams();
   const [group, setGroup] = useState(null);
-  // const [error, setError] = useState(null);
+  const [error, setError] = useState(null);
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  console.log("User in Members Page:", user);  
 
   useEffect(() => {
-    setGroup(state.group)
-  }, []);
+    fetchGroup();
+    fetchAdmin();
+  }, [user, groupID]); 
 
-  // useEffect(() => {
-  //   const fetchGroup = async () => {
-  //     try {
-  //       const response = await fetch(`http://localhost:5000/api/groups/${groupId}`);
-  //       if (!response.ok) {
-  //         throw new Error('Group not found');
-  //       }
-  //       const data = await response.json();
-  //       setGroup(data);
-  //     } catch (error) {
-  //       setError(error.message);
-  //     }
-  //   };
-  //
-  //   if (groupId) {
-  //     fetchGroup();
-  //   }
-  // }, [groupId]);
+  const fetchGroup = async () => {
+    try {
+      const response = await fetch(`http://localhost:5000/api/groups/get/${groupID}`);
+      if (!response.ok) {
+        throw new Error('Group not found');
+      }
+      const data = await response.json();
+      setGroup(data);
+    } catch (error) {
+      setError(error.message);
+    }
+  };
 
-  // if (error) {
-  //   return <div>Error: {error}</div>;
-  // }
-
-  if (!group) {
-    return <div>Loading...</div>;
-  }
+  const fetchAdmin = async () => {
+    try {
+        const response = await fetch(`http://localhost:5000/api/groups/admin/${groupID}`);
+        if (!response.ok) {
+            throw new Error('Admin not found');
+        }
+        const { adminId } = await response.json();
+        setIsAdmin(user.id === adminId); // Check if the current user is the admin
+    } catch (error) {
+        console.error('Error fetching admin:', error.message);
+    }
+};
 
   return (
     <div style={{ background: '#B9D9DC' }}>
@@ -50,7 +56,7 @@ const MembersPage = () => {
         <div className="col-span-6">
           <div className="mb-4"></div>
             <MembersBox group={group} />
-            <RequestListBox group={group} />
+            {isAdmin && <RequestListBox group={group} />}
         </div>
         <div className="col-span-3"> </div>
       </div>
