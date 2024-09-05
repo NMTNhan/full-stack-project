@@ -2,37 +2,38 @@ const Group = require("../models/Group");
 const User = require("../models/User");
 
 const createGroup = async (req, res) => {
-    const { name, description, visibility, adminId } = req.body;
+    const { name, description, visibility } = req.body;
 
     try {
         const newGroup = new Group({
             name,
             description,
             visibility,
-            status: 'pending',
-            admin: adminId,
-            members: [adminId],
+            admin: req.user._id,  // Automatically assign the logged-in user as the group admin
+            members: [req.user._id],  // Add the creator as the first member
             numberOfMembers: 1,
-            requestList: []
+            requestList: [],
+            isApproved: false  // Group is pending by default
         });
 
         await newGroup.save();
 
-        // Return the new group object without a message
         res.status(201).json(newGroup);
     } catch (error) {
         res.status(400).json({ message: 'Error creating group', error: error.message });
     }
-}
+};
 
 const getAllGroup = async (req, res) => {
     try {
-        const groups = await Group.find();
+        const groups = await Group.find({ isApproved: true });
         res.status(200).json(groups);
     } catch (error) {
         res.status(500).json({ message: 'Error retrieving groups', error });
     }
-}
+};
+
+
 
 const getGroupsOfUser = async (req, res) => {
     try {

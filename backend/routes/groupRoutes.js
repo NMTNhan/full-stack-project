@@ -8,10 +8,10 @@ const { isAdmin } = require('../middleware/adminMiddleware');
 const router = express.Router();
 
 // Create a new group
-router.post('/creategroup', createGroup);
+router.post('/creategroup', protect, createGroup); 
 
 // Get all groups
-router.get('/', getAllGroup);
+router.get('/', protect, getAllGroup);  // This fetches all approved groups
 
 router.get('/:userId', getGroupsOfUser);
 

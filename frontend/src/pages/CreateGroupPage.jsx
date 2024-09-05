@@ -1,40 +1,46 @@
-import React, { useState, useContext } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
-import { UserContext } from '../App';
 import '../styles/CreateGroupPage.css';
 
-const NewGroupForm = () => {
-    const { user } = useContext(UserContext);
-    const navigate = useNavigate();
-    
+function CreateGroupPage() {
     const [groupName, setGroupName] = useState('');
     const [description, setDescription] = useState('');
-    const [visibility, setVisibility] = useState('Public'); 
+    const [visibility, setVisibility] = useState('Public');
     const [error, setError] = useState(null);
     const [successMessage, setSuccessMessage] = useState(null);
+    const navigate = useNavigate();
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        
-        const newGroup = {
-            name: groupName,
-            description,
-            visibility,
-            adminId: user.id,
-        };
-
+    // New function to handle group creation with pending approval
+    const createGroup = async () => {
         try {
-            const response = await axios.post('http://localhost:5000/api/groups/creategroup', newGroup);
-            setSuccessMessage('Group created successfully!');
-            setError(null); 
-            setGroupName('');
-            setDescription('');
-            setVisibility('Public'); 
-        } catch (err) {
-            setError(err.response?.data?.message || 'Error creating group');
-            setSuccessMessage(null); 
+            const response = await fetch('http://localhost:5000/api/groups/creategroup', {
+                method: 'POST',
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('token')}`,  // Token from localStorage
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ name: groupName, description, visibility })
+            });
+    
+            const data = await response.json();
+    
+            if (!response.ok) {
+                throw new Error(data.message || 'Failed to create group');
+            }
+    
+            setSuccessMessage('Group created and is pending admin approval');
+            setError(null);
+        } catch (error) {
+            setError(error.message);
+            setSuccessMessage(null);
         }
+    };
+    
+
+    // Handle form submission to trigger group creation
+    const handleSubmit = (e) => {
+        e.preventDefault();  // Prevent default form submission
+        createGroup();  // Call the createGroup function
     };
 
     return (
@@ -76,12 +82,22 @@ const NewGroupForm = () => {
                     </select>
                 </div>
                 <div className='buttonContainer'>
-                    <button className='returnButton' onClick={() => navigate('/homepage')}>Go Back to Homepage</button>
-                    <button type="submit" className='submitButton'>Create Group</button>
+                    <button 
+                        className='returnButton' 
+                        onClick={() => navigate('/homepage')}
+                    >
+                        Go Back to Homepage
+                    </button>
+                    <button 
+                        type="submit" 
+                        className='submitButton'
+                    >
+                        Create Group
+                    </button>
                 </div>
             </form>
         </div>
     );
-};
+}
 
-export default NewGroupForm;
+export default CreateGroupPage;

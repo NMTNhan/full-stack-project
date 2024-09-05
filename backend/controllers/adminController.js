@@ -42,20 +42,22 @@ const resumeUser = async (req, res) => {
 // Approve Group
 const approveGroup = async (req, res) => {
     try {
-        console.log('Group ID:', req.params.id);  // Log the group ID
         const group = await Group.findById(req.params.id);
-        if (group) {
-            group.isApproved = true;
-            await group.save();
-            res.json({ message: 'Group approved successfully' });
-        } else {
-            res.status(404).json({ message: 'Group not found' });
+        if (!group) {
+            return res.status(404).json({ message: 'Group not found' });
         }
+
+        group.isApproved = true;  // Approve the group
+        await group.save();
+
+        res.json({ message: 'Group approved successfully', group });
     } catch (error) {
-        console.error('Error approving group:', error);  // Log the error
+        console.error('Error approving group:', error);
         res.status(500).json({ message: 'Server error' });
     }
 };
+
+
 
 const getPendingGroups = async (req, res) => {
     try {
