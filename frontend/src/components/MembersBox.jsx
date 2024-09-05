@@ -38,9 +38,7 @@ const MembersBox = () => {
                 throw new Error('Admin not found');
             }
             const { adminId } = await response.json();
-            setIsAdmin(user.id === adminId); // Check if the current user is the admin
-            console.log("Current User ID:", user.id);
-            console.log("Admin ID from API:", adminId);
+            setIsAdmin(user.id === adminId); 
         } catch (error) {
             console.error('Error fetching admin:', error.message);
         }

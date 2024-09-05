@@ -22,7 +22,6 @@ const RequestListBox = ({ group }) => {
         }
         const data = await response.json();
         setMembers(data);
-        console.log("Members:", data); 
       } catch (error) {
         setError(error.message);
       }
@@ -36,17 +35,15 @@ const RequestListBox = ({ group }) => {
           }
           const data = await response.json();
           setRequests(data);
-          console.log("Requests:", data); 
         } catch (error) {
           setError(error.message);
         }
-      };
+    };
 
-    // Function to accept a member
     const handleAccept = async (userId) => {
         try {
             await axios.post(`http://localhost:5000/api/groups/${groupID}/members/${userId}`);
-            setRequests((prevRequests) => prevRequests.filter((request) => request._id !== userId)); // Remove accepted request
+            setRequests((prevRequests) => prevRequests.filter((request) => request._id !== userId)); 
             fetchMembers();
             window.location.reload();
         } catch (error) {
@@ -54,11 +51,10 @@ const RequestListBox = ({ group }) => {
         }
     };
     
-    // Function to remove a member from the request list
     const handleRemove = async (userId) => {
         try {
             await axios.delete(`http://localhost:5000/api/groups/${group._id}/requests/${userId}`);
-            setRequests((prevRequests) => prevRequests.filter((request) => request._id !== userId)); // Remove the request
+            setRequests((prevRequests) => prevRequests.filter((request) => request._id !== userId)); 
             window.location.reload();
         } catch (error) {
             console.error('Error removing request:', error.response?.data?.message || error.message);

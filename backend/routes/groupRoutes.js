@@ -8,13 +8,15 @@ const { isAdmin } = require('../middleware/adminMiddleware');
 const router = express.Router();
 
 // Create a new group
-router.post('/creategroup', protect, createGroup); 
+router.post('/creategroup', createGroup);
 
 // Get all groups
-router.get('/', protect, getAllGroup);  // This fetches all approved groups
+router.get('/', getAllGroup);
 
+// Get groups of a user
 router.get('/:userId', getGroupsOfUser);
 
+// Get groups not joined by a user
 router.get('/notjoin/:userId', getGroupsNotJoinOfUser);
 
 // Get group by ID
@@ -41,8 +43,10 @@ router.get('/:groupId/members', getAllMembers);
 // Get all requests of a group
 router.get('/:groupId/requests', getAllRequest);
 
+// Approve a group
 router.put('/approve/:groupId', protect, isAdmin, approveGroup);
 
+// Get admin of a group
 router.get('/admin/:groupID', getAdmin);
 
 module.exports = router;

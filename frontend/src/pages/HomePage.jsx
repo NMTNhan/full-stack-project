@@ -5,10 +5,9 @@ import FriendSidebar from '../components/FriendSideBar';
 import {useContext, useEffect, useState} from "react";
 import {UserContext} from "../App";
 import NotJoinGroupSideBar from '../components/NotJoinGroupSideBar';
-import UserPosts from "../components/UserPosts";
 
 const HomePage = () => {
-  const { user , posts, setPosts } = useContext(UserContext);
+  const { user } = useContext(UserContext);
   const [groups, setGroups] = useState([]);
   const [notJoinGroups, setNotJoinGroups] = useState([]);
   const [friendsInfo, setFriendsInfo] = useState([]);
@@ -27,14 +26,14 @@ const HomePage = () => {
     try {
         const response = await fetch(`http://localhost:5000/api/groups/${user.id}`);
         if (response.ok) {
-            const groupsData = await response.json(); // Parse JSON data
-            setGroups(groupsData); // Set groups state
+            const groupsData = await response.json();
+            setGroups(groupsData); 
         } else {
             throw new Error('Failed to fetch groups for the user');
         }
     } catch (error) {
         console.error(error);
-        setError('Failed to load groups. Please try again later.'); // Set error message
+        setError('Failed to load groups. Please try again later.'); 
     }
   };
 
@@ -42,15 +41,14 @@ const HomePage = () => {
     try {
         const response = await fetch(`http://localhost:5000/api/groups/notjoin/${user.id}`);
         if (response.ok) {
-            const groupsData = await response.json(); // Parse JSON data
-            setNotJoinGroups(groupsData); // Set groups state
-            console.log(groupsData);
+            const groupsData = await response.json(); 
+            setNotJoinGroups(groupsData); 
         } else {
             throw new Error('Failed to fetch groups for the user');
         }
     } catch (error) {
         console.error(error);
-        setError('Failed to load groups. Please try again later.'); // Set error message
+        setError('Failed to load groups. Please try again later.'); 
     }
   }
 
@@ -61,8 +59,7 @@ const HomePage = () => {
           user.friends.map(async (friendId) => {
             const response = await fetch(`http://localhost:5000/api/friends/${friendId}`);
             if (response.ok) {
-                const data = await response.json()
-                return data.friend;
+              return response.json();
             } else {
               throw new Error('Failed to fetch friend information');
             }
@@ -75,7 +72,7 @@ const HomePage = () => {
   };
 
   return (
-    <div className={'h-fit bg-gray-100'}>
+    <div>
       <NavBar />
       <div className="grid grid-cols-12 gap-4 p-4">
         <div className="col-span-3">
@@ -85,7 +82,6 @@ const HomePage = () => {
         </div>
         <div className="col-span-6">
           <PostingArea />
-            <UserPosts posts={posts.filter(post => user.friends.includes(post.author._id))} setPosts={setPosts}/>
         </div>
         <div className="col-span-3">
           <FriendSidebar friends={friendsInfo}/>

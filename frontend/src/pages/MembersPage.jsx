@@ -41,7 +41,7 @@ const MembersPage = () => {
             throw new Error('Admin not found');
         }
         const { adminId } = await response.json();
-        setIsAdmin(user.id === adminId); // Check if the current user is the admin
+        setIsAdmin(user.id === adminId); 
     } catch (error) {
         console.error('Error fetching admin:', error.message);
     }
@@ -50,7 +50,7 @@ const MembersPage = () => {
   return (
     <div style={{ background: '#B9D9DC' }}>
       <NavBar />
-      <GroupHeaderBox group={group} /> {/* Assigning the id prop to GroupHeaderBox */}
+      <GroupHeaderBox group={group} /> 
       <div className="grid grid-cols-12 gap-4 p-4">
         <div className="col-span-3"></div>
         <div className="col-span-6">
