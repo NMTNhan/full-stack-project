@@ -1,5 +1,3 @@
-const {getUserProfile, getFriendInfoByID, unFriendByID, suspendUser, getUsers, acceptFriendRequest, rejectFriendRequest} = require('../controllers/userController.js');
-const mongoose = require('mongoose')
 const request = require('supertest');
 const dotenv = require('dotenv');
 const app = require('../server.js');
@@ -7,8 +5,6 @@ const app = require('../server.js');
 dotenv.config(); // Load environment variables
 
 describe('User controller test', () => {
-
-
     // Test the getUserProfile function
     it('should return the profile of the friend of the current user', async () => {
         const res = await request(app).get(
@@ -16,7 +12,7 @@ describe('User controller test', () => {
         );
 
         // Check if the function returns the correct response
-        expect(res.body).toStrictEqual({
+        expect(res.body.friend).toStrictEqual({
             _id: '66d6d7192ac356946767439e',
             username: 'testUser',
             friends: [],
@@ -24,7 +20,6 @@ describe('User controller test', () => {
             avatar: 'https://img.freepik.com/premium-vector/cute-boy-smiling-cartoon-kawaii-boy-illustration-boy-avatar-happy-kid_1001605-3447.jpg',
             email: 'testuser@gmail.com',
             isAdmin: false,
-            isSuspended: false,
         });
     });
 

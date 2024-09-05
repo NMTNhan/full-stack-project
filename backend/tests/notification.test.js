@@ -1,7 +1,6 @@
-const { createNotification, getNotificationsByUserID, deleteNotification, getNotificationByUserIDAndSenderID } = require('../controllers/notificationController');
 const request = require('supertest');
 const dotenv = require('dotenv');
-const app = require('../server.js');
+const app = require('../server');
 const mongoose = require("mongoose");
 
 dotenv.config(); // Load environment variables
@@ -52,42 +51,6 @@ describe('Notification Controller Test', () => {
         expect(res.body.message).toBe('Server error');
     });
 
-    // Test the getNotificationsByUserID function
-    it('should return the notifications of the user', async () => {
-        const res = await request(app).get(
-            "/api/notifications/get/66d6d7192ac356946767439e"
-        );
-
-        // Check if the function returns the correct response
-        expect(res.body).toStrictEqual([
-             {
-                 __v: 0,
-                 _id: "66d70ef9fd4ce723e49b34ad",
-                 createdAt: "2024-09-03T13:28:25.686Z",
-                 message: "testUser2 accepted your friend request !",
-                 receiverID: "66d6d7192ac356946767439e",
-                 senderID: {
-                     _id: "66d70ed7fd4ce723e49b34ab",
-                     avatar: "https://img.freepik.com/premium-vector/cute-boy-smiling-cartoon-kawaii-boy-illustration-boy-avatar-happy-kid_1001605-3447.jpg",
-                     username: "testUser2",
-                 },
-                 type: 'Friend Request Accepted',
-            },
-            {
-                __v: 0,
-                _id: notification._id,
-                createdAt: notification.createdAt,
-                message: "You have a new friend request",
-                receiverID: "66d6d7192ac356946767439e",
-                senderID: {
-                _id: "66d5725affacf17fd86eb3be",
-                avatar: "https://img.freepik.com/premium-vector/cute-boy-smiling-cartoon-kawaii-boy-illustration-boy-avatar-happy-kid_1001605-3447.jpg",
-                username: "hoangTest",
-            },
-            type: 'Friend Request',}
-        ]);
-    });
-
 
     it('should return 500 if server error', async () => {
         const res = await request(app).get(
@@ -136,6 +99,30 @@ describe('Notification Controller Test', () => {
 
         // Verify the response
         expect(res.status).toBe(200);
+    });
+
+    // Test the getNotificationsByUserID function
+    it('should return the notifications of the user', async () => {
+        const res = await request(app).get(
+            "/api/notifications/get/66d6d7192ac356946767439e"
+        );
+
+        // Check if the function returns the correct response
+        expect(res.body).toStrictEqual([
+            {
+                __v: 0,
+                _id: "66d70ef9fd4ce723e49b34ad",
+                createdAt: "2024-09-03T13:28:25.686Z",
+                message: "testUser2 accepted your friend request !",
+                receiverID: "66d6d7192ac356946767439e",
+                senderID: {
+                    _id: "66d70ed7fd4ce723e49b34ab",
+                    avatar: "https://img.freepik.com/premium-vector/cute-boy-smiling-cartoon-kawaii-boy-illustration-boy-avatar-happy-kid_1001605-3447.jpg",
+                    username: "testUser2",
+                },
+                type: 'Friend Request Accepted',
+            },
+        ]);
     });
 });
 

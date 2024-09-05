@@ -25,7 +25,15 @@ const getFriendInfoByID = async (req, res) => {
             if (!friend) {
                 return res.status(404).json({ message: 'Friend not found' });
             }
-            res.json(friend);
+            res.json({friend: {
+                _id: friend._id,
+                    username: friend.username,
+                    friends: friend.friends,
+                    groups: friend.groups,
+                    avatar: friend.avatar,
+                    email: friend.email,
+                    isAdmin: friend.isAdmin,
+            }});
         } catch (error) {
             res.status(500).json({ message: 'Server error' });
         }
