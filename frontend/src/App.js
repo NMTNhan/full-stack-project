@@ -10,6 +10,7 @@ import AboutUsPage from './pages/AboutUsPage';
 import MembersPage from './pages/MembersPage';
 import { createContext, useEffect, useState } from "react";
 import { NotFoundPage } from "./pages/NotFoundPage";
+import CreateGroupPage from './pages/CreateGroupPage';
 
 export const UserContext = createContext(undefined);
 
@@ -36,6 +37,7 @@ function App() {
           <Route path="/group/:groupID" element={<Group />} />
           <Route path="/members/:groupID" element={<MembersPage />} />
           <Route path="/aboutus/:groupID" element={<AboutUsPage />} />
+          <Route path="/creategroup" element={<CreateGroupPage />} />
           <Route path={'*'} element={<NotFoundPage />} />
         </Routes>
       </Router>

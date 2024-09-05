@@ -21,7 +21,7 @@ const GroupHeaderBox = ({ group }) => {
                 <div>
                     <p className="statusMember">
                         <span>
-                            <Link to={`/group/${group._id}`} className="text-blue-500 hover:text-blue-700">{group.status} Group</Link>
+                            <Link to={`/group/${group._id}`} className="text-blue-500 hover:text-blue-700">{group.visibility} Group</Link>
                             &nbsp; | &nbsp;
                             <Link to={`/members/${group._id}`} className="text-blue-500 hover:text-blue-700" state={{group: group}}>{group.numberOfMembers} Members</Link>
                             &nbsp; | &nbsp;
