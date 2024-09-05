@@ -107,6 +107,27 @@ const rejectFriendRequest = async (req, res) => {
 
 }
 
+const approveGroupRequest = async (req, res) => {
+    try {
+        const groupAuthorId = req.params.groupID;
+        const adminId = req.params.adminID;
+
+        await Notification.updateOne({
+            senderID: groupAuthorId,
+            receiverID: adminId,
+            type: 'Group Request'
+        },
+            {$set: {
+                senderId: adminId,
+                receiverId: groupAuthorId,
+                type: 'Create Group Request Accepted',
+                message: 'Your group request has been accepted'}
+        });
+    } catch (error) {
+        res.status(500).json({message: 'Server error'});
+    }
+}
+
 const suspendUser = async (req, res) => {
     try {
         const user = await User.findById(req.params.userId);
@@ -123,5 +144,5 @@ const suspendUser = async (req, res) => {
     }
 };
 
-module.exports = { getUserProfile, getFriendInfoByID, unFriendByID, getUsers, acceptFriendRequest, rejectFriendRequest, suspendUser};
+module.exports = { getUserProfile, getFriendInfoByID, unFriendByID, getUsers, acceptFriendRequest, rejectFriendRequest, approveGroupRequest, suspendUser};
   
