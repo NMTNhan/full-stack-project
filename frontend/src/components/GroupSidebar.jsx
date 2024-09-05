@@ -26,9 +26,6 @@ const GroupSidebar = () => {
     fetchGroups();
   }, []);
   
-  
-
-  
   return (
     <div className="p-4 bg-gray-50">
       <h3 className="font-bold text-lg mb-2">Groups</h3>

@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect, useContext} from 'react';
+import {UserContext} from "../App";
 
 
 function AdminDashboard() {
@@ -13,6 +14,8 @@ function AdminDashboard() {
   const [comments, setComments] = useState([]);
   const [postId, setPostId] = useState(null);  // Store postId for comments
   const [error, setError] = useState(null);
+
+  const { user } = useContext(UserContext);
 
   const openUserModal = () => setIsUserModalOpen(true);
   const closeUserModal = () => setIsUserModalOpen(false);
@@ -200,6 +203,22 @@ const approveGroup = async (groupId) => {
   }
   };
 
+  const updateApproveNotification = async (groupAuthorId) => {
+      try {
+          const response = await fetch(`http://localhost:5000/api/notifications/admin/group/approve/${groupAuthorId}/${user.id}`, {
+              method: 'PUT',
+              headers: { 'Content-Type': 'application/json' },
+          });
+          if (response.ok) {
+              console.log('Create group request approved successfully.');
+          } else {
+              throw new Error('Failed to approve create group request.');
+          }
+      } catch (error) {
+          console.error(error);
+      }
+  }
+
 
    // Function to fetch comments for a post
    const fetchComments = async (postId) => {
@@ -356,34 +375,36 @@ return (
 
     {/* Group Approval Modal */}
     {isGroupModalOpen && (
-  <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center">
-    <div className="bg-white rounded-lg shadow p-6 w-96">
-      <h2 className="text-xl font-semibold mb-4">Pending Group Approvals</h2>
-      {error && <p className="text-red-600">{error}</p>}
-      {groups.length > 0 ? (
-        <ul>
-          {groups.map(group => (
-            <li key={group._id} className="flex justify-between items-center mb-2">
-              <span>{group.name}</span>
-              <button
-                onClick={() => approveGroup(group._id)}
-                className="text-sm bg-green-600 text-white py-1 px-2 rounded"
-              >
-                Approve
-              </button>
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <p className="text-gray-600">There's no pending group creation request</p>
-      )}
-      <button onClick={closeGroupModal} className="mt-4 bg-blue-600 text-white py-2 px-4 rounded">
-        Close
-      </button>
-    </div>
-  </div>
-  )}
-
+      <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center">
+        <div className="bg-white rounded-lg shadow p-6 w-96">
+          <h2 className="text-xl font-semibold mb-4">Pending Group Approvals</h2>
+          {error && <p className="text-red-600">{error}</p>}
+          {groups.length > 0 ? (
+            <ul>
+              {groups.map(group => (
+                <li key={group._id} className="flex justify-between items-center mb-2">
+                  <span>{group.name}</span>
+                  <button
+                    onClick={() => {
+                        approveGroup(group._id)
+                        updateApproveNotification(group.author)
+                    }}
+                    className="text-sm bg-green-600 text-white py-1 px-2 rounded"
+                  >
+                    Approve
+                  </button>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="text-gray-600">There's no pending group creation request</p>
+          )}
+          <button onClick={closeGroupModal} className="mt-4 bg-blue-600 text-white py-2 px-4 rounded">
+            Close
+          </button>
+        </div>
+      </div>
+    )}
 
     {/* Comment Management Modal */}
     {isCommentModalOpen && (

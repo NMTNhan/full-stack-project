@@ -12,7 +12,7 @@ export default function FriendRequestCard({ friendRequest, notifications, setNot
 
     const onAccept = async () => {
         try {
-            const response = await fetch(`http://localhost:5000/api/notifications/accept/${user.id}/${friendRequest.senderID._id}`, {
+            const response = await fetch(`http://localhost:5000/api/notifications/friend/accept/${user.id}/${friendRequest.senderID._id}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
             });
@@ -33,7 +33,7 @@ export default function FriendRequestCard({ friendRequest, notifications, setNot
 
     const onReject = async () => {
         try {
-            const response = await fetch(`http://localhost:5000/api/notifications/reject/${user.id}/${friendRequest.senderID._id}`, {
+            const response = await fetch(`http://localhost:5000/api/notifications/friend/reject/${user.id}/${friendRequest.senderID._id}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
             });

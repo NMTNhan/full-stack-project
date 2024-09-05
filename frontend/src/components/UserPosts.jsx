@@ -1,10 +1,12 @@
-import React, {useState, useEffect} from "react";
+import React, {useState, useEffect, useContext} from "react";
 import ReactionButton from './ReactionButton';
 import CommentButton from './CommentButton';
+import {UserContext} from "../App";
 
 const UserPosts = ({ posts, setPosts }) => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const { user } = useContext(UserContext);
 
     useEffect(() => {
         // Fetch posts on component mount
@@ -43,6 +45,25 @@ const UserPosts = ({ posts, setPosts }) => {
     if (loading) return <p className='text-center'>Loading posts...</p>;
 
     if (error) return <p className='text-center text-red-500'>Error: {error}</p>;
+
+    const createNotification = async () => {
+        try {
+            const response = await fetch(`http://localhost:5000/api/notifications/create/${author}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({senderID: `${user.id}`, type: 'New Reaction Added', message: `${user.username} reacted your post`})
+            });
+            if (response.ok) {
+                console.log('Add reaction successfully');
+            } else {
+                throw new Error('Failed to add reaction');
+            }
+        } catch (error) {
+            console.error(error)
+        }
+    }
 
 return (
     <div className="mt-4">
@@ -104,7 +125,7 @@ return (
                                     console.log(reactionType) // Show to Test
                                 }
                             />
-                            <CommentButton comments={post.comments} />
+                            <CommentButton comments={post.comments} author={post.author._id} />
                         </div>
                     </div>
                 );
