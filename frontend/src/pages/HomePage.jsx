@@ -2,7 +2,7 @@ import NavBar from '../components/NavBar';
 import PostingArea from '../components/PostingArea';
 import GroupSidebar from '../components/GroupSidebar';
 import FriendSidebar from '../components/FriendSideBar';
-import React, {useContext, useEffect, useState} from "react";
+import {useContext, useEffect, useState} from "react";
 import {UserContext} from "../App";
 import NotJoinGroupSideBar from '../components/NotJoinGroupSideBar';
 import UserPosts from "../components/UserPosts";

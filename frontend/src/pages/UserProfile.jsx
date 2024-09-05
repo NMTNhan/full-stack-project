@@ -110,7 +110,7 @@ export default function UserProfile() {
                         <div className={'w-full ml-3'}>
                             <div className={'grid grid-cols-1 w-11/12 m-8 rounded-xl'}>
                                 <PostingArea addPost={handlePostCreated}/>
-                                <UserPosts posts={posts} setPosts={setPosts}/>
+                                <UserPosts posts={posts.filter(post => post.author._id === user._id)}/>
                             </div>
                         </div>
                     </div>

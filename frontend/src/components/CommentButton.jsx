@@ -1,10 +1,9 @@
-import React, {useContext, useState} from 'react';
-import PostComment from './PostComments'
-import {UserContext} from "../App";
+import React, { useState } from 'react';
+import PostComment from './PostComments';
+// import {UserContext} from "../App";
 
-const CommentButton = ({ comments, author }) => {
+const CommentButton = ({ postId, onNewComment }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const { user } = useContext(UserContext)
 
   const handleOpenModal = () => {
     setIsModalOpen(true);
@@ -14,39 +13,63 @@ const CommentButton = ({ comments, author }) => {
     setIsModalOpen(false);
   };
 
-  const createNotification = async () => {
+  // const createNotification = async () => {
+  //   try {
+  //     const response = await fetch(`http://localhost:5000/api/notifications/create/${author}`, {
+  //       method: 'POST',
+  //       headers: {
+  //         'Content-Type': 'application/json'
+  //       },
+  //       body: JSON.stringify({senderID: `${user.id}`, type: 'New Comment Added', message: `${user.username} commented on your post`})
+  //     });
+  //     if (response.ok) {
+  //       console.log('Add comment successfully');
+  //     } else {
+  //       throw new Error('Failed to add comment');
+  //     }
+  //   } catch (error) {
+  //     console.error(error)
+  //   }
+  // }
+
+  const handleSubmitComment = async (newComment) => {
+    const token = localStorage.getItem('token');
+
     try {
-      const response = await fetch(`http://localhost:5000/api/notifications/create/${author}`, {
+      const response = await fetch(`http://localhost:5000/api/posts/${postId}/comments`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          // 'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
         },
-        body: JSON.stringify({senderID: `${user.id}`, type: 'New Comment Added', message: `${user.username} commented on your post`})
+        body: JSON.stringify({ text: newComment }), // Send the new comment as a JSON object
       });
-      if (response.ok) {
-        console.log('Add comment successfully');
-      } else {
-        throw new Error('Failed to add comment');
-      }
-    } catch (error) {
-      console.error(error)
-    }
-  }
 
-  const handleSubmitComment = () => {
-    // logic for comment
-    handleCloseModal();
+      if (!response.ok) {
+        throw new Error('Failed to post comment');
+      }
+
+      const updatedPost = await response.json();
+      // if (!response.ok) throw new Error(updatedPost.message);
+      onNewComment(updatedPost.comments); // Update the comments in the parent component
+      setIsModalOpen(false);
+    } catch (error) {
+      console.error('Error posting comment:', error);
+    }
+    // handleCloseModal();
   };
 
   return (
     <>
     <button className="ml-1" onClick={handleOpenModal}>
+    {/* {isModalOpen && <PostComment onSubmit={handleSubmitComment} />} */}
       Comment
     </button>
     <PostComment
       isOpen={isModalOpen}
       onClose={handleCloseModal}
       onSubmit={handleSubmitComment}
+      comments={[]}
     />
   </>
   );
