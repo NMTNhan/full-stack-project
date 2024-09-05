@@ -17,6 +17,7 @@ export default function UserProfile() {
 
     useEffect(() => {
         fetchFriendsInfo();
+        fetchUserPosts(); 
     }, [user.friends]);
 
     //Get all the friend info.
@@ -37,6 +38,25 @@ export default function UserProfile() {
             console.error(error);
         }
     };
+
+    const fetchUserPosts = async () => {
+        try {
+            const token = localStorage.getItem('token');
+            const response = await fetch(`http://localhost:5000/api/posts?userId=${user.id}`, {
+                headers: { 'Authorization': `Bearer ${token}` },
+            });
+    
+            if (!response.ok) {
+                throw new Error('Failed to fetch user posts');
+            }
+    
+            const userPosts = await response.json();
+            setPosts(userPosts);
+        } catch (error) {
+            console.error(error);
+        }
+    }
+    
 
     return (
         <>
@@ -91,7 +111,7 @@ export default function UserProfile() {
                         <div className={'w-full ml-3'}>
                             <div className={'grid grid-cols-1 w-11/12 m-8 rounded-xl'}>
                                 <PostingArea addPost={handlePostCreated}/>
-                                <UserPosts posts={posts.filter(post => post.author._id === user._id)}/>
+                                <UserPosts posts={posts} setPosts={setPosts}/>
                             </div>
                         </div>
                     </div>
