@@ -58,7 +58,7 @@ const HomePage = () => {
       <NavBar />
       <div className="grid grid-cols-12 gap-4 p-4">
         <div className="col-span-3">
-          <GroupSidebar groups={groups} />
+          <GroupSidebar groups={groups} user={user} />
         </div>
         <div className="col-span-6">
           <PostingArea />
