@@ -46,24 +46,24 @@ const UserPosts = ({ posts, setPosts }) => {
 
     if (error) return <p className='text-center text-red-500'>Error: {error}</p>;
 
-    const createNotification = async () => {
-        try {
-            const response = await fetch(`http://localhost:5000/api/notifications/create/${author}`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({senderID: `${user.id}`, type: 'New Reaction Added', message: `${user.username} reacted your post`})
-            });
-            if (response.ok) {
-                console.log('Add reaction successfully');
-            } else {
-                throw new Error('Failed to add reaction');
-            }
-        } catch (error) {
-            console.error(error)
-        }
-    }
+    // const createNotification = async () => {
+    //     try {
+    //         const response = await fetch(`http://localhost:5000/api/notifications/create/${post}`, {
+    //             method: 'POST',
+    //             headers: {
+    //                 'Content-Type': 'application/json'
+    //             },
+    //             body: JSON.stringify({senderID: `${user.id}`, type: 'New Reaction Added', message: `${user.username} reacted your post`})
+    //         });
+    //         if (response.ok) {
+    //             console.log('Add reaction successfully');
+    //         } else {
+    //             throw new Error('Failed to add reaction');
+    //         }
+    //     } catch (error) {
+    //         console.error(error)
+    //     }
+    // }
 
 return (
     <div className="mt-4">
