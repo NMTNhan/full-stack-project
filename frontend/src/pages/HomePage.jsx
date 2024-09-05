@@ -2,6 +2,7 @@ import NavBar from '../components/NavBar';
 import PostingArea from '../components/PostingArea';
 import GroupSidebar from '../components/GroupSidebar';
 import FriendSidebar from '../components/FriendSideBar';
+import UserPosts from "../components/UserPosts";
 import {useContext, useEffect, useState} from "react";
 import {UserContext} from "../App";
 import NotJoinGroupSideBar from '../components/NotJoinGroupSideBar';
@@ -12,6 +13,8 @@ const HomePage = () => {
   const [notJoinGroups, setNotJoinGroups] = useState([]);
   const [friendsInfo, setFriendsInfo] = useState([]);
   const [error, setError] = useState(null);
+  const [posts, setPosts] = useState([]);
+
 
   useEffect(() => {
     fetchFriendsInfo()
@@ -83,6 +86,7 @@ const HomePage = () => {
         </div>
         <div className="col-span-6">
           <PostingArea />
+          <UserPosts posts={posts} setPosts={setPosts}/>
         </div>
         <div className="col-span-3">
           <FriendSidebar friends={friendsInfo}/>

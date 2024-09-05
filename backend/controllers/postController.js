@@ -10,9 +10,9 @@ const createPost = async (req, res) => {
     return res.status(400).json({ message: 'Content is required' });
   }
 
-  // if (req.file) {
-  //   imageStatus = req.file.path; // Save the image path
-  // }
+  if (req.file) {
+    imageStatus = req.file.path; // Save the image path
+  }
 
   try {
     const post = await Post.create({
@@ -34,7 +34,7 @@ const getPosts = async (req, res) => {
   
     try {
       const filter = userId ? { author: userId } : {};
-      const posts = await Post.find(filter).populate('author', 'username avatar email friends').sort({ createdAt: -1 });
+      const posts = await Post.find(filter).populate('author', 'username avatar').sort({ createdAt: -1 });
       res.json(posts);
     } catch (error) {
       console.error('Error fetching posts:', error);

@@ -8,8 +8,10 @@ const PostComment = ({ isOpen, onClose, onSubmit, comments }) => {
 
   // Handle new comment submission
   const handleSubmit = () => {
-    onSubmit(newComment); // Call the provided onSubmit function
-    setNewComment(''); // Clear the text area after submission
+    if (newComment.trim()) {
+      onSubmit(newComment); // Call the provided onSubmit function
+      setNewComment(''); // Clear the text area after submission
+    }
   };
 
   return (
