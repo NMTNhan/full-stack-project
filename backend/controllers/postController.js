@@ -38,6 +38,16 @@ const getPosts = async (req, res) => {
     }
 };
 
+const getAllPosts = async (req, res) => {
+    try {
+        const posts = await Post.find().populate('author', 'username avatar email friends').sort({ createdAt: -1 });
+        res.json(posts)
+    } catch (error) {
+        console.error('Error fetching posts:', error);
+        res.status(500).json({ message: 'Server error' });
+    }
+}
+
 const getPostsById = async (req, res) => {
     const { id } = req.params
 
@@ -201,4 +211,4 @@ const deleteCommentByAdmin = async (req, res) => {
   }
 };
 
-module.exports = { getCommentsForPost ,getPosts, createPost, updatePost, deletePost, reactionOnPost, commentOnPost, deletePostByAdmin, deleteCommentByAdmin, getPostsById  };
+module.exports = { getCommentsForPost ,getPosts, createPost, updatePost, deletePost, reactionOnPost, commentOnPost, deletePostByAdmin, deleteCommentByAdmin, getPostsById, getAllPosts  };

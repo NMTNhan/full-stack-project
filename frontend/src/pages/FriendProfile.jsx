@@ -9,9 +9,8 @@ import {AddFriendButton} from "../components/AddFriendButton";
 
 export default function FriendProfile() {
     const location = useLocation();
-    const { user } = useContext(UserContext);
+    const { user, posts, setPosts } = useContext(UserContext);
     const { friendProfile } = location.state;
-    const [posts, setPosts] = useState([]);
     const [friendsInfo, setFriendsInfo] = useState([]);
     const [isFriend, setIsFriend] = useState(false);
     let button;
@@ -19,10 +18,8 @@ export default function FriendProfile() {
     const navigate = useNavigate()
 
     useEffect(() => {
-        console.log(friendProfile)
         fetchFriendsInfo();
         checkIsFriend();
-        fetchPosts();
     }, [friendProfile]);
 
     // Function to check if this friend's profile is a friend's information of the current user
@@ -76,20 +73,6 @@ export default function FriendProfile() {
             console.error(error);
         }
     };
-
-    const fetchPosts = async () => {
-        try {
-            const response = await fetch(`http://localhost:5000/api/posts/get/${friendProfile._id}`);
-            if (response.ok) {
-                const data = await response.json()
-                setPosts(data)
-            } else {
-                throw new Error('Failed to fetch posts information');
-            }
-        } catch (error) {
-            console.error(error);
-        }
-    }
 
     if (user.id !== friendProfile._id) {
         button = isFriend ? <UnFriendButton handleUnFriend={handleUnFriend}/> : <AddFriendButton friendID={ friendProfile._id } userID={ user.id }/>
@@ -153,7 +136,7 @@ export default function FriendProfile() {
 
                         <div className={'w-full ml-3'}>
                             <div className={'grid grid-cols-1 w-11/12 m-8 rounded-xl'}>
-                                <UserPosts posts={posts} setPosts={setPosts}/>
+                                <UserPosts posts={posts.filter(post => post.author._id === friendProfile._id)}/>
                             </div>
                         </div>
                     </div>

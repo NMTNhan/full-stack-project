@@ -8,12 +8,11 @@ import NotJoinGroupSideBar from '../components/NotJoinGroupSideBar';
 import UserPosts from "../components/UserPosts";
 
 const HomePage = () => {
-  const { user } = useContext(UserContext);
+  const { user , posts, setPosts } = useContext(UserContext);
   const [groups, setGroups] = useState([]);
   const [notJoinGroups, setNotJoinGroups] = useState([]);
   const [friendsInfo, setFriendsInfo] = useState([]);
   const [error, setError] = useState(null);
-  const [posts , setPosts ] = useState([])
 
   useEffect(() => {
     fetchFriendsInfo()
@@ -22,7 +21,6 @@ const HomePage = () => {
   useEffect(() => {
     fetchGroups();
     fetchNotJoinGroups();
-      fetchPosts();
   }, [user]);
 
   const fetchGroups = async () => {
@@ -76,26 +74,6 @@ const HomePage = () => {
     }
   };
 
-  const fetchPosts = async () => {
-      let postsData = [];
-      try {
-           await Promise.all(
-              user.friends.map(async (friendId) => {
-                  const response = await fetch(`http://localhost:5000/api/posts/get/${friendId}`);
-                  if (response.ok) {
-                      const data = await response.json()
-                      postsData.push(...data)
-                  } else {
-                      throw new Error('Failed to fetch posts information');
-                  }
-              })
-          );
-           setPosts(postsData)
-      } catch (error) {
-          console.error(error);
-      }
-  }
-
   return (
     <div className={'h-fit bg-gray-100'}>
       <NavBar />
@@ -107,7 +85,7 @@ const HomePage = () => {
         </div>
         <div className="col-span-6">
           <PostingArea />
-            <UserPosts posts={posts} setPosts={setPosts}/>
+            <UserPosts posts={posts.filter(post => user.friends.includes(post.author._id))} setPosts={setPosts}/>
         </div>
         <div className="col-span-3">
           <FriendSidebar friends={friendsInfo}/>

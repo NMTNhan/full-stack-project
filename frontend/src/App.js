@@ -20,12 +20,40 @@ function App() {
     return savedUser ? JSON.parse(savedUser) : {};
   });
 
+  const [posts, setPosts] = useState(() => {
+    const savedPosts = localStorage.getItem('posts');
+    return savedPosts ? JSON.parse(savedPosts) : {};
+  })
+
+  const fetchAllPosts = async () => {
+    try {
+      const response = await fetch('http://localhost:5000/api/posts/get', {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+          'Content-Type': 'application/json',
+        },
+      })
+
+      if (response.ok) {
+        const data = await response.json()
+        setPosts(data)
+        localStorage.setItem('posts', JSON.stringify(posts));
+      }
+
+    } catch (error) {
+      console.error('Error creating post:', error);
+    }
+  }
+
   useEffect(() => {
+    fetchAllPosts();
+    console.log(posts)
     localStorage.setItem('user', JSON.stringify(user));
   }, [user]);
 
   return (
-    <UserContext.Provider value={{ user, setUser }}>
+    <UserContext.Provider value={{ user, setUser, posts, setPosts }}>
       <Router>
         <Routes>
           <Route path="/homepage" element={<HomePage />} />

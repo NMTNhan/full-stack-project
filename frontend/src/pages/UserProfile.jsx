@@ -7,8 +7,7 @@ import {UserContext} from "../App";
 
 export default function UserProfile() {
     const [friendsInfo, setFriendsInfo] = useState([]);
-    const [posts, setPosts] = useState([]);
-    const { user } = useContext(UserContext)
+    const { user, posts, setPosts } = useContext(UserContext)
 
     // Function to add a new post
     const handlePostCreated = (newPost) => {
@@ -18,10 +17,6 @@ export default function UserProfile() {
     useEffect(() => {
         fetchFriendsInfo();
     }, [user.friends]);
-
-    useEffect(() => {
-        fetchPosts()
-    }, [posts])
 
     //Get all the friend info.
     const fetchFriendsInfo = async () => {
@@ -42,20 +37,6 @@ export default function UserProfile() {
             console.error(error);
         }
     };
-
-    const fetchPosts = async () => {
-        try {
-            const response = await fetch(`http://localhost:5000/api/posts/get/${user.id}`);
-            if (response.ok) {
-                const data = await response.json()
-                setPosts(data)
-            } else {
-                throw new Error('Failed to fetch posts information');
-            }
-        } catch (error) {
-            console.error(error);
-        }
-    }
 
     return (
         <>
@@ -110,7 +91,7 @@ export default function UserProfile() {
                         <div className={'w-full ml-3'}>
                             <div className={'grid grid-cols-1 w-11/12 m-8 rounded-xl'}>
                                 <PostingArea addPost={handlePostCreated}/>
-                                <UserPosts posts={posts.filter(post => post.author._id === user._id)}/>
+                                <UserPosts posts={posts.filter(post => post.author._id === user.id)}/>
                             </div>
                         </div>
                     </div>
