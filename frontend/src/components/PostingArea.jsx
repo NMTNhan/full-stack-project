@@ -6,12 +6,22 @@ const PostingArea = ({ onPostCreated }) => {
   const [post, setPost] = useState('');
   const [selectedImage, setSelectedImage] = useState(null);
   const [selectedImageFile, setSelectedImageFile] = useState(null);
+  const [convertedImage, setConvertedImage] = useState('');
+
+  const convertToBase64 = (file) => {
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setConvertedImage(reader.result);
+    };
+    reader.readAsDataURL(file);
+  };
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
     if (file) {
       setSelectedImage(URL.createObjectURL(file));
       setSelectedImageFile(file);
+      convertToBase64(file);
     }
   };
 
@@ -25,7 +35,7 @@ const PostingArea = ({ onPostCreated }) => {
       if (selectedImageFile) {
         formData.append('image', selectedImageFile);
       }
-  
+
       const response = await fetch(`${API_BASE_URL}/api/posts`, {
         method: 'POST',
         body: formData,

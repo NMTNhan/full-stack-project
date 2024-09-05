@@ -20,6 +20,7 @@ export default function FriendProfile() {
     const navigate = useNavigate()
 
     useEffect(() => {
+        console.log(friendProfile)
         fetchFriendsInfo();
         checkIsFriend();
     }, [friendProfile]);
@@ -46,6 +47,7 @@ export default function FriendProfile() {
             if (response.ok) {
                 console.log('Unfriend successfully');
                 user.friends = user.friends.filter((friendId) => friendId !== friendProfile._id);
+                localStorage.setItem('user', JSON.stringify(user));
                 navigate('/userprofile')
             } else {
                 throw new Error('Failed to unfriend');
@@ -105,7 +107,7 @@ export default function FriendProfile() {
                         </div>
                     </div>
                 </div>
-                <div className={'h-screen bg-gray-100'}>
+                <div className={'h-fit bg-gray-100'}>
                     <div className={'flex w-full columns-2xs'}>
                         {/*Information and friend*/}
                         <div className={'w-1/2'}>

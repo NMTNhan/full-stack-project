@@ -8,6 +8,7 @@ import {NotificationCard} from "./NotificationCard";
 const NavBar = () => {
     const { user } = useContext(UserContext);
     const [notifications, setNotifications]  = useState([]);
+    const [friendRequests, setFriendRequests] = useState([]);
 
     // Function to fetch all the friend request
     const fetchFriendRequests = async () => {
@@ -27,15 +28,17 @@ const NavBar = () => {
     useEffect(() => {
         if (user && user.id) {
             fetchFriendRequests();
+            const notificationFiltered = notifications.filter((notification) => notification.type === 'Friend Request');
+            setFriendRequests(notificationFiltered);
         } else {
             console.error('User ID is not defined'); // Debug log
         }
-    }, [user])
+    }, [user, notifications])
 
 
 
     return (
-        <div className="navbar bg-base-100 px-4 shadow-md">
+        <div className="navbar bg-white px-4 shadow-md">
             {/* Left Side of NavBar */}
             <div className="flex items-center space-x-4">
                 <a className="text-2xl font-bold text-black" href="/homepage">Shitbook</a>
@@ -53,8 +56,13 @@ const NavBar = () => {
                     {/*Friend Request Icon: Dropdown */}
                     <ul
                         tabIndex={0}
-                        className="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52 mt-3"
+                        className="dropdown-content menu p-2 shadow bg-white rounded-box w-52 mt-3"
                     >
+                        {friendRequests.map((friendRequest) => {
+                            return (
+                                <FriendRequestCard key={friendRequest._id} friendRequest={friendRequest} notifications={notifications} setNotifications={setNotifications} />
+                            );
+                        })}
                     </ul>
                 </div>
 
@@ -67,14 +75,10 @@ const NavBar = () => {
                     {/*Notification Icon: Dropdown */}
                     <div
                         tabIndex={0}
-                        className="overflow-y-auto dropdown-content p-2 shadow bg-base-100 rounded-box w-96 max-h-96 mt-3 gap-2 "
+                        className="overflow-y-auto dropdown-content p-2 shadow bg-white rounded-box w-96 max-h-96 mt-3 gap-2 "
                     >
                         {notifications.map((notification) => {
-                            if (notification.type === 'Friend Request') {
-                                return (
-                                    <FriendRequestCard key={notification._id} friendRequest={notification} notifications={notifications} setNotifications={setNotifications} />
-                            );
-                            } else {
+                            if (notification.type !== 'Friend Request') {
                                 return (
                                     <NotificationCard notification={notification} />
                                 )

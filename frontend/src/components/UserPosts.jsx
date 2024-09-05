@@ -2,6 +2,7 @@ import React, {useState, useEffect, useContext} from "react";
 import ReactionButton from './ReactionButton';
 import CommentButton from './CommentButton';
 import {UserContext} from "../App";
+import {Link} from "react-router-dom";
 
 const UserPosts = ({ posts, setPosts }) => {
     const [loading, setLoading] = useState(true);
@@ -81,7 +82,7 @@ return (
                 const totalComments = post.comments?.length || 0;
 
                 // const totalComments = post.totalComment // Test with data
-
+                console.log(post.author)
                 return (
                     <div key={post._id} className="mt-4 h-200 border rounded shadow-sm bg-white">
                         <div className='p-4'>
@@ -92,7 +93,7 @@ return (
                                     className="w-12 h-12 rounded-full mr-4"
                                 />
                                 <div>
-                                    <p>{post.author?.username}</p>
+                                    <Link to={`/friend/${post.author._id}`} state={{friendProfile: post.author}} className={'no-underline hover:underline'}>{post.author?.username}</Link>
                                     <div className="text-sm text-gray-500">
                                         <p>{new Date(post.timestamp).toLocaleString()}</p>
                                     </div>

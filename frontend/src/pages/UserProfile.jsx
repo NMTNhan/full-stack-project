@@ -60,7 +60,7 @@ export default function UserProfile() {
                         <div className={'inline-block ml-48 pt-7 font-bold text-black text-4xl'}>{user.username}</div>
                     </div>
                 </div>
-                <div className={'h-screen bg-gray-100'}>
+                <div className={'h-fit bg-gray-100'}>
                     <div className={'flex w-full columns-2xs'}>
                         {/*Information and friend*/}
                         <div className={'w-1/2'}>

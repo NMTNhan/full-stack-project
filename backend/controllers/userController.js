@@ -37,7 +37,11 @@ const unFriendByID = async (req, res) => {
             { _id: req.body.userID },
             { $pull: { friends: req.params.id } }
         );
-        if (response) {
+        const response2 = await User.updateOne(
+            { _id: req.params.id},
+            { $pull: {friends: req.body.userID}}
+        )
+        if (response && response2) {
             res.json({ message: 'Unfriend successfully' });
         }
     } catch (error) {

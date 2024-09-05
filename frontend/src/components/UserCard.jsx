@@ -1,6 +1,6 @@
 import {useNavigate} from "react-router-dom";
 
-export default function UserCard({ friend}) {
+export default function UserCard({ friend }) {
 
     const navigate = useNavigate()
 

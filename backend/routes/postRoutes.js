@@ -6,7 +6,7 @@ const { isAdmin } = require('../middleware/adminMiddleware');
 const router = express.Router();
 
 // Route to create a post
-router.post('/', protect, createPost);
+router.post('/create', protect, createPost);
 
 // Route to get posts
 router.get('/', protect, getPosts); // Use root ('/') to be consistent with your other API routes
