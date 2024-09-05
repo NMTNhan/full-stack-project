@@ -29,6 +29,10 @@ const groupSchema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
+  isApproved: { 
+    type: Boolean, 
+    default: false 
+  },
   requestList: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
