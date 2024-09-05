@@ -1,5 +1,7 @@
 const express = require('express');
-const { createPost, getPosts, updatePost, deletePost, reactionOnPost, getCommentsForPost ,commentOnPost, deletePostByAdmin, deleteCommentByAdmin } = require('../controllers/postController');
+const { createPost, getPosts, updatePost, deletePost, reactionOnPost, getCommentsForPost ,commentOnPost, deletePostByAdmin, deleteCommentByAdmin,
+    getPostsById
+} = require('../controllers/postController');
 const { protect } = require('../middleware/authMiddleware');
 const { isAdmin } = require('../middleware/adminMiddleware');
 
@@ -10,6 +12,8 @@ router.post('/create', protect, createPost);
 
 // Route to get posts
 router.get('/', protect, getPosts); // Use root ('/') to be consistent with your other API routes
+
+router.get('/get/:id', getPostsById)
 
 // Route to update a post
 router.put('/:postId', protect, updatePost);

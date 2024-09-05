@@ -19,6 +19,10 @@ export default function UserProfile() {
         fetchFriendsInfo();
     }, [user.friends]);
 
+    useEffect(() => {
+        fetchPosts()
+    }, [posts])
+
     //Get all the friend info.
     const fetchFriendsInfo = async () => {
         try {
@@ -26,7 +30,8 @@ export default function UserProfile() {
                 user.friends.map(async (friendId) => {
                     const response = await fetch(`http://localhost:5000/api/friends/${friendId}`);
                     if (response.ok) {
-                        return response.json();
+                        const data = await response.json()
+                        return data.friend;
                     } else {
                         throw new Error('Failed to fetch friend information');
                     }
@@ -37,6 +42,20 @@ export default function UserProfile() {
             console.error(error);
         }
     };
+
+    const fetchPosts = async () => {
+        try {
+            const response = await fetch(`http://localhost:5000/api/posts/get/${user.id}`);
+            if (response.ok) {
+                const data = await response.json()
+                setPosts(data)
+            } else {
+                throw new Error('Failed to fetch posts information');
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    }
 
     return (
         <>

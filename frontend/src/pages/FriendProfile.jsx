@@ -2,7 +2,6 @@ import NavBar from "../components/NavBar";
 import UserCard from "../components/UserCard";
 import UserPosts from "../components/UserPosts";
 import React, {useContext, useEffect, useState} from "react";
-import {initialPosts} from "../model/PostModel";
 import {useLocation, useNavigate} from "react-router-dom";
 import {UserContext} from "../App";
 import {UnFriendButton} from "../components/UnFriendButton";
@@ -12,7 +11,7 @@ export default function FriendProfile() {
     const location = useLocation();
     const { user } = useContext(UserContext);
     const { friendProfile } = location.state;
-    const [posts, setPosts] = useState(initialPosts);
+    const [posts, setPosts] = useState([]);
     const [friendsInfo, setFriendsInfo] = useState([]);
     const [isFriend, setIsFriend] = useState(false);
     let button;
@@ -23,6 +22,7 @@ export default function FriendProfile() {
         console.log(friendProfile)
         fetchFriendsInfo();
         checkIsFriend();
+        fetchPosts();
     }, [friendProfile]);
 
     // Function to check if this friend's profile is a friend's information of the current user
@@ -64,7 +64,8 @@ export default function FriendProfile() {
                 friendProfile.friends.map(async (friendId) => {
                     const response = await fetch(`http://localhost:5000/api/friends/${friendId}`);
                     if (response.ok) {
-                        return response.json();
+                        const data = await response.json()
+                        return data.friend;
                     } else {
                         throw new Error('Failed to fetch friend information');
                     }
@@ -75,6 +76,20 @@ export default function FriendProfile() {
             console.error(error);
         }
     };
+
+    const fetchPosts = async () => {
+        try {
+            const response = await fetch(`http://localhost:5000/api/posts/get/${friendProfile._id}`);
+            if (response.ok) {
+                const data = await response.json()
+                setPosts(data)
+            } else {
+                throw new Error('Failed to fetch posts information');
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    }
 
     if (user.id !== friendProfile._id) {
         button = isFriend ? <UnFriendButton handleUnFriend={handleUnFriend}/> : <AddFriendButton friendID={ friendProfile._id } userID={ user.id }/>
@@ -126,9 +141,13 @@ export default function FriendProfile() {
                             </div>
                             <div className="w-full max-w-md bg-gray-50 rounded-xl shadow-md py-8 px-8 mt-8 ml-8 mr-8">
                                 <h2 className={'text-[28px] font-bold text-black mb-6 text-center'}>Friend</h2>
-                                {friendsInfo.map((friend) => (
-                                    <UserCard key={friend._id} friend={friend} user={friendProfile}/>
-                                ))}
+                                <div className={'grid grid-cols-3 gap-2'}>
+                                    {friendsInfo.map((friend) => (
+                                        <>
+                                            <UserCard key={friend.id} friend={friend}/>
+                                        </>
+                                    ))}
+                                </div>
                             </div>
                         </div>
 

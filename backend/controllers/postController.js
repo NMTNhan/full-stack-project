@@ -3,22 +3,18 @@ const Comment = require('../models/Comment');
 
 // Create a new post
 const createPost = async (req, res) => {
-  const { content, imageStatus } = req.body;
+  const { content, image } = req.body;
 
   // Check if content is provided
   if (!content) {
     return res.status(400).json({ message: 'Content is required' });
   }
 
-  // if (req.file) {
-  //   imageStatus = req.file.path; // Save the image path
-  // }
-
   try {
     const post = await Post.create({
-      content,
-      author: req.user._id, // The user ID is attached by the protect middleware
-      imageStatus,
+      content: content,
+      author: req.user.id, // The user ID is attached by the protect middleware
+      imageStatus: image,
     });
 
     res.status(201).json(post);
@@ -39,6 +35,18 @@ const getPosts = async (req, res) => {
     } catch (error) {
       console.error('Error fetching posts:', error);
       res.status(500).json({ message: 'Server error' });
+    }
+};
+
+const getPostsById = async (req, res) => {
+    const { id } = req.params
+
+    try {
+        const posts = await Post.find({author: id}).populate('author', 'username avatar email friends').sort({ createdAt: -1 });
+        res.json(posts)
+    } catch (error) {
+        console.error('Error fetching posts:', error);
+        res.status(500).json({ message: 'Server error' });
     }
 };
 
@@ -193,4 +201,4 @@ const deleteCommentByAdmin = async (req, res) => {
   }
 };
 
-module.exports = { getCommentsForPost ,getPosts, createPost, updatePost, deletePost, reactionOnPost, commentOnPost, deletePostByAdmin, deleteCommentByAdmin  };
+module.exports = { getCommentsForPost ,getPosts, createPost, updatePost, deletePost, reactionOnPost, commentOnPost, deletePostByAdmin, deleteCommentByAdmin, getPostsById  };

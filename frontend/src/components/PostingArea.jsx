@@ -20,28 +20,22 @@ const PostingArea = ({ onPostCreated }) => {
     const file = event.target.files[0];
     if (file) {
       setSelectedImage(URL.createObjectURL(file));
-      setSelectedImageFile(file);
-      convertToBase64(file);
+      convertToBase64(file)
     }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const token = localStorage.getItem('token');
-
-      const formData = new FormData();
-      formData.append('content', post);
-      if (selectedImageFile) {
-        formData.append('image', selectedImageFile);
-      }
-
-      const response = await fetch(`${API_BASE_URL}/api/posts`, {
+      const response = await fetch(`${API_BASE_URL}/api/posts/create`, {
         method: 'POST',
-        body: formData,
+        body: JSON.stringify({
+          content: post,
+          image: convertedImage
+        }),
         headers: {
-          'Authorization': `Bearer ${token}`,
-          // 'Content-Type': 'multipart/form-data',
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+          'Content-Type': 'application/json',
         },
       });
 

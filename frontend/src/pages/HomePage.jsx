@@ -2,9 +2,10 @@ import NavBar from '../components/NavBar';
 import PostingArea from '../components/PostingArea';
 import GroupSidebar from '../components/GroupSidebar';
 import FriendSidebar from '../components/FriendSideBar';
-import {useContext, useEffect, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import {UserContext} from "../App";
 import NotJoinGroupSideBar from '../components/NotJoinGroupSideBar';
+import UserPosts from "../components/UserPosts";
 
 const HomePage = () => {
   const { user } = useContext(UserContext);
@@ -12,6 +13,7 @@ const HomePage = () => {
   const [notJoinGroups, setNotJoinGroups] = useState([]);
   const [friendsInfo, setFriendsInfo] = useState([]);
   const [error, setError] = useState(null);
+  const [posts , setPosts ] = useState([])
 
   useEffect(() => {
     fetchFriendsInfo()
@@ -20,6 +22,7 @@ const HomePage = () => {
   useEffect(() => {
     fetchGroups();
     fetchNotJoinGroups();
+      fetchPosts();
   }, [user]);
 
   const fetchGroups = async () => {
@@ -60,7 +63,8 @@ const HomePage = () => {
           user.friends.map(async (friendId) => {
             const response = await fetch(`http://localhost:5000/api/friends/${friendId}`);
             if (response.ok) {
-              return response.json();
+                const data = await response.json()
+                return data.friend;
             } else {
               throw new Error('Failed to fetch friend information');
             }
@@ -71,6 +75,26 @@ const HomePage = () => {
       console.error(error);
     }
   };
+
+  const fetchPosts = async () => {
+      let postsData = [];
+      try {
+           await Promise.all(
+              user.friends.map(async (friendId) => {
+                  const response = await fetch(`http://localhost:5000/api/posts/get/${friendId}`);
+                  if (response.ok) {
+                      const data = await response.json()
+                      postsData.push(...data)
+                  } else {
+                      throw new Error('Failed to fetch posts information');
+                  }
+              })
+          );
+           setPosts(postsData)
+      } catch (error) {
+          console.error(error);
+      }
+  }
 
   return (
     <div className={'h-fit bg-gray-100'}>
@@ -83,6 +107,7 @@ const HomePage = () => {
         </div>
         <div className="col-span-6">
           <PostingArea />
+            <UserPosts posts={posts} setPosts={setPosts}/>
         </div>
         <div className="col-span-3">
           <FriendSidebar friends={friendsInfo}/>
