@@ -2,16 +2,17 @@ const Group = require("../models/Group");
 const User = require("../models/User");
 
 const createGroup = async (req, res) => {
-    const { name, description, status, admin } = req.body;
+    const { name, description, visibility, adminId } = req.body;
 
     try {
         const newGroup = new Group({
             name,
             description,
-            status,
-            admin,
-            members: [],
-            numberOfMembers: 0,
+            visibility,
+            status: 'pending',
+            admin: adminId,
+            members: [adminId],
+            numberOfMembers: 1,
             requestList: []
         });
 
@@ -37,6 +38,16 @@ const getGroupsOfUser = async (req, res) => {
     try {
         const userId = req.params.userId;
         const groups = await Group.find({ members: userId });
+        res.status(200).json(groups);
+    } catch (error) {
+        res.status(500).json({ message: 'Error retrieving groups', error });
+    }
+}
+
+const getGroupsNotJoinOfUser = async (req, res) => {
+    try {
+        const userId = req.params.userId;
+        const groups = await Group.find({ members: { $nin: [userId] } });
         res.status(200).json(groups);
     } catch (error) {
         res.status(500).json({ message: 'Error retrieving groups', error });
@@ -262,4 +273,4 @@ const getAdmin = async (req, res) => {
 };
 
 
-module.exports = {createGroup, getAllGroup, getGroupsOfUser, getGroupById, addMemberToRequestList, removeMember, addMember, addMemberFromRequestListToGroup, removerUserFromRequestList, getAllMembers, getAllRequest, approveGroup, getAdmin}
+module.exports = {createGroup, getAllGroup, getGroupsOfUser, getGroupsNotJoinOfUser, getGroupById, addMemberToRequestList, removeMember, addMember, addMemberFromRequestListToGroup, removerUserFromRequestList, getAllMembers, getAllRequest, approveGroup, getAdmin}

@@ -1,5 +1,6 @@
 import React from 'react';
 import {Link} from "react-router-dom";
+import '../styles/GroupSideBar.css';
 
 const GroupSidebar = ({ groups = [] }) => {
   return (
@@ -12,6 +13,9 @@ const GroupSidebar = ({ groups = [] }) => {
           </Link>
         </div>
       ))}
+      <button className='createGroupButton'>
+        <Link to="/creategroup">Want to create new Group?</Link>
+      </button>
     </div>
   );
 };

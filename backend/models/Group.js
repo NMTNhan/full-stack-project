@@ -8,13 +8,13 @@ const groupSchema = new mongoose.Schema({
   description: {
     type: String,
   },
-  isApproved: { 
-    type: Boolean, 
-    default: false 
-  },
   status: {
     type: String,
     default: 'pending',
+  },
+  visibility: {
+    type: String,
+    default: 'Public',
   },
   admin: {
     type: mongoose.Schema.Types.ObjectId,
@@ -32,6 +32,10 @@ const groupSchema = new mongoose.Schema({
   requestList: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
+  }],
+  posts: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Post',
   }],
   createdAt: {
     type: Date,

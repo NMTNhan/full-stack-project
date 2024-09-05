@@ -1,5 +1,5 @@
 const express = require('express');
-const {createGroup, getAllGroup, getGroupsOfUser, getGroupById, addMemberToRequestList, removeMember, addMember, addMemberFromRequestListToGroup,
+const {createGroup, getAllGroup, getGroupsOfUser, getGroupsNotJoinOfUser, getGroupById, addMemberToRequestList, removeMember, addMember, addMemberFromRequestListToGroup,
   removerUserFromRequestList, getAllMembers, getAllRequest, approveGroup, getAdmin
 } = require("../controllers/groupController");
 const { protect } = require('../middleware/authMiddleware');
@@ -8,12 +8,14 @@ const { isAdmin } = require('../middleware/adminMiddleware');
 const router = express.Router();
 
 // Create a new group
-router.post('/createGroup', createGroup);
+router.post('/creategroup', createGroup);
 
 // Get all groups
 router.get('/', getAllGroup);
 
 router.get('/:userId', getGroupsOfUser);
+
+router.get('/notjoin/:userId', getGroupsNotJoinOfUser);
 
 // Get group by ID
 router.get('/get/:id', getGroupById);
