@@ -8,6 +8,7 @@ import {UserContext} from "../App";
 export default function UserProfile() {
     const [friendsInfo, setFriendsInfo] = useState([]);
     const [posts, setPosts] = useState([]);
+    const [error, setError] = useState(null);
     const { user } = useContext(UserContext)
 
     // Function to add a new post
@@ -15,10 +16,19 @@ export default function UserProfile() {
         setPosts([newPost, ...posts]);
     };
 
-    useEffect(() => {
-        fetchFriendsInfo();
-        fetchUserPosts(); 
-    }, [user.friends]);
+    
+
+useEffect(() => {
+    const fetchData = async () => {
+        try {
+            await fetchFriendsInfo();
+            await fetchUserPosts();
+        } catch (err) {
+            setError('Failed to load data');
+        }
+    };
+    fetchData();
+}, [user.friends, user.id]);
 
     //Get all the friend info.
     const fetchFriendsInfo = async () => {

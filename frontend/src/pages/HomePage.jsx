@@ -16,6 +16,7 @@ const HomePage = () => {
   const [posts, setPosts] = useState([]);
 
 
+
   useEffect(() => {
     fetchFriendsInfo()
   }, [user.friends]);
@@ -74,6 +75,35 @@ const HomePage = () => {
       console.error(error);
     }
   };
+
+  useEffect(() => {
+  // Fetch posts on component mount
+    const fetchPosts = async () => {
+      try {
+        const token = localStorage.getItem('token');
+
+        const url = `http://localhost:5000/api/posts`;
+
+        const response = await fetch(url, {
+            method: "GET",
+            headers: {
+                'Authorization': `Bearer ${token}`,
+            },
+        });
+
+        if (!response.ok) {
+            throw new Error(`Failed to fetch posts: HTTP error! status: ${response.status}`);
+        }
+
+        const postsData = await response.json();
+        setPosts(postsData);
+      } catch (error) {
+          console.error(error);
+          setError(error.message);
+      }
+    };
+    fetchPosts();
+  }, [setPosts]);
 
   return (
     <div className={'h-fit bg-gray-100'}>
