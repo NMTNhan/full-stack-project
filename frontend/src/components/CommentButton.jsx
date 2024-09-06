@@ -3,7 +3,7 @@ import PostComment from './PostComments';
 import {UserContext} from "../App";
 // import {UserContext} from "../App";
 
-const CommentButton = ({ postId, onNewComment }) => {
+const CommentButton = ({ post, onNewComment }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const { user } = useContext(UserContext);
@@ -16,30 +16,30 @@ const CommentButton = ({ postId, onNewComment }) => {
     setIsModalOpen(false);
   };
 
-  // const createNotification = async () => {
-  //   try {
-  //     const response = await fetch(`http://localhost:5000/api/notifications/create/${author}`, {
-  //       method: 'POST',
-  //       headers: {
-  //         'Content-Type': 'application/json'
-  //       },
-  //       body: JSON.stringify({senderID: `${user.id}`, type: 'New Comment Added', message: `${user.username} commented on your post`})
-  //     });
-  //     if (response.ok) {
-  //       console.log('Add comment successfully');
-  //     } else {
-  //       throw new Error('Failed to add comment');
-  //     }
-  //   } catch (error) {
-  //     console.error(error)
-  //   }
-  // }
+  const createNotification = async () => {
+    try {
+      const response = await fetch(`http://localhost:5000/api/notifications/create/${post.author._id}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({senderID: `${user.id}`, type: 'New Comment Added', message: `${user.username} commented on your post`})
+      });
+      if (response.ok) {
+        console.log('Add comment successfully');
+      } else {
+        throw new Error('Failed to add comment');
+      }
+    } catch (error) {
+      console.error(error)
+    }
+  }
 
   const handleSubmitComment = async (newComment) => {
     const token = localStorage.getItem('token');
 
     try {
-      const response = await fetch(`http://localhost:5000/api/posts/${postId._id}/comments`, {
+      const response = await fetch(`http://localhost:5000/api/posts/${post._id}/comments`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -53,9 +53,9 @@ const CommentButton = ({ postId, onNewComment }) => {
       }
 
       const updatedPost = await response.json();
-      // if (!response.ok) throw new Error(updatedPost.message);
       onNewComment(updatedPost.comments); // Update the comments in the parent component
       setIsModalOpen(false);
+      await createNotification()
     } catch (error) {
       console.error('Error posting comment:', error);
     }
@@ -72,7 +72,7 @@ const CommentButton = ({ postId, onNewComment }) => {
       isOpen={isModalOpen}
       onClose={handleCloseModal}
       onSubmit={handleSubmitComment}
-      comments={postId.comments}
+      comments={post.comments}
     />
   </>
   );

@@ -131,7 +131,6 @@ const reactionOnPost = async (req, res) => {
     const { type } = req.body;
   
     try {
-        console.log(postId)
       const post = await Post.findById(postId);
 
       if (!post) {

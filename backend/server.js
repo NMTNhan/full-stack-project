@@ -33,8 +33,6 @@ mongoose.connect(process.env.MONGO_URI, {
 //Listen for connection events
 mongoose.connection.on('connected', () => {
   if (localStorage.getItem('token')) {
-    console.log('Token found, attempting to send queued reactions')
-    console.log('queuedReactions: ',localStorage.getItem('queuedReactions'))
     localStorage.getItem('queuedReactions').forEach(async (item) => {
       await fetch(item.url, {
         method: item.method,

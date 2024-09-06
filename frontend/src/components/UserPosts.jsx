@@ -92,6 +92,26 @@ const UserPosts = ({ posts, setPosts }) => {
         }
     };
 
+    //Create notification for the post's author when suer reaction on their post.
+    const createNotification = async ( postId ) => {
+        try {
+            const response = await fetch(`http://localhost:5000/api/notifications/create/${postId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({senderID: `${user.id}`, type: 'New Reaction Added', message: `${user.username} react on your post`})
+            });
+            if (response.ok) {
+                console.log('Add reaction successfully');
+            } else {
+                throw new Error('Failed to add comment');
+            }
+        } catch (error) {
+            console.error(error)
+        }
+    }
+
     const onReaction = async (postId, reactionType) => {
         try {
             const response = await fetch(`http://localhost:5000/api/posts/reactions/${postId}`, {
@@ -117,6 +137,7 @@ const UserPosts = ({ posts, setPosts }) => {
             setPosts((prevPosts) =>
                 prevPosts.map((post) => (post._id === postId ? updatedPost : post))
             );
+            await createNotification(postId)
         } catch (error) {
             console.error(error);
             setError(error.message);
@@ -164,7 +185,7 @@ const UserPosts = ({ posts, setPosts }) => {
                                             className="w-12 h-12 rounded-full mr-4"
                                         />
                                         <div>
-                                            <p>{post.author?.username}</p>
+                                            <Link to={`/friend/${post.author._id}`} state={{friendProfile: post.author}}>{post.author?.username}</Link>
                                         </div>
                                     </div>
                                     {isEditing ? (
@@ -250,7 +271,7 @@ const UserPosts = ({ posts, setPosts }) => {
                                 />
                                 {/* <CommentButton comments={post.comments} /> */}
                                 <CommentButton
-                                    postId={post} // Pass the post ID to CommentButton
+                                    post={post} // Pass the post ID to CommentButton
                                     onNewComment={(newComments) => {
                                         // Update the post's comments with the new comments array
                                         setPosts((prevPosts) =>
