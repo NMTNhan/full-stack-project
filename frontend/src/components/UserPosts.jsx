@@ -49,12 +49,9 @@ const UserPosts = ({ posts, setPosts }) => {
                 },
             });
     
-            // // Log response for debugging
-            // console.log('Response Status:', response.status);
-            // console.log('Response Headers:', response.headers);
-            // console.log('Response Text:', await response.text()); // Log the raw text
-    
             if (!response.ok) {
+                const errorText = await response.text(); // Read the response text for debugging
+                console.error(`HTTP error! Status: ${response.status}. Response text: ${errorText}`);
                 throw new Error(`HTTP error! Status: ${response.status}`);
             }
     

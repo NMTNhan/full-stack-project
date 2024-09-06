@@ -7,6 +7,6 @@ const router = express.Router();
 router.post('/create', protect, createEditHistory);
 
 // Route to get edit history
-router.get('/:postId', protect, getEditHistory);
+router.get('/posts/:postId/history', protect, getEditHistory);
 
 module.exports = router;
