@@ -3,7 +3,7 @@ const Comment = require('../models/Comment');
 
 // Create a new post
 const createPost = async (req, res) => {
-  const { content, image, groupID } = req.body;
+    const { content, image, groupID, visibility } = req.body;
 
   // Check if content is provided
   if (!content) {
@@ -18,12 +18,14 @@ const createPost = async (req, res) => {
             author: req.user.id, // The user ID is attached by the protect middleware
             imageStatus: image,
             groupId: groupID,
+            visibility,
         });
     } else {
         post = await Post.create({
             content: content,
             author: req.user.id, // The user ID is attached by the protect middleware
             imageStatus: image,
+            visibility,
         });
     }
     res.status(201).json(post);
@@ -72,7 +74,7 @@ const getPostsById = async (req, res) => {
 // Update a post by ID
 const updatePost = async (req, res) => {
     const { postId } = req.params;
-    const { content, imageStatus } = req.body;
+    const { content, visibility } = req.body;
   
     try {
       const post = await Post.findById(postId);
@@ -88,8 +90,8 @@ const updatePost = async (req, res) => {
   
       // Update the post fields
       post.content = content || post.content;
-      post.imageStatus = imageStatus || post.imageStatus;
-  
+      post.visibility = visibility || post.visibility;
+
       await post.save();
       res.json(post);
     } catch (error) {
@@ -167,24 +169,23 @@ const getCommentsForPost = async (req, res) => {
 // Comment on a post
 const commentOnPost = async (req, res) => {
     const { postId } = req.params;
-    const { content, avatar } = req.body;
+    const { text } = req.body;
   
     try {
       const post = await Post.findById(postId);
-
+  
       if (!post) {
         return res.status(404).json({ message: 'Post not found' });
       }
-
+  
       const comment = {
-          user: req.user.id,
-          avatar: avatar,
-          content,
+        user: req.user._id,
+        text,
       };
-
+  
       post.comments.push(comment);
       await post.save();
-
+  
       res.json(post);
     } catch (error) {
       console.error('Error commenting on post:', error);
@@ -221,4 +222,4 @@ const deleteCommentByAdmin = async (req, res) => {
   }
 };
 
-module.exports = { getCommentsForPost ,getPosts, createPost, updatePost, deletePost, reactionOnPost, commentOnPost, deletePostByAdmin, deleteCommentByAdmin, getPostsById, getAllPosts  };
+module.exports = { getCommentsForPost ,getPosts, createPost, updatePost, deletePost, reactionOnPost, commentOnPost, deletePostByAdmin, deleteCommentByAdmin  };

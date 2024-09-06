@@ -1,5 +1,6 @@
 import React, {useContext, useState} from 'react';
 import {UserContext} from "../App";
+import '../styles/VisibilityStyle.css'
 
 const API_BASE_URL = 'http://localhost:5000';
 
@@ -8,6 +9,7 @@ const PostingArea = ({ onPostCreated, groupID }) => {
   const [selectedImage, setSelectedImage] = useState(null);
   const [selectedImageFile, setSelectedImageFile] = useState(null);
   const [convertedImage, setConvertedImage] = useState('');
+  const [visibility, setVisibility] = useState("Public");
 
   const { posts, setPosts } = useContext(UserContext);
 
@@ -30,12 +32,21 @@ const PostingArea = ({ onPostCreated, groupID }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch(`${API_BASE_URL}/api/posts/create`, {
+      const token = localStorage.getItem('token');
+
+      const formData = new FormData();
+      formData.append('content', post);
+      if (selectedImageFile) {
+        formData.append('image', selectedImageFile);
+      }
+
+      const response = await fetch(`${API_BASE_URL}/api/posts`, {
         method: 'POST',
         body: JSON.stringify({
           content: post,
           image: convertedImage,
-          groupID: groupID
+          groupID: groupID,
+            visibility: visibility,
         }),
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`,
@@ -97,6 +108,15 @@ const PostingArea = ({ onPostCreated, groupID }) => {
               style={{ display: 'none' }}
             />
           </div>
+
+          <select
+            value={visibility}
+            onChange={(e) => setVisibility(e.target.value)}
+            className="small-select ml-2" /* Apply the small-select class */
+          >
+            <option value="Public">Public</option>
+            <option value="Friends">Friends</option>
+          </select>
 
           <button type="submit" className="mt-2 bg-blue-500 text-white px-4 py-2 rounded">
             Post
