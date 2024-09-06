@@ -41,7 +41,7 @@ const UserPosts = ({ posts, setPosts }) => {
     const handleViewHistory = async (postId) => {
         try {
             const token = localStorage.getItem("token");
-            const response = await fetch(`/api/posts/${postId}/history`, {
+            const response = await fetch(`http://localhost:5000/api/posts/${postId}/history`, {
                 method: "GET",
                 headers: {
                     Authorization: `Bearer ${token}`,
