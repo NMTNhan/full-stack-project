@@ -1,11 +1,10 @@
 import React, {useContext, useState} from "react";
 import ReactionButton from './ReactionButton';
 import CommentButton from './CommentButton';
-// import '@fortawesome/fontawesome-free/css/all.min.css';
+import '@fortawesome/fontawesome-free/css/all.min.css';
 import ListPopup from "./ListPopUp";
 // import {Link} from "react-router-dom";
 import {UserContext} from "../App";
-
 
 const UserPosts = ({ posts, setPosts }) => {
     const [error, setError] = useState(null);
@@ -78,6 +77,24 @@ const UserPosts = ({ posts, setPosts }) => {
             if (!response.ok) {
                 throw new Error(`Failed to save changes: HTTP error! status: ${response.status}`);
             }
+
+            const historyData = {
+                postId: postId,
+                changes: `Edited content to "${editContent}" and visibility to "${visibility}"`,
+              };
+          
+              const historyResponse = await fetch('http://localhost:5000/api/history/create', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                  'Authorization': `Bearer ${token}`,
+                },
+                body: JSON.stringify(historyData),
+              });
+          
+              if (!historyResponse.ok) {
+                throw new Error(`Failed to save edit history: HTTP error! status: ${historyResponse.status}`);
+              }
 
             setPosts((prevPosts) =>
                 prevPosts.map((post) =>
@@ -225,16 +242,16 @@ const UserPosts = ({ posts, setPosts }) => {
                                 )}
                             </div>
 
-                        {post.imageStatus && (
-                            <img
-                                src={post.imageStatus}
-                                alt={post.content}
-                                className="w-full h-50 object-cover"
-                            />
-                        )}
+                            {post.imageStatus && (
+                                <img
+                                    src={post.imageStatus}
+                                    alt={post.content}
+                                    className="w-full h-50 object-cover"
+                                />
+                            )}
 
                             <div className='flex justify-between px-4 py-2'>
-                                <div className='text-gray-500'>{totalReactions}</div>
+                                {totalReactions > 0 && ( <div className='text-gray-500'>{totalReactions}</div> )}
                                 {totalComments > 0 && (
                                     <div className='text-gray-500'>
                                         {totalComments >= 2
@@ -271,3 +288,5 @@ const UserPosts = ({ posts, setPosts }) => {
     );
 }
 export default UserPosts;
+
+

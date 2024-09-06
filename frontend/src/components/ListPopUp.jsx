@@ -30,6 +30,15 @@ const ListPopup = ({ postId, onEdit, onDelete, closePopup }) => {
             </button>
             <button
                 onClick={() => {
+                    // onEdit(postId);
+                    closePopup(); // Close the popup after action
+                }}
+                className="w-full text-left px-4 py-2 hover:bg-gray-100"
+            >
+                Edit History
+            </button>
+            <button
+                onClick={() => {
                     onDelete(postId);
                     closePopup(); // Close the popup after action
                 }}
