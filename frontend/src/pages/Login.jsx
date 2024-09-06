@@ -1,14 +1,13 @@
-import React, { useState, useContext } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import { UserContext } from '../App'; // Adjust the path if necessary
+import React, { useState } from 'react';
+import axios from 'axios';
+import { Link, useNavigate } from 'react-router-dom';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 
-const Login = () => {
+const Login = ({ setToken, setIsAdmin }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [error, setError] = useState(null);
-  const { setUser } = useContext(UserContext);
+  const [error, setError] = useState('');
   const navigate = useNavigate();
 
   const updateAccountInfo = (e) => {
@@ -26,33 +25,37 @@ const Login = () => {
 
   const login = async (e) => {
     e.preventDefault();
-
+  
     try {
-      const response = await fetch('http://localhost:5000/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
-      });
-
-      if (!response.ok) {
-        throw new Error('Login failed');
-      }
-
-      const data = await response.json();
-      localStorage.setItem('token', data.token);
-      localStorage.setItem('user', JSON.stringify(data.user));
-      setUser(data.user);
-
+      const response = await axios.post('http://localhost:5000/api/auth/login', { email, password });
+  
+      // Log the entire response to check its structure
+      console.log('Response from backend:', response);
+  
+      // Save the token to localStorage
+      localStorage.setItem('token', response.data.token);
+  
       // Redirect based on user role
-      if (data.user.isAdmin) {
+      if (response.data.user.isAdmin) {
+        console.log("Admin login successful");
         navigate('/admin'); // Redirect to admin dashboard
       } else {
+        console.log("Regular user login successful");
         navigate('/homepage'); // Redirect to homepage for normal users
       }
     } catch (error) {
-      setError(error.message);
+      console.log('Error occurred during login:', error);
+      if (error.response && error.response.status === 403) {
+        setError('Your account has been suspended. Please contact support.');
+      } else if (error.response && error.response.status === 400) {
+        setError('Invalid email or password.');
+      } else {
+        setError('An unexpected error occurred. Please try again.');
+      }
     }
   };
+  
+  
 
   return (
     <>
@@ -77,17 +80,21 @@ const Login = () => {
           <div className={'m-3'}>
             <h2 className={'text-[28px] font-bold text-black mb-6 text-center'}>Log In</h2>
             <form className={'flex flex-col'}>
-              <input placeholder={'Email'}
+              <input
+                placeholder={'Email'}
                 className={'bg-gray-100 text-black border-0 rounded-md p-2 mb-4 focus:outline-none transition ease-in duration-150 placeholder-gray-300'}
                 name={'email'}
                 type='text'
-                onChange={updateAccountInfo} />
+                onChange={updateAccountInfo}
+              />
               <div className={'flex space-x-4'}>
-                <input placeholder={'Password'}
+                <input
+                  placeholder={'Password'}
                   className={'bg-gray-100 text-black border-0 rounded-md p-2 mb-4 w-11/12 focus:outline-none transition ease-in duration-150 placeholder-gray-300'}
                   name={'password'}
                   type={showPassword ? 'text' : 'password'}
-                  onChange={updateAccountInfo} />
+                  onChange={updateAccountInfo}
+                />
                 <button type={'button'} className={'place-items-center'} onClick={handleOnClick}>
                   {showPassword ? <FaEye className={'text-black text-2xl'} /> : <FaEyeSlash className={'text-black text-2xl'} />}
                 </button>
@@ -96,12 +103,15 @@ const Login = () => {
               <button
                 className={'bg-gradient-to-r from-indigo-500 to-blue-500 text-white font-medium py-2 rounded-md hover:bg-indigo-600 hover:to-blue-600 transition ease-in duration-200'}
                 type="submit"
-                onClick={login}>Log In
+                onClick={login}
+              >
+                Log In
               </button>
               <div className={'divider'}></div>
               <button
                 className={'bg-gradient-to-r from-emerald-500 to-green-500 text-white font-medium py-2 rounded-md hover:bg-emerald-600 hover:to-green-600 transition ease-in duration-200'}
-                type="button">
+                type="button"
+              >
                 <Link to={'/signup'}>Create New Account</Link>
               </button>
             </form>

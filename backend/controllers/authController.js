@@ -6,10 +6,18 @@ const loginUser = async (req, res) => {
 
   try {
     const user = await User.findOne({ email });
+
+    // Check if the user exists and the password is correct
     if (!user || !(await user.matchPassword(password))) {
-      return res.status(400).json({ message: 'Invalid credentials' });
+      return res.status(400).json({ message: 'Invalid email or password' });
     }
 
+    // Check if the user is suspended
+    if (user.isSuspended) {
+      return res.status(403).json({ message: 'Your account has been suspended. Please contact support.' });
+    }
+
+    // Generate JWT token for authenticated users
     const token = generateToken(user._id);
 
     res.json({
@@ -17,17 +25,19 @@ const loginUser = async (req, res) => {
       user: {
         id: user._id,
         username: user.username,
+        email: user.email,
+        isAdmin: user.isAdmin,
         friends: user.friends,
         groups: user.groups,
         avatar: user.avatar,
-        email: user.email,
-        isAdmin: user.isAdmin,
       },
     });
   } catch (error) {
     res.status(500).json({ message: 'Server error' });
   }
 };
+
+
 
 const registerUser = async (req, res) => {
   const { username, email, password } = req.body;
