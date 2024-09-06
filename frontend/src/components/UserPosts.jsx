@@ -1,7 +1,7 @@
 import React, {useContext, useState} from "react";
 import ReactionButton from './ReactionButton';
 import CommentButton from './CommentButton';
-import '@fortawesome/fontawesome-free/css/all.min.css';
+// import '@fortawesome/fontawesome-free/css/all.min.css';
 import ListPopup from "./ListPopUp";
 import {Link} from "react-router-dom";
 import {UserContext} from "../App";
