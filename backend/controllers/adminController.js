@@ -1,6 +1,7 @@
 const User = require('../models/User');
 const Post = require('../models/Post');
 const Group = require('../models/Group');
+const Comment = require('../models/Comment');
 const { isValidObjectId } = require('mongoose');
 
 // Suspend User
@@ -57,17 +58,42 @@ const approveGroup = async (req, res) => {
     }
 };
 
-
-
-const getPendingGroups = async (req, res) => {
+const deleteGroup = async (req, res) => {
     try {
-        const pendingGroups = await Group.find({ isApproved: false });
-        res.json(pendingGroups);
+        const groupId = req.params.id;
+        const group = await Group.findByIdAndDelete(groupId); // Using findByIdAndDelete
+
+        if (!group) {
+            return res.status(404).json({ message: 'Group not found' });
+        }
+
+        return res.status(200).json({ message: 'Group deleted successfully' });
     } catch (error) {
-        console.error('Error fetching pending groups:', error); // Log the error
-        res.status(500).json({ message: 'Server error' });
+        console.error('Error deleting group:', error.message);
+        return res.status(500).json({ message: 'Failed to delete group' });
     }
 };
+
+
+// Fetch all groups (approved and unapproved)
+const getAllGroups = async (req, res) => {
+    try {
+      const groups = await Group.find(); // Fetch all groups
+      res.json(groups);
+    } catch (error) {
+      res.status(500).json({ message: 'Failed to fetch groups' });
+    }
+  };
+  
+  // Fetch only unapproved groups (pending)
+const getPendingGroups = async (req, res) => {
+    try {
+      const groups = await Group.find({ isApproved: false }); // Fetch only pending approval groups
+      res.json(groups);
+    } catch (error) {
+      res.status(500).json({ message: 'Failed to fetch pending groups' });
+    }
+  };
 
 
 const deletePostByAdmin = async (req, res) => {
@@ -93,34 +119,42 @@ const deletePostByAdmin = async (req, res) => {
 };
 
 
-
 const deleteCommentByAdmin = async (req, res) => {
     try {
-        const post = await Post.findById(req.params.postId);
-        if (post) {
-            const comment = post.comments.id(req.params.commentId);
-            if (comment) {
-                comment.remove();  // Remove the comment from the post
-                await post.save();  // Save the post after comment removal
-                res.json({ message: 'Comment deleted successfully' });
-            } else {
-                res.status(404).json({ message: 'Comment not found' });
-            }
-        } else {
-            res.status(404).json({ message: 'Post not found' });
-        }
+      const { postId, commentId } = req.params;
+  
+      // Find the post
+      const post = await Post.findById(postId);
+      if (!post) {
+        return res.status(404).json({ message: 'Post not found' });
+      }
+  
+      // Find and delete the comment
+      const comment = await Comment.findByIdAndDelete(commentId); // Ensure this function works properly
+      if (!comment) {
+        return res.status(404).json({ message: 'Comment not found' });
+      }
+  
+      // Optionally, remove the comment from the post's comments array
+      post.comments = post.comments.filter((c) => c._id.toString() !== commentId);
+      await post.save();
+  
+      return res.status(200).json({ message: 'Comment deleted successfully' });
     } catch (error) {
-        console.error('Error deleting comment:', error);  // Log the error
-        res.status(500).json({ message: 'Server error' });
+      console.error('Error deleting comment:', error.message);
+      return res.status(500).json({ message: 'Failed to delete comment' });
     }
-};
+  };
+  
 
 
 module.exports = {
     suspendUser,
-    resumeUser,  // Add this line
+    resumeUser,
     approveGroup,
+    getAllGroups,
     getPendingGroups,
     deletePostByAdmin,
     deleteCommentByAdmin,
+    deleteGroup,
 };

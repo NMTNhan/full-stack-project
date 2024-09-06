@@ -41,7 +41,7 @@ const NavBar = () => {
         <div className="navbar bg-white px-4 shadow-md">
             {/* Left Side of NavBar */}
             <div className="flex items-center space-x-4">
-                <a className="text-2xl font-bold text-black" href="/homepage">Shitbook</a>
+                <a className="text-2xl font-bold text-black" href="/homepage">Smilebook</a>
                 <div className="relative flex items-center max-w-xs">
                 </div>
             </div>
