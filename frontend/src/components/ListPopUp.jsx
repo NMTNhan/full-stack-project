@@ -1,6 +1,6 @@
 import React, { useRef, useEffect } from 'react';
 
-const ListPopup = ({ postId, onEdit, onDelete, closePopup }) => {
+const ListPopup = ({ postId, onEdit, onViewHistory, onDelete, closePopup }) => {
     const popupRef = useRef(null);
 
     useEffect(() => {
@@ -27,6 +27,15 @@ const ListPopup = ({ postId, onEdit, onDelete, closePopup }) => {
                 className="w-full text-left px-4 py-2 hover:bg-gray-100"
             >
                 Edit
+            </button>
+            <button
+                onClick={() => {
+                    onViewHistory(postId);
+                    closePopup(); // Close the popup after action
+                }}
+                className="w-full text-left px-4 py-2 hover:bg-gray-100"
+            >
+                Edit History
             </button>
             <button
                 onClick={() => {

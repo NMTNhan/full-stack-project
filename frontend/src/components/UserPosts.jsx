@@ -1,11 +1,11 @@
 import React, {useContext, useState} from "react";
 import ReactionButton from './ReactionButton';
 import CommentButton from './CommentButton';
-// import '@fortawesome/fontawesome-free/css/all.min.css';
+import '@fortawesome/fontawesome-free/css/all.min.css';
 import ListPopup from "./ListPopUp";
+import HistoryPopup from '../components/historyPopUp';
 // import {Link} from "react-router-dom";
 import {UserContext} from "../App";
-
 
 const UserPosts = ({ posts, setPosts }) => {
     const [error, setError] = useState(null);
@@ -13,6 +13,9 @@ const UserPosts = ({ posts, setPosts }) => {
     const [editingPostId, setEditingPostId] = useState(null); // Track the post being edited
     const [editContent, setEditContent] = useState("");
     const [visibility, setVisibility] = useState("");
+
+    const [showHistoryModal, setShowHistoryModal] = useState(false);
+    const [historyData, setHistoryData] = useState([]);
 
     const { user } = useContext(UserContext)
     
@@ -33,6 +36,31 @@ const UserPosts = ({ posts, setPosts }) => {
     ;
     const handleVisibilityChange = (postId, newVisibility) => {
         setVisibility(newVisibility);
+    };
+
+    const handleViewHistory = async (postId) => {
+        try {
+            const token = localStorage.getItem("token");
+            const response = await fetch(`http://localhost:5000/api/posts/${postId}/history`, {
+                method: "GET",
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                },
+            });
+    
+            if (!response.ok) {
+                const errorText = await response.text(); // Read the response text for debugging
+                console.error(`HTTP error! Status: ${response.status}. Response text: ${errorText}`);
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+    
+            const data = await response.json();
+            setHistoryData(data);
+            setShowHistoryModal(true);
+        } catch (error) {
+            console.error("Error fetching history data:", error);
+        }
     };
 
     const handleDelete = async (postId) => {
@@ -78,6 +106,24 @@ const UserPosts = ({ posts, setPosts }) => {
             if (!response.ok) {
                 throw new Error(`Failed to save changes: HTTP error! status: ${response.status}`);
             }
+
+            const historyData = {
+                postId: postId,
+                changes: `Edited content to "${editContent}" and visibility to "${visibility}"`,
+              };
+          
+              const historyResponse = await fetch('http://localhost:5000/api/history/create', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                  'Authorization': `Bearer ${token}`,
+                },
+                body: JSON.stringify(historyData),
+              });
+          
+              if (!historyResponse.ok) {
+                throw new Error(`Failed to save edit history: HTTP error! status: ${historyResponse.status}`);
+              }
 
             setPosts((prevPosts) =>
                 prevPosts.map((post) =>
@@ -214,11 +260,21 @@ const UserPosts = ({ posts, setPosts }) => {
                                                 postId={post._id}
                                                 onEdit={handleEdit}
                                                 onDelete={handleDelete}
+                                                onViewHistory={handleViewHistory}
                                                 closePopup={() => setMenuVisible(null)}
+                                            />
+                                        )}
+
+                                        {/* HistoryPopup Component */}
+                                        {showHistoryModal && (
+                                            <HistoryPopup
+                                                historyData={historyData}
+                                                close={() => setShowHistoryModal(false)}
                                             />
                                         )}
                                     </div>
                                 </div>
+
                                 {isEditing ? (
                                     <div>
                                         <textarea
@@ -246,16 +302,16 @@ const UserPosts = ({ posts, setPosts }) => {
                                 )}
                             </div>
 
-                        {post.imageStatus && (
-                            <img
-                                src={post.imageStatus}
-                                alt={post.content}
-                                className="w-full h-50 object-cover"
-                            />
-                        )}
+                            {post.imageStatus && (
+                                <img
+                                    src={post.imageStatus}
+                                    alt={post.content}
+                                    className="w-full h-50 object-cover"
+                                />
+                            )}
 
                             <div className='flex justify-between px-4 py-2'>
-                                <div className='text-gray-500'>{totalReactions}</div>
+                                {totalReactions > 0 && ( <div className='text-gray-500'>{totalReactions}</div> )}
                                 {totalComments > 0 && (
                                     <div className='text-gray-500'>
                                         {totalComments >= 2
@@ -292,3 +348,5 @@ const UserPosts = ({ posts, setPosts }) => {
     );
 }
 export default UserPosts;
+
+

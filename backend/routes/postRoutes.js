@@ -1,7 +1,7 @@
 const express = require('express');
 const { createPost, getPosts, updatePost, deletePost, reactionOnPost, getCommentsForPost ,commentOnPost, deletePostByAdmin, deleteCommentByAdmin,
     getPostsById,
-    getAllPosts
+    getAllPosts,
 } = require('../controllers/postController');
 const { protect } = require('../middleware/authMiddleware');
 const { isAdmin } = require('../middleware/adminMiddleware');

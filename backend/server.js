@@ -17,6 +17,7 @@ const postRoutes = require('./routes/postRoutes'); // Ensure this is imported
 const friendRoutes = require('./routes/friendRoutes');
 const notificationRoutes = require('./routes/notificationRoutes');
 const groupRoutes = require('./routes/groupRoutes');
+const historyRoutes = require('./routes/historyRoutes'); 
 
 // Middleware
 app.use(express.json()); // Parse JSON bodies
@@ -52,6 +53,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/admin', adminRoutes)
 app.use('/api', userRoutes);
 app.use('/api/posts', postRoutes); // Ensure this is being used
+app.use('/api/history', historyRoutes);
 app.use('/api/friends', friendRoutes);
 app.use('/api/notifications', notificationRoutes);
 app.use('/api/groups', groupRoutes); // Use group routes
