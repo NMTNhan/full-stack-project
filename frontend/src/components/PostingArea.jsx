@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import '../styles/VisibilityStyle.css'
+
 
 const API_BASE_URL = 'http://localhost:5000';
 
@@ -7,6 +9,7 @@ const PostingArea = ({ onPostCreated }) => {
   const [selectedImage, setSelectedImage] = useState(null);
   const [selectedImageFile, setSelectedImageFile] = useState(null);
   const [convertedImage, setConvertedImage] = useState('');
+  const [visibility, setVisibility] = useState("Public");
 
   const convertToBase64 = (file) => {
     const reader = new FileReader();
@@ -32,6 +35,7 @@ const PostingArea = ({ onPostCreated }) => {
 
       const formData = new FormData();
       formData.append('content', post);
+      formData.append('visibility', visibility); 
       if (selectedImageFile) {
         formData.append('image', selectedImageFile);
       }
@@ -96,6 +100,15 @@ const PostingArea = ({ onPostCreated }) => {
               style={{ display: 'none' }}
             />
           </div>
+
+          <select
+            value={visibility}
+            onChange={(e) => setVisibility(e.target.value)}
+            className="small-select ml-2" /* Apply the small-select class */
+          >
+            <option value="Public">Public</option>
+            <option value="Friends">Friends</option>
+          </select>
 
           <button type="submit" className="mt-2 bg-blue-500 text-white px-4 py-2 rounded">
             Post

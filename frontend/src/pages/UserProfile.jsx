@@ -66,7 +66,6 @@ useEffect(() => {
             console.error(error);
         }
     }
-    
 
     return (
         <>

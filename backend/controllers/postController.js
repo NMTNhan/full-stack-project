@@ -3,7 +3,7 @@ const Comment = require('../models/Comment');
 
 // Create a new post
 const createPost = async (req, res) => {
-  const { content, imageStatus } = req.body;
+  const { content, imageStatus, visibility } = req.body;
 
   // Check if content is provided
   if (!content) {
@@ -19,6 +19,7 @@ const createPost = async (req, res) => {
       content,
       author: req.user._id, // The user ID is attached by the protect middleware
       imageStatus,
+      visibility,
     });
 
     res.status(201).json(post);

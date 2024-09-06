@@ -1,4 +1,5 @@
-import React, {useState, useEffect} from "react";
+import React, { useState, useContext } from "react";
+import { UserContext } from "../App";
 import ReactionButton from './ReactionButton';
 import CommentButton from './CommentButton';
 import '@fortawesome/fontawesome-free/css/all.min.css';
@@ -7,11 +8,36 @@ import ListPopup from "./ListPopUp";
 
 const UserPosts = ({ posts, setPosts }) => {
     const [error, setError] = useState(null);
-
     const [menuVisible, setMenuVisible] = useState(null); // Track visibility of menus
-
     const [editingPostId, setEditingPostId] = useState(null); // Track the post being edited
     const [editContent, setEditContent] = useState("");
+
+    const { user } = useContext(UserContext);
+    const handleVisibilityChange = async (postId, newVisibility) => {
+        try {
+            const token = localStorage.getItem('token');
+        
+            const response = await fetch(`http://localhost:5000/api/posts/${postId}`, {
+              method: 'PUT',
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`,
+              },
+              body: JSON.stringify({ visibility: newVisibility }), // Update visibility field
+            });
+        
+            if (!response.ok) {
+              throw new Error(`Failed to update visibility: HTTP error! status: ${response.status}`);
+            }
+        const updatedPosts = posts.map(post =>
+            post.id === postId ? { ...post, visibility: newVisibility } : post
+        );
+        setPosts(updatedPosts);
+    } catch (error) {
+        console.error(error);
+        setError(error.message);
+      }
+    };
 
     const toggleMenu = (postId) => {
         setMenuVisible((prevState) => (prevState === postId ? null : postId));
@@ -135,7 +161,16 @@ const UserPosts = ({ posts, setPosts }) => {
                                         </div>
                                     </div>
                                     
-                                    <div>Public</div>
+                                    {post.author === user.id && ( // Check if the current user is the author
+                                        <select
+                                            value={post.visibility}
+                                            onChange={(e) => handleVisibilityChange(post.id, e.target.value)}
+                                            className="small-select"
+                                        >
+                                            <option value="Public">Public</option>
+                                            <option value="Friends">Friends</option>
+                                        </select>
+                                    )}
 
                                     <div className="relative">
                                         <i
