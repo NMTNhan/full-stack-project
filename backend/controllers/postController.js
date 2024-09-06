@@ -82,9 +82,9 @@ const updatePost = async (req, res) => {
       if (!post) {
         return res.status(404).json({ message: 'Post not found' });
       }
-  
+
       // Ensure the user is the author of the post
-      if (post.author.toString() !== req.user._id.toString()) {
+      if (post.author._id.toString() !== req.user._id.toString()) {
         return res.status(403).json({ message: 'User not authorized' });
       }
   
@@ -202,7 +202,7 @@ const getCommentsForPost = async (req, res) => {
 // Comment on a post
 const commentOnPost = async (req, res) => {
     const { postId } = req.params;
-    const { text } = req.body;
+    const { content } = req.body;
   
     try {
       const post = await Post.findById(postId);
@@ -213,7 +213,8 @@ const commentOnPost = async (req, res) => {
   
       const comment = {
         user: req.user._id,
-        text,
+        content: content,
+          avatar: req.user.avatar
       };
   
       post.comments.push(comment);

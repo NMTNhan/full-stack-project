@@ -136,7 +136,7 @@ export default function FriendProfile() {
 
                         <div className={'w-full ml-3'}>
                             <div className={'grid grid-cols-1 w-11/12 m-8 rounded-xl'}>
-                                <UserPosts posts={isFriend ? posts.filter(post => post.author._id === friendsInfo._id && post.visibility === 'Friend') : posts.filter(post => post.author._id === friendProfile._id)}/>
+                                <UserPosts posts={isFriend ? posts.filter(post => post.author._id === friendProfile._id) : posts.filter(post => post.author._id === friendProfile._id && post.visibility === 'Public')}/>
                             </div>
                         </div>
                     </div>

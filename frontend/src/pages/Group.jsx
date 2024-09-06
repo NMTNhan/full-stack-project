@@ -3,7 +3,6 @@ import { useParams, useNavigate } from 'react-router-dom';
 import NavBar from '../components/NavBar';
 import PostingArea from '../components/PostingArea';
 import UserPosts from '../components/UserPosts';
-import { membersPosts } from '../model/memberPost';
 import GroupHeaderBox from '../components/GroupHeaderBox';
 import { useContext } from 'react';
 import { UserContext } from '../App';
@@ -13,7 +12,7 @@ import "../styles/Group.css";
 
 
 const Group = () => {
-  const { user, posts, setPosts } = useContext(UserContext);
+  const { user, posts} = useContext(UserContext);
   const {groupID}  = useParams(); 
   const [group, setGroup] = useState(null);
   const [error, setError] = useState(null);
@@ -34,6 +33,9 @@ const Group = () => {
       }
       const data = await response.json();
       setGroup(data);
+      if (data.requestList.includes(user.id)) {
+        setSentRequest(true);
+      }
       setError(null);
       if (data.members.includes(user.id)) {
         setIsMember(true);
@@ -48,7 +50,8 @@ const Group = () => {
       const response = await axios.post(`http://localhost:5000/api/groups/${groupID}/requests/${user.id}`);
       setSentRequest(true);
       setSuccessMessage('Request to join the group has been sent!');
-      setError(null); 
+      setError(null);
+      await createNotification();
     } catch (error) {
       if (error.response) {
         setError(error.response.data.message || 'Error sending request. Please try again later.');
@@ -59,29 +62,65 @@ const Group = () => {
     }
   };
 
+  const createNotification = async () => {
+    try {
+      const response = await axios.post(`http://localhost:5000/api/notifications`, {
+        sender: user.id,
+        receiver: group.admin,
+        type: 'Group Request',
+      });
+    } catch (error) {
+      if (error.response) {
+        setError(error.response.data.message || 'Error sending request. Please try again later.');
+      } else {
+        setError('Error sending request. Please try again later.');
+      }
+    }
+  }
+
   return (
     <div style={{ background: '#B9D9DC' }}>
       <NavBar />
       {group && (group.visibility === 'Public' || isMember) ? (
         <>
           <GroupHeaderBox group={group} />
+          <div className={'flex place-content-center'}>
+            {sentRequest ? <p className="success">Request to join the group has been sent!</p> :
+                <div>
+                  <button className='returnButton' onClick={() => navigate('/homepage')}>Go Back to Homepage
+                  </button>
+                  &nbsp;
+                  <button onClick={handleRequest} className="requestButton">
+                    Request to Join Group?
+                  </button>
+                </div>
+            }
+          </div>
           <div className="grid grid-cols-12 gap-4 p-4">
             <div className="col-span-3"></div>
-            <div className="col-span-6">
-              <PostingArea groupID={`${group._id}`}/>
-              <UserPosts posts={posts.filter((post) => post.groupId === group._id)} />
+            <div className="col-span-6 place-items-center">
+              {
+                group.members.includes(user.id) ?
+                    <>
+                      <PostingArea groupID={`${group._id}`}/>
+                      <UserPosts posts={posts.filter((post) => post.groupId === group._id)}/>
+                    </>
+                    :
+                    <UserPosts posts={posts.filter((post) => post.groupId === group._id)}/>
+              }
             </div>
+
             <div className="col-span-3"></div>
           </div>
         </>
       ) : group && !isMember ? (
-        <>
-          <GroupHeaderBoxForPrivate group={group} />
-          <div className="requestContainer1">
-            <div>
-              <h2>You cannot view this group.</h2>
-              <p>This group is private, and you are not a member.</p>
+          <>
+            <GroupHeaderBoxForPrivate group={group}/>
+            <div className="requestContainer1">
               <div>
+                <h2>You cannot view this group.</h2>
+                <p>This group is private, and you are not a member.</p>
+                <div>
                 <button className='returnButton' onClick={() => navigate('/homepage')}>Go Back to Homepage</button>
                 &nbsp;
                 <button onClick={handleRequest} className="requestButton">

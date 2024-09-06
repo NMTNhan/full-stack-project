@@ -1,14 +1,16 @@
-import React, { useState } from 'react';
+import React, {useContext, useState} from 'react';
 import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
+import {UserContext} from "../App";
 
-const Login = ({ setToken, setIsAdmin }) => {
+const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const navigate = useNavigate();
+  const { setUser } = useContext(UserContext);
 
   const updateAccountInfo = (e) => {
     const { name, value } = e.target;
@@ -29,11 +31,12 @@ const Login = ({ setToken, setIsAdmin }) => {
     try {
       const response = await axios.post('http://localhost:5000/api/auth/login', { email, password });
   
-      // Log the entire response to check its structure
-      console.log('Response from backend:', response);
+      // // Log the entire response to check its structure
+      // console.log('Response from backend:', response);
   
       // Save the token to localStorage
       localStorage.setItem('token', response.data.token);
+      setUser(response.data.user);
   
       // Redirect based on user role
       if (response.data.user.isAdmin) {

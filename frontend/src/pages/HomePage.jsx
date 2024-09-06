@@ -12,7 +12,6 @@ const HomePage = () => {
   const [groups, setGroups] = useState([]);
   const [notJoinGroups, setNotJoinGroups] = useState([]);
   const [friendsInfo, setFriendsInfo] = useState([]);
-  const [error, setError] = useState(null);
 
 
   useEffect(() => {
@@ -35,7 +34,6 @@ const HomePage = () => {
         }
     } catch (error) {
         console.error(error);
-        setError('Failed to load groups. Please try again later.'); 
     }
   };
 
@@ -50,7 +48,6 @@ const HomePage = () => {
         }
     } catch (error) {
         console.error(error);
-        setError('Failed to load groups. Please try again later.'); 
     }
   }
 
@@ -97,7 +94,6 @@ const HomePage = () => {
         setPosts(postsData);
       } catch (error) {
           console.error(error);
-          setError(error.message);
       }
     };
     fetchPosts();
@@ -106,7 +102,7 @@ const HomePage = () => {
   return (
     <div>
       <NavBar />
-      <div className="grid grid-cols-12 gap-4 p-4">
+      <div className="h-fit grid grid-cols-12 gap-4 p-4 bg-gray-100">
         <div className="col-span-3">
           <GroupSidebar groups={groups} />
           &nbsp;
@@ -114,7 +110,7 @@ const HomePage = () => {
         </div>
         <div className="col-span-6">
             <PostingArea groupID={null} />
-            <UserPosts posts={posts.filter((post) => user.friends.includes(post.author._id) || post.author._id === user.id || user.groups.includes(post.groupId))}/>
+            <UserPosts posts={posts.filter((post) => user.friends.includes(post.author._id) || post.author._id === user.id || user.groups.includes(post.groupId))} setPosts={setPosts}/>
         </div>
         <div className="col-span-3">
           <FriendSidebar friends={friendsInfo}/>

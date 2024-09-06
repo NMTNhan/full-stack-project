@@ -43,9 +43,9 @@ const CommentButton = ({ post, onNewComment }) => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
+          Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({ content: newComment, avatar: user.avatar }), // Send the new comment as a JSON object
+        body: JSON.stringify({ content: newComment }), // Send the new comment as a JSON object
       });
 
       if (!response.ok) {
@@ -55,7 +55,9 @@ const CommentButton = ({ post, onNewComment }) => {
       const updatedPost = await response.json();
       onNewComment(updatedPost.comments); // Update the comments in the parent component
       setIsModalOpen(false);
-      await createNotification()
+      if (post.author._id !== user.id) {
+        await createNotification();
+      }
     } catch (error) {
       console.error('Error posting comment:', error);
     }

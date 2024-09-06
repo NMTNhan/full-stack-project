@@ -4,11 +4,12 @@ import CommentButton from './CommentButton';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import ListPopup from "./ListPopUp";
 import HistoryPopup from '../components/historyPopUp';
-// import {Link} from "react-router-dom";
 import {UserContext} from "../App";
+import {Link} from "react-router-dom";
+import { FaThumbsUp, FaHeart, FaLaughBeam, FaSadTear, FaAngry } from 'react-icons/fa';
+import '../styles/ReactionButtonStyle.css';
 
 const UserPosts = ({ posts, setPosts }) => {
-    const [error, setError] = useState(null);
     const [menuVisible, setMenuVisible] = useState(null); // Track visibility of menus
     const [editingPostId, setEditingPostId] = useState(null); // Track the post being edited
     const [editContent, setEditContent] = useState("");
@@ -41,11 +42,10 @@ const UserPosts = ({ posts, setPosts }) => {
     const handleViewHistory = async (postId) => {
         try {
             const token = localStorage.getItem("token");
-            const response = await fetch(`http://localhost:5000/api/posts/${postId}/history`, {
+            const response = await fetch(`http://localhost:5000/api/history/posts/${postId}/history`, {
                 method: "GET",
                 headers: {
                     Authorization: `Bearer ${token}`,
-                    'Content-Type': 'application/json'
                 },
             });
     
@@ -82,7 +82,6 @@ const UserPosts = ({ posts, setPosts }) => {
             setPosts((prevPosts) => prevPosts.filter((post) => post._id !== postId));
         } catch (error) {
             console.error(error);
-            setError(error.message);
         }
     };
 
@@ -134,14 +133,13 @@ const UserPosts = ({ posts, setPosts }) => {
             setEditingPostId(null);
         } catch (error) {
             console.error(error);
-            setError(error.message);
         }
     };
 
     //Create notification for the post's author when suer reaction on their post.
-    const createNotification = async ( postId ) => {
+    const createNotification = async ( postAuthorId ) => {
         try {
-            const response = await fetch(`http://localhost:5000/api/notifications/create/${postId}`, {
+            const response = await fetch(`http://localhost:5000/api/notifications/create/${postAuthorId}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -158,7 +156,7 @@ const UserPosts = ({ posts, setPosts }) => {
         }
     }
 
-    const onReaction = async (postId, reactionType) => {
+    const onReaction = async (postId, reactionType, postAuthorId) => {
         try {
             const response = await fetch(`http://localhost:5000/api/posts/reactions/${postId}`, {
                 method: 'PUT',
@@ -183,26 +181,18 @@ const UserPosts = ({ posts, setPosts }) => {
             setPosts((prevPosts) =>
                 prevPosts.map((post) => (post._id === postId ? updatedPost : post))
             );
-            await createNotification(postId)
+            if (postAuthorId !== user.id) {
+                await createNotification(postAuthorId)
+            }
         } catch (error) {
             console.error(error);
-            setError(error.message);
         }
     }
 
     return (
-        <div className="mt-4">
+        <div className="mt-4 text-black">
             {posts.length > 0 ? (
                 posts.map((post) => {
-                    // Calculate total reactions
-                    const totalReactions = (
-                        (post.like?.length || 0) +
-                        (post.love?.length || 0) +
-                        (post.funny?.length || 0) +
-                        (post.sad?.length || 0) +
-                        (post.angry?.length || 0)
-                    );
-
                     let type =''; // Initialize type with an empty string
                     if (post.like.includes(user.id)) {
                         type = 'like';
@@ -231,7 +221,7 @@ const UserPosts = ({ posts, setPosts }) => {
                                             className="w-12 h-12 rounded-full mr-4"
                                         />
                                         <div>
-                                            <Link to={`/friend/${post.author._id}`} state={{friendProfile: post.author}}>{post.author?.username}</Link>
+                                            <Link className={'hover:underline text-black'} to={`/friend/${post.author._id}`} state={{friendProfile: post.author}}>{post.author?.username}</Link>
                                         </div>
                                     </div>
                                     {isEditing ? (
@@ -257,7 +247,7 @@ const UserPosts = ({ posts, setPosts }) => {
                                         {/* Menu Pop-Up */}
                                         {menuVisible === post._id && (
                                             <ListPopup
-                                                postId={post._id}
+                                                post={post}
                                                 onEdit={handleEdit}
                                                 onDelete={handleDelete}
                                                 onViewHistory={handleViewHistory}
@@ -279,8 +269,9 @@ const UserPosts = ({ posts, setPosts }) => {
                                     <div>
                                         <textarea
                                             value={editContent}
+                                            defaultValue={post.content}
                                             onChange={(e) => setEditContent(e.target.value)}
-                                            className="w-full border rounded p-2"
+                                            className="w-full rounded p-2 bg-white border-2 border-black mt-2"
                                         />
                                         <div className="flex justify-end mt-2">
                                             <button
@@ -311,7 +302,18 @@ const UserPosts = ({ posts, setPosts }) => {
                             )}
 
                             <div className='flex justify-between px-4 py-2'>
-                                {totalReactions > 0 && ( <div className='text-gray-500'>{totalReactions}</div> )}
+                                <div className={'flex gap-5'}>
+                                    <div className={'flex text-blue-500 gap-2 place-items-center'}>
+                                        <FaThumbsUp/>{post.like.length}</div>
+                                    <div className={'flex text-red-500 gap-2 place-items-center'}>
+                                        <FaHeart />{post.love.length}</div>
+                                    <div className={'flex text-yellow-500 gap-2 place-items-center'}>
+                                        <FaLaughBeam />{post.funny.length}</div>
+                                    <div className={'flex text-blue-300 gap-2 place-items-center'}>
+                                        <FaSadTear />{post.sad.length}</div>
+                                    <div className={'flex text-red-700 gap-2 place-items-center'}>
+                                        <FaAngry />{post.angry.length}</div>
+                                </div>
                                 {totalComments > 0 && (
                                     <div className='text-gray-500'>
                                         {totalComments >= 2
@@ -323,7 +325,7 @@ const UserPosts = ({ posts, setPosts }) => {
                             <div className='flex justify-between px-16'>
                                 <ReactionButton
                                     type={type} // Specify the type for the ReactionButton
-                                    onReaction={(reactionType) => onReaction(post._id, reactionType)}
+                                    onReaction={(reactionType) => onReaction(post._id, reactionType, post.author._id)}
                                 />
                                 {/* <CommentButton comments={post.comments} /> */}
                                 <CommentButton

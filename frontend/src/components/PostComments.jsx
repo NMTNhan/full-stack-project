@@ -53,7 +53,7 @@ const PostComment = ({ isOpen, onClose, onSubmit, comments }) => {
         <div className='flex justify-center items-center'>
           {/* New Comment Input */}
           <textarea
-            className="w-full h-12 p-2 border rounded mb-2"
+            className="w-full h-12 p-2 rounded mb-2 bg-gray-300 text-black border-2 border-black"
             placeholder="Write your comment here..."
             value={newComment}
             onChange={(e) => setNewComment(e.target.value)}
