@@ -117,7 +117,7 @@ export default function SignUp() {
                                 type={"submit"}>Sign Up
                             </button>
                             <div className={'text-black mt-4 text-center font-bold'}>
-                                <Link to="/login" className={'text-white-500 hover:underline mt-4 hover:text-sky-500'}>Already have an account?</Link>
+                                <Link to="/" className={'text-white-500 hover:underline mt-4 hover:text-sky-500'}>Already have an account?</Link>
                             </div>
                         </form>
                     </div>
