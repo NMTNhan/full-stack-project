@@ -2,7 +2,7 @@ import React, {useState} from "react";
 import ReactionButton from './ReactionButton';
 import CommentButton from './CommentButton';
 import {Link} from "react-router-dom";
-import '@fortawesome/fontawesome-free/css/all.min.css';
+// import '@fortawesome/fontawesome-free/css/all.min.css';
 import ListPopup from "./ListPopUp";
 
 const UserPosts = ({ posts, setPosts }) => {
