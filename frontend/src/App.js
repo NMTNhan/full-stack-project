@@ -48,9 +48,8 @@ function App() {
 
   useEffect(() => {
     fetchAllPosts();
-    console.log(posts)
     localStorage.setItem('user', JSON.stringify(user));
-  }, [user]);
+  }, [user, posts]);
 
   return (
     <UserContext.Provider value={{ user, setUser, posts, setPosts }}>

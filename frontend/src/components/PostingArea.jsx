@@ -1,12 +1,15 @@
-import React, { useState } from 'react';
+import React, {useContext, useState} from 'react';
+import {UserContext} from "../App";
 
 const API_BASE_URL = 'http://localhost:5000';
 
-const PostingArea = ({ onPostCreated }) => {
+const PostingArea = ({ onPostCreated, groupID }) => {
   const [post, setPost] = useState('');
   const [selectedImage, setSelectedImage] = useState(null);
   const [selectedImageFile, setSelectedImageFile] = useState(null);
   const [convertedImage, setConvertedImage] = useState('');
+
+  const { posts, setPosts } = useContext(UserContext);
 
   const convertToBase64 = (file) => {
     const reader = new FileReader();
@@ -31,7 +34,8 @@ const PostingArea = ({ onPostCreated }) => {
         method: 'POST',
         body: JSON.stringify({
           content: post,
-          image: convertedImage
+          image: convertedImage,
+          groupID: groupID
         }),
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`,
@@ -44,6 +48,9 @@ const PostingArea = ({ onPostCreated }) => {
       }
 
       const data = await response.json(); // Extract JSON data from the response
+
+      setPosts([data, ...posts]); // Add the new post to the beginning of the posts array
+      localStorage.setItem('posts', JSON.stringify([data, ...posts])); // Store the updated posts array in local storage
 
       // Handle post creation response
       if (onPostCreated) {

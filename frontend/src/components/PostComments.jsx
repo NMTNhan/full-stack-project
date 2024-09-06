@@ -35,12 +35,12 @@ const PostComment = ({ isOpen, onClose, onSubmit, comments }) => {
             comments.map((comment) => (
               <div key={comment._id} className="flex border items-start mt-2">
                 <img
-                  src={comment.author.avatar}
-                  alt={`Avatar of ${comment.author.username}`}
+                  src={comment.avatar}
+                  alt={`Avatar of ${comment.username}`}
                   className="w-8 h-8 rounded-full mr-2"
                 />
                 <div className="flex flex-col">
-                  <p className="font-semibold">{comment.author.username}</p>
+                  <p className="font-semibold">{comment.username}</p>
                   <p className="text-sm">{comment.content}</p>
                 </div>
               </div>

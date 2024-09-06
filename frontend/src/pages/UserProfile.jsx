@@ -9,11 +9,6 @@ export default function UserProfile() {
     const [friendsInfo, setFriendsInfo] = useState([]);
     const { user, posts, setPosts } = useContext(UserContext)
 
-    // Function to add a new post
-    const handlePostCreated = (newPost) => {
-        setPosts([newPost, ...posts]);
-    };
-
     useEffect(() => {
         fetchFriendsInfo();
     }, [user.friends]);
@@ -90,8 +85,8 @@ export default function UserProfile() {
                         </div>
                         <div className={'w-full ml-3'}>
                             <div className={'grid grid-cols-1 w-11/12 m-8 rounded-xl'}>
-                                <PostingArea addPost={handlePostCreated}/>
-                                <UserPosts posts={posts.filter(post => post.author._id === user.id)}/>
+                                <PostingArea groupID={null}/>
+                                <UserPosts posts={posts.filter(post => post.author._id === user.id)} setPosts={setPosts}/>
                             </div>
                         </div>
                     </div>

@@ -28,6 +28,8 @@ router.delete('/:postId', protect, deletePost);
 // router.put('/:postId/like', protect, likePost);
 router.put('/:postId/reactions', reactionOnPost); // Test without protect
 
+router.post('/:postId/comments', protect ,commentOnPost)
+
 // Route to comment on a post
 router.get('/:postId/comments', protect, getCommentsForPost);  // New route to fetch comments for a post
 

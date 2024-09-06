@@ -3,7 +3,7 @@ const Comment = require('../models/Comment');
 
 // Create a new post
 const createPost = async (req, res) => {
-  const { content, image } = req.body;
+  const { content, image, groupID } = req.body;
 
   // Check if content is provided
   if (!content) {
@@ -11,12 +11,21 @@ const createPost = async (req, res) => {
   }
 
   try {
-    const post = await Post.create({
-      content: content,
-      author: req.user.id, // The user ID is attached by the protect middleware
-      imageStatus: image,
-    });
-
+      let post;
+    if (groupID) {
+        post = await Post.create({
+            content: content,
+            author: req.user.id, // The user ID is attached by the protect middleware
+            imageStatus: image,
+            groupId: groupID,
+        });
+    } else {
+        post = await Post.create({
+            content: content,
+            author: req.user.id, // The user ID is attached by the protect middleware
+            imageStatus: image,
+        });
+    }
     res.status(201).json(post);
   } catch (error) {
     console.error('Error creating post:', error);
@@ -158,23 +167,24 @@ const getCommentsForPost = async (req, res) => {
 // Comment on a post
 const commentOnPost = async (req, res) => {
     const { postId } = req.params;
-    const { text } = req.body;
+    const { content, avatar } = req.body;
   
     try {
       const post = await Post.findById(postId);
-  
+
       if (!post) {
         return res.status(404).json({ message: 'Post not found' });
       }
-  
+
       const comment = {
-        user: req.user._id,
-        text,
+          user: req.user.id,
+          avatar: avatar,
+          content,
       };
-  
+
       post.comments.push(comment);
       await post.save();
-  
+
       res.json(post);
     } catch (error) {
       console.error('Error commenting on post:', error);

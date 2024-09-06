@@ -1,9 +1,12 @@
-import React, { useState } from 'react';
+import React, {useContext, useState} from 'react';
 import PostComment from './PostComments';
+import {UserContext} from "../App";
 // import {UserContext} from "../App";
 
 const CommentButton = ({ postId, onNewComment }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const { user } = useContext(UserContext);
 
   const handleOpenModal = () => {
     setIsModalOpen(true);
@@ -36,13 +39,13 @@ const CommentButton = ({ postId, onNewComment }) => {
     const token = localStorage.getItem('token');
 
     try {
-      const response = await fetch(`http://localhost:5000/api/posts/${postId}/comments`, {
+      const response = await fetch(`http://localhost:5000/api/posts/${postId._id}/comments`, {
         method: 'POST',
         headers: {
-          // 'Content-Type': 'application/json',
+          'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`,
         },
-        body: JSON.stringify({ text: newComment }), // Send the new comment as a JSON object
+        body: JSON.stringify({ content: newComment, avatar: user.avatar }), // Send the new comment as a JSON object
       });
 
       if (!response.ok) {
@@ -69,7 +72,7 @@ const CommentButton = ({ postId, onNewComment }) => {
       isOpen={isModalOpen}
       onClose={handleCloseModal}
       onSubmit={handleSubmitComment}
-      comments={[]}
+      comments={postId.comments}
     />
   </>
   );

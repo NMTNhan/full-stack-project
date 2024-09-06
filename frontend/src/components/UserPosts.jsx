@@ -190,7 +190,7 @@ const UserPosts = ({ posts, setPosts }) => {
                                 />
                                 {/* <CommentButton comments={post.comments} /> */}
                                 <CommentButton
-                                    postId={post._id} // Pass the post ID to CommentButton
+                                    postId={post} // Pass the post ID to CommentButton
                                     onNewComment={(newComments) => {
                                         // Update the post's comments with the new comments array
                                         setPosts((prevPosts) =>

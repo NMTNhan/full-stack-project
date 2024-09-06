@@ -13,11 +13,10 @@ import "../styles/Group.css";
 
 
 const Group = () => {
-  const { user } = useContext(UserContext);
+  const { user, posts, setPosts } = useContext(UserContext);
   const {groupID}  = useParams(); 
   const [group, setGroup] = useState(null);
   const [error, setError] = useState(null);
-  const [posts, setPosts] = useState(membersPosts);
   const [isMember, setIsMember] = useState(false);
   const [sentRequest, setSentRequest] = useState(false); 
   const [successMessage, setSuccessMessage] = useState(null);
@@ -60,16 +59,6 @@ const Group = () => {
     }
   };
 
-  const DisplayPost = (content) => {
-    const newPost = {
-      id: posts.length + 1,
-      content: content,
-      author: "Current User",
-      timestamp: new Date().toLocaleString(),
-    };
-    setPosts([newPost, ...posts]);
-  };
-
   return (
     <div style={{ background: '#B9D9DC' }}>
       <NavBar />
@@ -79,8 +68,8 @@ const Group = () => {
           <div className="grid grid-cols-12 gap-4 p-4">
             <div className="col-span-3"></div>
             <div className="col-span-6">
-              <PostingArea addPost={DisplayPost} />
-              <UserPosts posts={posts} />
+              <PostingArea groupID={`${group._id}`}/>
+              <UserPosts posts={posts.filter((post) => post.groupId === group._id)} />
             </div>
             <div className="col-span-3"></div>
           </div>

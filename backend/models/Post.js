@@ -14,7 +14,23 @@ const postSchema = new mongoose.Schema({
   imageStatus: {
     type: String, // URL of the image, optional
   },
-  likes: [{
+  like: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+  }],
+  love: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+  }],
+  funny: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+  }],
+  sad: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+  }],
+  angry: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
   }],
@@ -23,15 +39,21 @@ const postSchema = new mongoose.Schema({
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
     },
-    text: {
+    content: {
       type: String,
       required: true,
+    },
+    avatar: {
+      type: String,
     },
     createdAt: {
       type: Date,
       default: Date.now,
     }
   }],
+  groupId: {
+    type: String,
+  },
   createdAt: {
     type: Date,
     default: Date.now,

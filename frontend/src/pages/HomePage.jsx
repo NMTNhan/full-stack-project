@@ -5,9 +5,10 @@ import FriendSidebar from '../components/FriendSideBar';
 import {useContext, useEffect, useState} from "react";
 import {UserContext} from "../App";
 import NotJoinGroupSideBar from '../components/NotJoinGroupSideBar';
+import UserPosts from "../components/UserPosts";
 
 const HomePage = () => {
-  const { user } = useContext(UserContext);
+  const { user, posts} = useContext(UserContext);
   const [groups, setGroups] = useState([]);
   const [notJoinGroups, setNotJoinGroups] = useState([]);
   const [friendsInfo, setFriendsInfo] = useState([]);
@@ -59,7 +60,8 @@ const HomePage = () => {
           user.friends.map(async (friendId) => {
             const response = await fetch(`http://localhost:5000/api/friends/${friendId}`);
             if (response.ok) {
-              return response.json();
+              const data = await response.json();
+              return data.friend;
             } else {
               throw new Error('Failed to fetch friend information');
             }
@@ -81,7 +83,8 @@ const HomePage = () => {
           <NotJoinGroupSideBar groups={notJoinGroups} />
         </div>
         <div className="col-span-6">
-          <PostingArea />
+            <PostingArea groupID={null} />
+            <UserPosts posts={posts.filter((post) => user.friends.includes(post.author._id) || post.author._id === user.id || user.groups.includes(post.groupId))}/>
         </div>
         <div className="col-span-3">
           <FriendSidebar friends={friendsInfo}/>

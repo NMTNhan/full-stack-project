@@ -7,7 +7,6 @@ import { UserContext } from '../App';
 const GroupHeaderBox = ({ group }) => {
     const { user } = useContext(UserContext);
     if (!group) return null;
-    console.log("User in GroupHeaderBox:", user);
 
     return (
         <section className="groupHeaderBox">
