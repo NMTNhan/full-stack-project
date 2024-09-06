@@ -3,7 +3,9 @@ const Comment = require('../models/Comment');
 
 // Create a new post
 const createPost = async (req, res) => {
-  const { content, imageStatus, visibility } = req.body;
+  // const { content, imageStatus, visibility } = req.body;
+  const { content, visibility } = req.body;
+  let imageStatus = req.body.imageStatus;
 
   // Check if content is provided
   if (!content) {
@@ -46,7 +48,7 @@ const getPosts = async (req, res) => {
 // Update a post by ID
 const updatePost = async (req, res) => {
     const { postId } = req.params;
-    const { content, imageStatus } = req.body;
+    const { content, imageStatus, visibility } = req.body;
   
     try {
       const post = await Post.findById(postId);
@@ -63,6 +65,7 @@ const updatePost = async (req, res) => {
       // Update the post fields
       post.content = content || post.content;
       post.imageStatus = imageStatus || post.imageStatus;
+      post.visibility = visibility || post.visibility;
   
       await post.save();
       res.json(post);

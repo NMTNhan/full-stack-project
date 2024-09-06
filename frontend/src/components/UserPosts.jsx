@@ -1,5 +1,5 @@
-import React, { useState, useContext } from "react";
-import { UserContext } from "../App";
+import React, { useState } from "react";
+// import { UserContext } from "../App";
 import ReactionButton from './ReactionButton';
 import CommentButton from './CommentButton';
 import '@fortawesome/fontawesome-free/css/all.min.css';
@@ -11,46 +11,32 @@ const UserPosts = ({ posts, setPosts }) => {
     const [menuVisible, setMenuVisible] = useState(null); // Track visibility of menus
     const [editingPostId, setEditingPostId] = useState(null); // Track the post being edited
     const [editContent, setEditContent] = useState("");
-
-    const { user } = useContext(UserContext);
-    const handleVisibilityChange = async (postId, newVisibility) => {
-        try {
-            const token = localStorage.getItem('token');
-        
-            const response = await fetch(`http://localhost:5000/api/posts/${postId}`, {
-              method: 'PUT',
-              headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`,
-              },
-              body: JSON.stringify({ visibility: newVisibility }), // Update visibility field
-            });
-        
-            if (!response.ok) {
-              throw new Error(`Failed to update visibility: HTTP error! status: ${response.status}`);
-            }
-        const updatedPosts = posts.map(post =>
-            post.id === postId ? { ...post, visibility: newVisibility } : post
-        );
-        setPosts(updatedPosts);
-    } catch (error) {
-        console.error(error);
-        setError(error.message);
-      }
-    };
-
+    const [visibility, setVisibility] = useState("");
+    
+    // const isPostVisible = (post) => {
+    //     // Define the visibility logic
+    //     if (post.visibility === 'Public') return true;
+    //     if (post.visibility === 'Friends' && currentUser.friends.includes(post.author._id)) return true;
+    //     return false;
+    // };
+    
     const toggleMenu = (postId) => {
         setMenuVisible((prevState) => (prevState === postId ? null : postId));
     };
 
-    const handleEdit = (postId, currentContent) => {
+    const handleEdit = (postId, currentContent, currentVisibility) => {
         setEditingPostId(postId); // Set the post ID being edited
         setEditContent(currentContent); // Initialize with current post content
+        setVisibility(currentVisibility || '');
     };
 
     const handleCancelEdit = () => {
         setEditingPostId(null); // Reset the editing post ID
         setEditContent(''); // Clear the content of the editor
+        setVisibility('');}
+    ;
+    const handleVisibilityChange = (postId, newVisibility) => {
+        setVisibility(newVisibility);
     };
 
     // const createNotification = async () => {
@@ -98,33 +84,37 @@ const UserPosts = ({ posts, setPosts }) => {
     const handleSaveEdit = async (postId) => {
         try {
             const token = localStorage.getItem('token');
-
+            const updateData = {
+                content: editContent,
+                visibility: visibility,
+            };
+    
             const response = await fetch(`http://localhost:5000/api/posts/${postId}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`,
                 },
-                body: JSON.stringify({ content: editContent }),
+                body: JSON.stringify(updateData),
             });
-
+    
             if (!response.ok) {
                 throw new Error(`Failed to save changes: HTTP error! status: ${response.status}`);
             }
-
-            // Update the post content in the state
+    
             setPosts((prevPosts) =>
                 prevPosts.map((post) =>
-                    post._id === postId ? { ...post, content: editContent } : post
+                    post._id === postId ? { ...post, content: editContent, visibility: visibility } : post
                 )
             );
-
-            setEditingPostId(null); // Exit editing mode
+    
+            setEditingPostId(null);
         } catch (error) {
             console.error(error);
             setError(error.message);
         }
     };
+    
 
     return (
         <div className="mt-4">
@@ -160,18 +150,20 @@ const UserPosts = ({ posts, setPosts }) => {
                                             </div>
                                         </div>
                                     </div>
-                                    
-                                    {post.author === user.id && ( // Check if the current user is the author
+                                    {isEditing ? (
                                         <select
-                                            value={post.visibility}
-                                            onChange={(e) => handleVisibilityChange(post.id, e.target.value)}
+                                            value={visibility} // Use the state value for visibility
+                                            onChange={(e) => handleVisibilityChange(post._id, e.target.value)}
                                             className="small-select"
                                         >
                                             <option value="Public">Public</option>
                                             <option value="Friends">Friends</option>
                                         </select>
+                                    ) : (
+                                        <div>
+                                            <p>{post.visibility}</p>
+                                        </div>
                                     )}
-
                                     <div className="relative">
                                         <i
                                             className="fas fa-ellipsis-h cursor-pointer"
