@@ -1,9 +1,10 @@
-import React, {useState} from "react";
+import React, {useContext, useState} from "react";
 import ReactionButton from './ReactionButton';
 import CommentButton from './CommentButton';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import ListPopup from "./ListPopUp";
 import {Link} from "react-router-dom";
+import {UserContext} from "../App";
 
 
 const UserPosts = ({ posts, setPosts }) => {
@@ -12,13 +13,8 @@ const UserPosts = ({ posts, setPosts }) => {
     const [editingPostId, setEditingPostId] = useState(null); // Track the post being edited
     const [editContent, setEditContent] = useState("");
     const [visibility, setVisibility] = useState("");
-    
-    // const isPostVisible = (post) => {
-    //     // Define the visibility logic
-    //     if (post.visibility === 'Public') return true;
-    //     if (post.visibility === 'Friends' && currentUser.friends.includes(post.author._id)) return true;
-    //     return false;
-    // };
+
+    const { user } = useContext(UserContext)
     
     const toggleMenu = (postId) => {
         setMenuVisible((prevState) => (prevState === postId ? null : postId));
@@ -96,6 +92,36 @@ const UserPosts = ({ posts, setPosts }) => {
         }
     };
 
+    const onReaction = async (postId, reactionType) => {
+        try {
+            const response = await fetch(`http://localhost:5000/api/posts/reactions/${postId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${localStorage.getItem('token')}`,
+                },
+                body: JSON.stringify({ type: reactionType }),
+            });
+
+            if (!response.ok) {
+                let queuedReactions = JSON.parse(localStorage.getItem('queuedReactions')) || [];
+                queuedReactions.push({
+                    url: `http://localhost:5000/api/posts/reactions/${postId}`,
+                    method: 'PUT',
+                    body: { type: reactionType },
+                });
+                localStorage.setItem('queuedReactions', JSON.stringify(queuedReactions));
+            }
+
+            const updatedPost = await response.json();
+            setPosts((prevPosts) =>
+                prevPosts.map((post) => (post._id === postId ? updatedPost : post))
+            );
+        } catch (error) {
+            console.error(error);
+            setError(error.message);
+        }
+    }
 
     return (
         <div className="mt-4">
@@ -109,6 +135,19 @@ const UserPosts = ({ posts, setPosts }) => {
                         (post.sad?.length || 0) +
                         (post.angry?.length || 0)
                     );
+
+                    let type =''; // Initialize type with an empty string
+                    if (post.like.includes(user.id)) {
+                        type = 'like';
+                    } else if (post.love.includes(user.id)) {
+                        type = 'love';
+                    } else if (post.funny.includes(user.id)) {
+                        type = 'funny';
+                    } else if (post.sad.includes(user.id)) {
+                        type = 'sad';
+                    } else if (post.angry.includes(user.id)) {
+                        type = 'angry';
+                    }
 
                     const totalComments = post.comments?.length || 0;
 
@@ -126,9 +165,6 @@ const UserPosts = ({ posts, setPosts }) => {
                                         />
                                         <div>
                                             <p>{post.author?.username}</p>
-                                            <div className="text-sm text-gray-500">
-                                                <p>{new Date(post.timestamp).toLocaleString()}</p>
-                                            </div>
                                         </div>
                                     </div>
                                     {isEditing ? (
@@ -189,9 +225,9 @@ const UserPosts = ({ posts, setPosts }) => {
                                 )}
                             </div>
 
-                        {post.image && (
+                        {post.imageStatus && (
                             <img
-                                src={post.image}
+                                src={post.imageStatus}
                                 alt={post.content}
                                 className="w-full h-50 object-cover"
                             />
@@ -209,10 +245,8 @@ const UserPosts = ({ posts, setPosts }) => {
                             </div>
                             <div className='flex justify-between px-16'>
                                 <ReactionButton
-                                    type="like" // Specify the type for the ReactionButton
-                                    onReaction={(reactionType) =>
-                                        console.log(reactionType) // Show to Test
-                                    }
+                                    type={type} // Specify the type for the ReactionButton
+                                    onReaction={(reactionType) => onReaction(post._id, reactionType)}
                                 />
                                 {/* <CommentButton comments={post.comments} /> */}
                                 <CommentButton

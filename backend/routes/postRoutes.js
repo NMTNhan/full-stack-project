@@ -25,8 +25,7 @@ router.put('/:postId', protect, updatePost);
 router.delete('/:postId', protect, deletePost);
 
 // Route to like a post
-// router.put('/:postId/like', protect, likePost);
-router.put('/:postId/reactions', reactionOnPost); // Test without protect
+router.put('/reactions/:postId', protect, reactionOnPost); // Test without protect
 
 router.post('/:postId/comments', protect ,commentOnPost)
 

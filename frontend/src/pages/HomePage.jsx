@@ -8,7 +8,7 @@ import NotJoinGroupSideBar from '../components/NotJoinGroupSideBar';
 import UserPosts from "../components/UserPosts";
 
 const HomePage = () => {
-  const { user, posts} = useContext(UserContext);
+  const { user, posts, setPosts} = useContext(UserContext);
   const [groups, setGroups] = useState([]);
   const [notJoinGroups, setNotJoinGroups] = useState([]);
   const [friendsInfo, setFriendsInfo] = useState([]);

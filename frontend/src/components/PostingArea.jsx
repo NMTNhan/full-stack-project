@@ -7,7 +7,6 @@ const API_BASE_URL = 'http://localhost:5000';
 const PostingArea = ({ onPostCreated, groupID }) => {
   const [post, setPost] = useState('');
   const [selectedImage, setSelectedImage] = useState(null);
-  const [selectedImageFile, setSelectedImageFile] = useState(null);
   const [convertedImage, setConvertedImage] = useState('');
   const [visibility, setVisibility] = useState("Public");
 
@@ -32,19 +31,11 @@ const PostingArea = ({ onPostCreated, groupID }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const token = localStorage.getItem('token');
-
-      const formData = new FormData();
-      formData.append('content', post);
-      if (selectedImageFile) {
-        formData.append('image', selectedImageFile);
-      }
-
-      const response = await fetch(`${API_BASE_URL}/api/posts`, {
+      const response = await fetch(`${API_BASE_URL}/api/posts/create`, {
         method: 'POST',
         body: JSON.stringify({
           content: post,
-          image: convertedImage,
+          imageStatus: convertedImage,
           groupID: groupID,
             visibility: visibility,
         }),
@@ -69,7 +60,6 @@ const PostingArea = ({ onPostCreated, groupID }) => {
       }
       setPost('');
       setSelectedImage(null);
-      setSelectedImageFile(null); // Clear selected image file
     } catch (error) {
       console.error('Error creating post:', error);
     }

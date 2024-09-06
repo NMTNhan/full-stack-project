@@ -3,7 +3,7 @@ const Comment = require('../models/Comment');
 
 // Create a new post
 const createPost = async (req, res) => {
-    const { content, image, groupID, visibility } = req.body;
+    const { content, imageStatus, groupID, visibility } = req.body;
 
   // Check if content is provided
   if (!content) {
@@ -16,7 +16,7 @@ const createPost = async (req, res) => {
         post = await Post.create({
             content: content,
             author: req.user.id, // The user ID is attached by the protect middleware
-            imageStatus: image,
+            imageStatus: imageStatus,
             groupId: groupID,
             visibility,
         });
@@ -24,7 +24,7 @@ const createPost = async (req, res) => {
         post = await Post.create({
             content: content,
             author: req.user.id, // The user ID is attached by the protect middleware
-            imageStatus: image,
+            imageStatus: imageStatus,
             visibility,
         });
     }
@@ -128,20 +128,54 @@ const deletePost = async (req, res) => {
 // Like a post
 const reactionOnPost = async (req, res) => {
     const { postId } = req.params;
+    const { type } = req.body;
   
     try {
+        console.log(postId)
       const post = await Post.findById(postId);
-  
+
       if (!post) {
         return res.status(404).json({ message: 'Post not found' });
       }
   
       // Check if the post has already been liked by the user
-      if (post.likes.includes(req.user._id)) {
-        return res.status(400).json({ message: 'Post already liked' });
+      if (post.like.includes(req.user.id)) {
+          post.like.pull(req.user.id);
       }
-  
-      post.likes.push(req.user._id);
+        if (post.love.includes(req.user.id)) {
+            post.love.pull(req.user.id);
+        }
+        if (post.funny.includes(req.user.id)) {
+            post.funny.pull(req.user.id);
+        }
+        if (post.sad.includes(req.user.id)) {
+            post.sad.pull(req.user.id);
+        }
+        if (post.angry.includes(req.user.id)) {
+            post.angry.pull(req.user.id);
+        }
+      switch (type) {
+          case 'like': {
+              post.like.push(req.user.id);
+              break;
+          }
+          case 'love': {
+              post.love.push(req.user.id);
+              break;
+          }
+          case 'funny': {
+              post.funny.push(req.user.id);
+              break;
+          }
+          case 'sad' : {
+              post.sad.push(req.user.id);
+              break;
+          }
+          case 'angry': {
+              post.angry.push(req.user.id);
+              break;
+          }
+      }
       await post.save();
   
       res.json(post);
@@ -222,4 +256,4 @@ const deleteCommentByAdmin = async (req, res) => {
   }
 };
 
-module.exports = { getCommentsForPost ,getPosts, createPost, updatePost, deletePost, reactionOnPost, commentOnPost, deletePostByAdmin, deleteCommentByAdmin  };
+module.exports = { getCommentsForPost ,getPosts, createPost, updatePost, deletePost, reactionOnPost, commentOnPost, deletePostByAdmin, deleteCommentByAdmin, getAllPosts, getPostsById  };
