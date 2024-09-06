@@ -3,7 +3,7 @@ const Comment = require('../models/Comment');
 
 // Create a new post
 const createPost = async (req, res) => {
-  const { content, image, groupID } = req.body;
+    const { content, imageStatus, groupID, visibility } = req.body;
 
   // Check if content is provided
   if (!content) {
@@ -16,14 +16,16 @@ const createPost = async (req, res) => {
         post = await Post.create({
             content: content,
             author: req.user.id, // The user ID is attached by the protect middleware
-            imageStatus: image,
+            imageStatus: imageStatus,
             groupId: groupID,
+            visibility,
         });
     } else {
         post = await Post.create({
             content: content,
             author: req.user.id, // The user ID is attached by the protect middleware
-            imageStatus: image,
+            imageStatus: imageStatus,
+            visibility,
         });
     }
     res.status(201).json(post);
@@ -72,7 +74,7 @@ const getPostsById = async (req, res) => {
 // Update a post by ID
 const updatePost = async (req, res) => {
     const { postId } = req.params;
-    const { content, imageStatus } = req.body;
+    const { content, visibility } = req.body;
   
     try {
       const post = await Post.findById(postId);
@@ -88,8 +90,8 @@ const updatePost = async (req, res) => {
   
       // Update the post fields
       post.content = content || post.content;
-      post.imageStatus = imageStatus || post.imageStatus;
-  
+      post.visibility = visibility || post.visibility;
+
       await post.save();
       res.json(post);
     } catch (error) {
@@ -126,20 +128,54 @@ const deletePost = async (req, res) => {
 // Like a post
 const reactionOnPost = async (req, res) => {
     const { postId } = req.params;
+    const { type } = req.body;
   
     try {
+        console.log(postId)
       const post = await Post.findById(postId);
-  
+
       if (!post) {
         return res.status(404).json({ message: 'Post not found' });
       }
   
       // Check if the post has already been liked by the user
-      if (post.likes.includes(req.user._id)) {
-        return res.status(400).json({ message: 'Post already liked' });
+      if (post.like.includes(req.user.id)) {
+          post.like.pull(req.user.id);
       }
-  
-      post.likes.push(req.user._id);
+        if (post.love.includes(req.user.id)) {
+            post.love.pull(req.user.id);
+        }
+        if (post.funny.includes(req.user.id)) {
+            post.funny.pull(req.user.id);
+        }
+        if (post.sad.includes(req.user.id)) {
+            post.sad.pull(req.user.id);
+        }
+        if (post.angry.includes(req.user.id)) {
+            post.angry.pull(req.user.id);
+        }
+      switch (type) {
+          case 'like': {
+              post.like.push(req.user.id);
+              break;
+          }
+          case 'love': {
+              post.love.push(req.user.id);
+              break;
+          }
+          case 'funny': {
+              post.funny.push(req.user.id);
+              break;
+          }
+          case 'sad' : {
+              post.sad.push(req.user.id);
+              break;
+          }
+          case 'angry': {
+              post.angry.push(req.user.id);
+              break;
+          }
+      }
       await post.save();
   
       res.json(post);
@@ -167,24 +203,23 @@ const getCommentsForPost = async (req, res) => {
 // Comment on a post
 const commentOnPost = async (req, res) => {
     const { postId } = req.params;
-    const { content, avatar } = req.body;
+    const { text } = req.body;
   
     try {
       const post = await Post.findById(postId);
-
+  
       if (!post) {
         return res.status(404).json({ message: 'Post not found' });
       }
-
+  
       const comment = {
-          user: req.user.id,
-          avatar: avatar,
-          content,
+        user: req.user._id,
+        text,
       };
-
+  
       post.comments.push(comment);
       await post.save();
-
+  
       res.json(post);
     } catch (error) {
       console.error('Error commenting on post:', error);
@@ -221,4 +256,4 @@ const deleteCommentByAdmin = async (req, res) => {
   }
 };
 
-module.exports = { getCommentsForPost ,getPosts, createPost, updatePost, deletePost, reactionOnPost, commentOnPost, deletePostByAdmin, deleteCommentByAdmin, getPostsById, getAllPosts  };
+module.exports = { getCommentsForPost ,getPosts, createPost, updatePost, deletePost, reactionOnPost, commentOnPost, deletePostByAdmin, deleteCommentByAdmin, getAllPosts, getPostsById  };

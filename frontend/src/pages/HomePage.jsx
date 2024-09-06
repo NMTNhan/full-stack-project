@@ -8,11 +8,12 @@ import NotJoinGroupSideBar from '../components/NotJoinGroupSideBar';
 import UserPosts from "../components/UserPosts";
 
 const HomePage = () => {
-  const { user, posts} = useContext(UserContext);
+  const { user, posts, setPosts} = useContext(UserContext);
   const [groups, setGroups] = useState([]);
   const [notJoinGroups, setNotJoinGroups] = useState([]);
   const [friendsInfo, setFriendsInfo] = useState([]);
   const [error, setError] = useState(null);
+
 
   useEffect(() => {
     fetchFriendsInfo()
@@ -72,6 +73,35 @@ const HomePage = () => {
       console.error(error);
     }
   };
+
+  useEffect(() => {
+  // Fetch posts on component mount
+    const fetchPosts = async () => {
+      try {
+        const token = localStorage.getItem('token');
+
+        const url = `http://localhost:5000/api/posts`;
+
+        const response = await fetch(url, {
+            method: "GET",
+            headers: {
+                'Authorization': `Bearer ${token}`,
+            },
+        });
+
+        if (!response.ok) {
+            throw new Error(`Failed to fetch posts: HTTP error! status: ${response.status}`);
+        }
+
+        const postsData = await response.json();
+        setPosts(postsData);
+      } catch (error) {
+          console.error(error);
+          setError(error.message);
+      }
+    };
+    fetchPosts();
+  }, [setPosts]);
 
   return (
     <div>

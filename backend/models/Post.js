@@ -11,6 +11,11 @@ const postSchema = new mongoose.Schema({
     ref: 'User',
     required: true,
   },
+  visibility: {
+    type: String,
+    enum: ['Public', 'Friends'], // Define allowed visibility types
+    default: 'Public',
+  },
   imageStatus: {
     type: String, // URL of the image, optional
   },

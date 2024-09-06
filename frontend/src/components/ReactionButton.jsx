@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
 import { FaThumbsUp, FaHeart, FaLaughBeam, FaSadTear, FaAngry } from 'react-icons/fa';
 import '../styles/ReactionButtonStyle.css';
@@ -11,10 +11,13 @@ const reactionStyles = {
     angry: { text: "Angry", color: "text-red-700", icon: <FaAngry /> }
 };
 
-const ReactionButton = ({ initialCount = 0, onReaction }) => {
+const ReactionButton = ({ type, onReaction }) => {
     const [isHovered, setIsHovered] = useState(false);
     const [selectedReaction, setSelectedReaction] = useState(null);
-    // const [count, setCount] = useState(initialCount);
+
+    useEffect(() => {
+        setSelectedReaction(type);
+    }, [type]);
 
     const handleReactionClick = (reactionType) => {
         if (selectedReaction === reactionType) {
@@ -67,7 +70,6 @@ const ReactionButton = ({ initialCount = 0, onReaction }) => {
 };
 
 ReactionButton.propTypes = {
-    initialCount: PropTypes.number,
     onReaction: PropTypes.func.isRequired,
 };
 
