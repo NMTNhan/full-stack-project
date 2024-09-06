@@ -3,6 +3,7 @@ import ReactionButton from './ReactionButton';
 import CommentButton from './CommentButton';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import ListPopup from "./ListPopUp";
+import HistoryPopup from '../components/historyPopUp';
 // import {Link} from "react-router-dom";
 import {UserContext} from "../App";
 
@@ -12,6 +13,9 @@ const UserPosts = ({ posts, setPosts }) => {
     const [editingPostId, setEditingPostId] = useState(null); // Track the post being edited
     const [editContent, setEditContent] = useState("");
     const [visibility, setVisibility] = useState("");
+
+    const [showHistoryModal, setShowHistoryModal] = useState(false);
+    const [historyData, setHistoryData] = useState([]);
 
     const { user } = useContext(UserContext)
     
@@ -32,6 +36,34 @@ const UserPosts = ({ posts, setPosts }) => {
     ;
     const handleVisibilityChange = (postId, newVisibility) => {
         setVisibility(newVisibility);
+    };
+
+    const handleViewHistory = async (postId) => {
+        try {
+            const token = localStorage.getItem("token");
+            const response = await fetch(`/api/posts/${postId}/history`, {
+                method: "GET",
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                },
+            });
+    
+            // // Log response for debugging
+            // console.log('Response Status:', response.status);
+            // console.log('Response Headers:', response.headers);
+            // console.log('Response Text:', await response.text()); // Log the raw text
+    
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+    
+            const data = await response.json();
+            setHistoryData(data);
+            setShowHistoryModal(true);
+        } catch (error) {
+            console.error("Error fetching history data:", error);
+        }
     };
 
     const handleDelete = async (postId) => {
@@ -210,11 +242,21 @@ const UserPosts = ({ posts, setPosts }) => {
                                                 postId={post._id}
                                                 onEdit={handleEdit}
                                                 onDelete={handleDelete}
+                                                onViewHistory={handleViewHistory}
                                                 closePopup={() => setMenuVisible(null)}
+                                            />
+                                        )}
+
+                                        {/* HistoryPopup Component */}
+                                        {showHistoryModal && (
+                                            <HistoryPopup
+                                                historyData={historyData}
+                                                close={() => setShowHistoryModal(false)}
                                             />
                                         )}
                                     </div>
                                 </div>
+
                                 {isEditing ? (
                                     <div>
                                         <textarea
