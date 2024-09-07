@@ -18,7 +18,12 @@ const RequestListBox = ({ group }) => {
     // Fetch group members
     const fetchMembers = async () => {
       try {
-        const response = await fetch(`http://localhost:5000/api/groups/${groupID}/members`);
+        const response = await fetch(`http://localhost:5000/api/groups/${groupID}/members`, {
+            method: 'GET',
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem('token')}`,
+            },
+        });
         if (!response.ok) {
           throw new Error('Group not found');
         }
@@ -32,7 +37,12 @@ const RequestListBox = ({ group }) => {
     // Fetch group requests
     const fetchRequests = async () => {
         try {
-          const response = await fetch(`http://localhost:5000/api/groups/${groupID}/requests`);
+          const response = await fetch(`http://localhost:5000/api/groups/${groupID}/requests`, {
+              method: 'GET',
+              headers: {
+                    Authorization: `Bearer ${localStorage.getItem('token')}`,
+                },
+          });
           if (!response.ok) {
             throw new Error('Group not found');
           }
@@ -47,7 +57,12 @@ const RequestListBox = ({ group }) => {
     const handleAccept = async (userId) => {
         try {
             // Send a POST request to the server to accept the member
-            await axios.post(`http://localhost:5000/api/groups/${groupID}/members/${userId}`);
+            await fetch(`http://localhost:5000/api/groups/${groupID}/members/${userId}`, {
+                method: 'POST',
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('token')}`,
+                },
+            });
 
             // Remove the accepted member from the requests list
             setRequests((prevRequests) => prevRequests.filter((request) => request._id !== userId));
@@ -61,7 +76,11 @@ const RequestListBox = ({ group }) => {
     // Function to handle removing a member request
     const handleRemove = async (userId) => {
         try {
-            await axios.delete(`http://localhost:5000/api/groups/${group._id}/requests/${userId}`);
+            await axios.delete(`http://localhost:5000/api/groups/${group._id}/requests/${userId}`, {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('token')}`,
+                },
+            });
             setRequests((prevRequests) => prevRequests.filter((request) => request._id !== userId)); 
             window.location.reload();
         } catch (error) {

@@ -17,7 +17,10 @@ export default function FriendRequestCard({friendRequest, notifications, setNoti
             // Call the API to accept the friend request
             const response = await fetch(`http://localhost:5000/api/notifications/friend/accept/${user.id}/${friendRequest.senderID._id}`, {
                 method: 'PUT',
-                headers: {'Content-Type': 'application/json'},
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('token')}`,
+                    'Content-Type': 'application/json'
+                },
             });
 
             // If the response is ok, update the notifications and the user's friends
@@ -42,7 +45,10 @@ export default function FriendRequestCard({friendRequest, notifications, setNoti
             // Call the API to reject the friend request
             const response = await fetch(`http://localhost:5000/api/notifications/friend/reject/${user.id}/${friendRequest.senderID._id}`, {
                 method: 'PUT',
-                headers: {'Content-Type': 'application/json'},
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('token')}`,
+                    'Content-Type': 'application/json'
+                },
             });
 
             // If the response is ok, update the notifications

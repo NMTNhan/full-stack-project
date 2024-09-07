@@ -24,7 +24,9 @@ const MembersPage = () => {
     const fetchGroup = async () => {
         try {
             // Fetch group information
-            const response = await fetch(`http://localhost:5000/api/groups/get/${groupID}`);
+            const response = await fetch(`http://localhost:5000/api/groups/get/${groupID}`, {
+                Authorization: `Bearer ${localStorage.getItem('token')}`,
+            });
 
             // Check if group is not found
             if (!response.ok) {

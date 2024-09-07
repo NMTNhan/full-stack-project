@@ -13,7 +13,11 @@ const NavBar = () => {
     // Function to fetch all the friend request
     const fetchFriendRequests = async () => {
         try {
-            const response = await fetch(`http://localhost:5000/api/notifications/get/${user.id}`);
+            const response = await fetch(`http://localhost:5000/api/notifications/get/${user.id}`, {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('token')}`,
+                },
+            });
             if (response.ok) {
                 const data = await response.json();
                 setNotifications(data);

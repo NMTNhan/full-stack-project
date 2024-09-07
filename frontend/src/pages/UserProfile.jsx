@@ -19,7 +19,11 @@ export default function UserProfile() {
             // Fetch friends info
             const friendsData = await Promise.all(
                 user.friends.map(async (friendId) => {
-                    const response = await fetch(`http://localhost:5000/api/friends/${friendId}`);
+                    const response = await fetch(`http://localhost:5000/api/friends/${friendId}`, {
+                        headers: {
+                            Authorization: `Bearer ${localStorage.getItem('token')}`,
+                        },
+                    });
                     if (response.ok) {
                         const data = await response.json()
                         return data.friend;

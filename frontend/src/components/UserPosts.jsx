@@ -170,6 +170,7 @@ const UserPosts = ({posts, setPosts}) => {
             const response = await fetch(`http://localhost:5000/api/notifications/create/${postAuthorId}`, {
                 method: 'POST',
                 headers: {
+                    Authorization: `Bearer ${localStorage.getItem('token')}`,
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({

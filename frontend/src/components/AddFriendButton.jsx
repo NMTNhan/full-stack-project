@@ -12,7 +12,12 @@ export const AddFriendButton = ({friendID, userID}) => {
     const checkIsSentFriendRequest = async () => {
         try {
             // Calling the APIs to check if the friend request is sent
-            const response = await fetch(`http://localhost:5000/api/notifications/check/${userID}/${friendID}`);
+            const response = await fetch(`http://localhost:5000/api/notifications/check/${userID}/${friendID}`, {
+                method: 'GET',
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('token')}`,
+                }
+            });
 
             // If the response is ok, set the state of isSentFriendRequest
             if (response.ok) {
@@ -37,7 +42,8 @@ export const AddFriendButton = ({friendID, userID}) => {
             const response = await fetch(`http://localhost:5000/api/notifications/create/${friendID}`, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${localStorage.getItem('token')}`,
                 },
                 body: JSON.stringify({senderID: `${userID}`, type: 'Friend Request'})
             });

@@ -19,7 +19,11 @@ const MembersBox = () => {
 
     const fetchGroup = async () => {
         try {
-            const response = await fetch(`http://localhost:5000/api/groups/${groupID}/members`);
+            const response = await fetch(`http://localhost:5000/api/groups/${groupID}/members`, {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('token')}`,
+                },
+            });
             if (!response.ok) {
                 throw new Error('Group not found');
             }
@@ -32,7 +36,11 @@ const MembersBox = () => {
 
     const fetchAdmin = async () => {
         try {
-            const response = await fetch(`http://localhost:5000/api/groups/admin/${groupID}`);
+            const response = await fetch(`http://localhost:5000/api/groups/admin/${groupID}`, {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('token')}`,
+                },
+            });
             if (!response.ok) {
                 throw new Error('Admin not found');
             }
@@ -46,7 +54,11 @@ const MembersBox = () => {
 
     const handleRemoveMember = async (memberId) => {
         try {
-            await axios.delete(`http://localhost:5000/api/groups/${groupID}/members/${memberId}`);
+            await axios.delete(`http://localhost:5000/api/groups/${groupID}/members/${memberId}`, {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('token')}`,
+                },
+            });
             setMembers(prevMembers => prevMembers.filter(member => member._id !== memberId));
             window.location.reload();
         } catch (error) {

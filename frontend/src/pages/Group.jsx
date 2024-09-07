@@ -30,7 +30,11 @@ const Group = () => {
     const fetchGroup = async () => {
         try {
             // Fetch group information
-            const response = await fetch(`http://localhost:5000/api/groups/get/${groupID}`);
+            const response = await fetch(`http://localhost:5000/api/groups/get/${groupID}`, {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('token')}`,
+                },
+            });
 
             // Check if group is not found
             if (!response.ok) {
@@ -59,7 +63,11 @@ const Group = () => {
     const handleRequest = async () => {
         try {
             // Send request to join group
-            await axios.post(`http://localhost:5000/api/groups/${groupID}/requests/${user.id}`);
+            await fetch(`http://localhost:5000/api/groups/${groupID}/requests/${user.id}`, {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('token')}`,
+                },
+            });
             setSentRequest(true);
             setSuccessMessage('Request to join the group has been sent!');
             setError(null);
@@ -81,7 +89,8 @@ const Group = () => {
             const response = await fetch(`http://localhost:5000/api/notifications/create/${group.admin}`, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${localStorage.getItem('token')}`,
                 },
                 body: JSON.stringify({
                     senderID: `${user.id}`,

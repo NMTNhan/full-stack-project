@@ -28,7 +28,11 @@ const HomePage = () => {
     const fetchGroups = async () => {
         try {
             // Fetch groups
-            const response = await fetch(`http://localhost:5000/api/groups/${user.id}`);
+            const response = await fetch(`http://localhost:5000/api/groups/${user.id}`, {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('token')}`,
+                },
+            });
 
             // Check if response is ok
             if (response.ok) {
@@ -46,7 +50,11 @@ const HomePage = () => {
     const fetchNotJoinGroups = async () => {
         try {
             // Fetch not join groups
-            const response = await fetch(`http://localhost:5000/api/groups/notjoin/${user.id}`);
+            const response = await fetch(`http://localhost:5000/api/groups/notjoin/${user.id}`, {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('token')}`,
+                },
+            });
 
             // Check if response is ok
             if (response.ok) {
@@ -66,7 +74,11 @@ const HomePage = () => {
             // Fetch friends info
             const friendsData = await Promise.all(
                 user.friends.map(async (friendId) => {
-                    const response = await fetch(`http://localhost:5000/api/friends/${friendId}`);
+                    const response = await fetch(`http://localhost:5000/api/friends/${friendId}`, {
+                        headers: {
+                            Authorization: `Bearer ${localStorage.getItem('token')}`,
+                        },
+                    });
                     if (response.ok) {
                         const data = await response.json();
                         return data.friend;
