@@ -1,6 +1,8 @@
 const User = require('../models/User');
 const generateToken = require('../utils/generateToken');
 
+
+// Login User
 const loginUser = async (req, res) => {
   const { email, password } = req.body;
 
@@ -17,7 +19,7 @@ const loginUser = async (req, res) => {
       return res.status(403).json({ message: 'Your account has been suspended. Please contact support.' });
     }
 
-    // Generate JWT token for authenticated users
+    // Generate token
     const token = generateToken(user._id);
 
     res.json({
@@ -38,21 +40,22 @@ const loginUser = async (req, res) => {
 };
 
 
-
+// Register User
 const registerUser = async (req, res) => {
   const { username, email, password } = req.body;
 
+  // Check if user exists
   try {
     const userExists = await User.findOne({ email });
 
     if (userExists) {
       return res.status(400).json({ message: 'User already exists' });
     }
-
+    // Create new user
     const user = new User({ username, email, password, isAdmin: false });
-
     await user.save();
 
+    // Generate token for new user
     const token = generateToken(user._id);
 
     res.status(201).json({
@@ -71,5 +74,6 @@ const registerUser = async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 };
+
 
 module.exports = { loginUser, registerUser };

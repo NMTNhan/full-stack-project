@@ -7,7 +7,7 @@ const { isValidObjectId } = require('mongoose');
 // Suspend User
 const suspendUser = async (req, res) => {
     try {
-        console.log('User ID:', req.params.id);  // Log the user ID
+        console.log('User ID:', req.params.id);
         const user = await User.findById(req.params.id);
         if (user) {
             user.isSuspended = true;
@@ -17,7 +17,7 @@ const suspendUser = async (req, res) => {
             res.status(404).json({ message: 'User not found' });
         }
     } catch (error) {
-        console.error('Error suspending user:', error);  // Log the error
+        console.error('Error suspending user:', error);
         res.status(500).json({ message: 'Server error' });
     }
 };
@@ -25,7 +25,7 @@ const suspendUser = async (req, res) => {
 // Resume User
 const resumeUser = async (req, res) => {
     try {
-        console.log('Resuming User ID:', req.params.id); // Log the user ID
+        console.log('Resuming User ID:', req.params.id); 
         const user = await User.findById(req.params.id);
         if (user) {
             user.isSuspended = false;
@@ -48,7 +48,7 @@ const approveGroup = async (req, res) => {
             return res.status(404).json({ message: 'Group not found' });
         }
 
-        group.isApproved = true;  // Approve the group
+        group.isApproved = true; 
         await group.save();
 
         res.json({ message: 'Group approved successfully', group });
@@ -58,10 +58,11 @@ const approveGroup = async (req, res) => {
     }
 };
 
+// Delete Group
 const deleteGroup = async (req, res) => {
     try {
         const groupId = req.params.id;
-        const group = await Group.findByIdAndDelete(groupId); // Using findByIdAndDelete
+        const group = await Group.findByIdAndDelete(groupId);
 
         if (!group) {
             return res.status(404).json({ message: 'Group not found' });
@@ -78,17 +79,17 @@ const deleteGroup = async (req, res) => {
 // Fetch all groups (approved and unapproved)
 const getAllGroups = async (req, res) => {
     try {
-      const groups = await Group.find(); // Fetch all groups
+      const groups = await Group.find();
       res.json(groups);
     } catch (error) {
       res.status(500).json({ message: 'Failed to fetch groups' });
     }
   };
   
-  // Fetch only unapproved groups (pending)
+  // Fetch only unapproved groups
 const getPendingGroups = async (req, res) => {
     try {
-      const groups = await Group.find({ isApproved: false }); // Fetch only pending approval groups
+      const groups = await Group.find({ isApproved: false });
       res.json(groups);
     } catch (error) {
       res.status(500).json({ message: 'Failed to fetch pending groups' });
@@ -96,10 +97,11 @@ const getPendingGroups = async (req, res) => {
   };
 
 
+// Delete Posts
 const deletePostByAdmin = async (req, res) => {
     try {
         const postId = req.params.id;
-        console.log('Post ID:', postId);  // Log the post ID
+        console.log('Post ID:', postId);
         
         if (!isValidObjectId(postId)) {
             return res.status(400).json({ message: 'Invalid post ID format' });
@@ -107,18 +109,18 @@ const deletePostByAdmin = async (req, res) => {
 
         const post = await Post.findById(postId);
         if (post) {
-            await post.deleteOne();  // Use deleteOne on the document instance
+            await post.deleteOne();
             res.json({ message: 'Post deleted successfully' });
         } else {
             res.status(404).json({ message: 'Post not found' });
         }
     } catch (error) {
-        console.error('Error deleting post:', error);  // Log the error
+        console.error('Error deleting post:', error);
         res.status(500).json({ message: 'Server error' });
     }
 };
 
-
+// Delete Comments
 const deleteCommentByAdmin = async (req, res) => {
     try {
       const { postId, commentId } = req.params;
@@ -130,12 +132,11 @@ const deleteCommentByAdmin = async (req, res) => {
       }
   
       // Find and delete the comment
-      const comment = await Comment.findByIdAndDelete(commentId); // Ensure this function works properly
+      const comment = await Comment.findByIdAndDelete(commentId);
       if (!comment) {
         return res.status(404).json({ message: 'Comment not found' });
       }
   
-      // Optionally, remove the comment from the post's comments array
       post.comments = post.comments.filter((c) => c._id.toString() !== commentId);
       await post.save();
   

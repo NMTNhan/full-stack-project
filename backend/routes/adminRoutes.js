@@ -5,23 +5,30 @@ const { isAdmin } = require('../middleware/adminMiddleware');
 
 const router = express.Router();
 
-// Define your admin routes here
-
-router.put('/users/:id/resume', protect, isAdmin, resumeUser);
 
 // Route to fetch all groups (approved and unapproved)
 router.get('/groups', protect, isAdmin, getAllGroups); 
 
-// Route to fetch only pending groups (unapproved)
+// Route to fetch only unapproved group (pending)
 router.get('/groups/pending', protect, isAdmin, getPendingGroups);
 
-router.delete('/groups/:id', protect, isAdmin, deleteGroup);
-router.put('/users/:id/suspend', protect, isAdmin, suspendUser);
+// Route to approve group
 router.put('/groups/:id/approve', protect, isAdmin, approveGroup);
-router.delete('/posts/:id', protect, isAdmin, deletePostByAdmin);  // Deleting posts
+
+// Route to delete group
+router.delete('/groups/:id', protect, isAdmin, deleteGroup);
+
+// Route to suspend user
+router.put('/users/:id/suspend', protect, isAdmin, suspendUser);
+
+// Route to resume user
+router.put('/users/:id/resume', protect, isAdmin, resumeUser);
+
+// Route to delete post
+router.delete('/posts/:id', protect, isAdmin, deletePostByAdmin);
+
+// Route to delete comments
 router.delete('/posts/:postId/comments/:commentId', protect, isAdmin, deleteCommentByAdmin);
-
-
 
 
 module.exports = router;

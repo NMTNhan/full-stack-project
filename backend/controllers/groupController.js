@@ -1,6 +1,7 @@
 const Group = require("../models/Group");
 const User = require("../models/User");
 
+
 const createGroup = async (req, res) => {
     const { name, description, visibility, adminId } = req.body;
 
@@ -23,6 +24,7 @@ const createGroup = async (req, res) => {
     }
 }
 
+
 const getAllGroup = async (req, res) => {
     try {
         const groups = await Group.find();
@@ -31,6 +33,7 @@ const getAllGroup = async (req, res) => {
         res.status(500).json({ message: 'Error retrieving groups', error });
     }
 }
+
 
 const getGroupsOfUser = async (req, res) => {
     try {

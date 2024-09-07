@@ -4,7 +4,8 @@ const dotenv = require('dotenv');
 const { LocalStorage } = require('node-localstorage');
 const cors = require('cors');
 
-dotenv.config(); // Load environment variables
+// Load environment variables
+dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -13,15 +14,15 @@ const localStorage = new LocalStorage('./scratch');
 const authRoutes = require('./routes/authRoutes');
 const adminRoutes = require('./routes/adminRoutes');
 const userRoutes = require('./routes/userRoutes');
-const postRoutes = require('./routes/postRoutes'); // Ensure this is imported
+const postRoutes = require('./routes/postRoutes');
 const friendRoutes = require('./routes/friendRoutes');
 const notificationRoutes = require('./routes/notificationRoutes');
 const groupRoutes = require('./routes/groupRoutes');
 const historyRoutes = require('./routes/historyRoutes'); 
 
 // Middleware
-app.use(express.json()); // Parse JSON bodies
-app.use(cors()); // Enable CORS for all requests
+app.use(express.json());
+app.use(cors());
 
 // Connect to MongoDB
 mongoose.connect(process.env.MONGO_URI, {
@@ -52,11 +53,11 @@ mongoose.connection.on('connected', () => {
 app.use('/api/auth', authRoutes);
 app.use('/api/admin', adminRoutes)
 app.use('/api', userRoutes);
-app.use('/api/posts', postRoutes); // Ensure this is being used
+app.use('/api/posts', postRoutes);
 app.use('/api/history', historyRoutes);
 app.use('/api/friends', friendRoutes);
 app.use('/api/notifications', notificationRoutes);
-app.use('/api/groups', groupRoutes); // Use group routes
+app.use('/api/groups', groupRoutes);
 
 // Basic route for testing
 app.get('/', (req, res) => {

@@ -4,6 +4,7 @@ import NavBar from "../components/NavBar"
 
 
 function AdminDashboard() {
+  // Set states
   const [isUserModalOpen, setIsUserModalOpen] = useState(false);
   const [isContentModalOpen, setIsContentModalOpen] = useState(false);
   const [isGroupModalOpen, setIsGroupModalOpen] = useState(false);
@@ -20,7 +21,7 @@ function AdminDashboard() {
 
   const { user } = useContext(UserContext);
 
- // Open/Close functions
+ // Open/Close modal functions
  const openUserModal = () => setIsUserModalOpen(true);
  const closeUserModal = () => setIsUserModalOpen(false);
 
@@ -48,7 +49,7 @@ const closeCommentModal = () => setIsCommentModalOpen(false);
     if (isPendingGroupModalOpen) fetchPendingGroups();
   }, [isUserModalOpen, isContentModalOpen, isGroupModalOpen, isPendingGroupModalOpen]);
   
-    // Fetch functions
+    // Fetch user function
     const fetchUsers = async () => {
       try {
         const response = await fetch('http://localhost:5000/api/users', {
@@ -67,7 +68,8 @@ const closeCommentModal = () => setIsCommentModalOpen(false);
       }
     };
 
-  const toggleSuspension = async (userId) => {
+    // Suspend user function
+    const toggleSuspension = async (userId) => {
     try {
         const response = await fetch(`http://localhost:5000/api/admin/users/${userId}/suspend`, {
             method: 'PUT',
@@ -91,7 +93,8 @@ const closeCommentModal = () => setIsCommentModalOpen(false);
     }
   };
 
-  const resumeUser = async (userId) => {
+    // Resume user function
+    const resumeUser = async (userId) => {
     try {
         const response = await fetch(`http://localhost:5000/api/admin/users/${userId}/resume`, {
             method: 'PUT',
@@ -116,7 +119,8 @@ const closeCommentModal = () => setIsCommentModalOpen(false);
   };
 
 
-  const fetchPosts = async () => {
+    // Fetch posts functions
+    const fetchPosts = async () => {
     try {
       const response = await fetch('http://localhost:5000/api/posts', {
         method: 'GET',
@@ -137,7 +141,9 @@ const closeCommentModal = () => setIsCommentModalOpen(false);
     }
   };
 
-  const deletePost = async (postId) => {
+
+    // Delete posts functions
+    const deletePost = async (postId) => {
     try {
         const response = await fetch(`http://localhost:5000/api/admin/posts/${postId}`, {
             method: 'DELETE',
@@ -157,23 +163,26 @@ const closeCommentModal = () => setIsCommentModalOpen(false);
     }
 };
 
-const fetchAllGroups = async () => {
-  try {
-    const response = await fetch('http://localhost:5000/api/admin/groups', {
-      method: 'GET',
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem('token')}`,
-        'Content-Type': 'application/json',
-      },
-    });
-    if (!response.ok) throw new Error('Failed to fetch groups');
-    const data = await response.json();
-    setGroups(data);
-  } catch (error) {
-    setError('Error fetching groups: ' + error.message);
-  }
+
+    // Fetch all group function
+    const fetchAllGroups = async () => {
+    try {
+      const response = await fetch('http://localhost:5000/api/admin/groups', {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+          'Content-Type': 'application/json',
+        },
+      });
+      if (!response.ok) throw new Error('Failed to fetch groups');
+      const data = await response.json();
+      setGroups(data);
+    } catch (error) {
+      setError('Error fetching groups: ' + error.message);
+    }
 };
 
+    // Fetch pending group function
 const fetchPendingGroups = async () => {
   try {
     const response = await fetch('http://localhost:5000/api/admin/groups/pending', {
@@ -191,6 +200,8 @@ const fetchPendingGroups = async () => {
   }
 };
 
+
+    // Approving group function
 const approveGroup = async (groupId) => {
   try {
     const response = await fetch(`http://localhost:5000/api/admin/groups/${groupId}/approve`, {
@@ -208,6 +219,8 @@ const approveGroup = async (groupId) => {
   }
 };
 
+
+    // Delete group function
 const deleteGroup = async (groupId) => {
   try {
     const response = await fetch(`http://localhost:5000/api/admin/groups/${groupId}`, {
@@ -230,24 +243,25 @@ const deleteGroup = async (groupId) => {
 };
 
 
-  const updateApproveNotification = async (groupAuthorId) => {
-      try {
-          const response = await fetch(`http://localhost:5000/api/notifications/admin/group/approve/${groupAuthorId}/${user.id}`, {
-              method: 'PUT',
-              headers: { 'Content-Type': 'application/json' },
-          });
-          if (response.ok) {
-              console.log('Create group request approved successfully.');
-          } else {
-              throw new Error('Failed to approve create group request.');
-          }
-      } catch (error) {
-          console.error(error);
-      }
-  }
+  // Notification function
+  // const updateApproveNotification = async (groupAuthorId) => {
+  //     try {
+  //         const response = await fetch(`http://localhost:5000/api/notifications/admin/group/approve/${groupAuthorId}/${user.id}`, {
+  //             method: 'PUT',
+  //             headers: { 'Content-Type': 'application/json' },
+  //         });
+  //         if (response.ok) {
+  //             console.log('Create group request approved successfully.');
+  //         } else {
+  //             throw new Error('Failed to approve create group request.');
+  //         }
+  //     } catch (error) {
+  //         console.error(error);
+  //     }
+  // }
 
 
-   // Function to fetch comments for a post
+   // Comment fetching function
    const fetchComments = async (postId) => {
     try {
         const response = await fetch(`http://localhost:5000/api/posts/${postId}/comments`, {
@@ -267,7 +281,7 @@ const deleteGroup = async (groupId) => {
     }
 };
 
-
+    // Deleting commentfunction
 const deleteComment = async (postId, commentId) => {
   try {
     const response = await fetch(`http://localhost:5000/api/admin/posts/${postId}/comments/${commentId}`, {
@@ -322,6 +336,7 @@ return (
           <button onClick={openGroupModal} className="bg-blue-600 text-white py-2 px-4 rounded">Open Groups</button>
         </div>
       </div>
+
     {/* User Management Modal */}
     {isUserModalOpen && (
       <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center">
@@ -354,7 +369,7 @@ return (
       </div>
     )}
 
-    {/* Content Management Modal */}
+    {/* Posts Management Modal */}
     {isContentModalOpen && (
       <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center">
         <div className="bg-white rounded-lg shadow p-6 w-96">
@@ -397,7 +412,7 @@ return (
           <li key={group._id} className="flex justify-between items-center mb-2">
             <span>{group.name}</span>
             <button
-              onClick={() => deleteGroup(group._id)}  // Update the state in real time
+              onClick={() => deleteGroup(group._id)}
               className="text-sm bg-red-600 text-white py-1 px-2 rounded"
             >
               Delete
