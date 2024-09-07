@@ -6,7 +6,7 @@ import ListPopup from "./ListPopUp";
 import HistoryPopup from '../components/historyPopUp';
 import {UserContext} from "../App";
 import {Link} from "react-router-dom";
-import { FaThumbsUp, FaHeart, FaLaughBeam, FaSadTear, FaAngry } from 'react-icons/fa';
+import {FaThumbsUp, FaHeart, FaLaughBeam, FaSadTear, FaAngry, FaEllipsisH} from 'react-icons/fa';
 import '../styles/ReactionButtonStyle.css';
 
 const UserPosts = ({ posts, setPosts }) => {
@@ -63,11 +63,11 @@ const UserPosts = ({ posts, setPosts }) => {
         }
     };
 
-    const handleDelete = async (postId) => {
+    const handleDelete = async (post) => {
+
         try {
             const token = localStorage.getItem("token");
-
-            const response = await fetch(`http://localhost:5000/api/posts/${postId}`, {
+            const response = await fetch(`http://localhost:5000/api/posts/${post._id}`, {
                 method: "DELETE",
                 headers: {
                     Authorization: `Bearer ${token}`,
@@ -79,7 +79,7 @@ const UserPosts = ({ posts, setPosts }) => {
                 throw new Error(`Failed to delete post: HTTP error! status: ${response.status}`);
             }
 
-            setPosts((prevPosts) => prevPosts.filter((post) => post._id !== postId));
+            setPosts((prevPosts) => prevPosts.filter((p) => p._id !== post._id));
         } catch (error) {
             console.error(error);
         }
@@ -239,10 +239,9 @@ const UserPosts = ({ posts, setPosts }) => {
                                         </div>
                                     )}
                                     <div className="relative">
-                                        <i
-                                            className="fas fa-ellipsis-h cursor-pointer"
+                                        <div
                                             onClick={() => toggleMenu(post._id)}
-                                        ></i>
+                                        ><FaEllipsisH/></div>
 
                                         {/* Menu Pop-Up */}
                                         {menuVisible === post._id && (

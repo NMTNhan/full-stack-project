@@ -116,14 +116,13 @@ const deletePost = async (req, res) => {
         return res.status(403).json({ message: 'User not authorized' });
       }
   
-      await post.remove();
+      await Post.deleteOne({ _id: postId });
       res.json({ message: 'Post removed' });
     } catch (error) {
       console.error('Error deleting post:', error);
       res.status(500).json({ message: 'Server error' });
     }
 };
-
 
 // Like a post
 const reactionOnPost = async (req, res) => {
@@ -256,4 +255,4 @@ const deleteCommentByAdmin = async (req, res) => {
   }
 };
 
-module.exports = { getCommentsForPost ,getPosts, createPost, updatePost, deletePost, reactionOnPost, commentOnPost, deletePostByAdmin, deleteCommentByAdmin, getAllPosts, getPostsById  };
+module.exports = { getCommentsForPost ,getPosts, createPost, updatePost, deletePost, reactionOnPost, commentOnPost, deletePostByAdmin, deleteCommentByAdmin, getAllPosts, getPostsById };

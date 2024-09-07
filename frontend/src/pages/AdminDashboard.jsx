@@ -1,5 +1,4 @@
-import React, {useState, useEffect, useContext} from 'react';
-import {UserContext} from "../App";
+import React, {useState, useEffect} from 'react';
 import NavBar from "../components/NavBar"
 
 
@@ -18,8 +17,6 @@ function AdminDashboard() {
   const [comments, setComments] = useState([]);
   const [postId, setPostId] = useState(null);
   const [error, setError] = useState(null);
-
-  const { user } = useContext(UserContext);
 
  // Open/Close modal functions
  const openUserModal = () => setIsUserModalOpen(true);
@@ -281,7 +278,7 @@ const deleteGroup = async (groupId) => {
     }
 };
 
-    // Deleting commentfunction
+    // Deleting comment function
 const deleteComment = async (postId, commentId) => {
   try {
     const response = await fetch(`http://localhost:5000/api/admin/posts/${postId}/comments/${commentId}`, {
@@ -306,6 +303,7 @@ const deleteComment = async (postId, commentId) => {
           : post
       )
     );
+    setComments(comments.filter((comment) => comment._id !== commentId));
   } catch (error) {
     setError('Error deleting comment: ' + error.message);
   }
@@ -386,7 +384,7 @@ return (
                   Delete
                 </button>
                 <button
-                  onClick={() => openCommentModal(post._id)}
+                  onClick={() => {openCommentModal(post._id); setComments(post.comments)}}
                   className="text-sm bg-blue-600 text-white py-1 px-2 rounded"
                 >
                   Manage Comments
@@ -457,7 +455,7 @@ return (
           <ul>
             {comments.map(comment => (
               <li key={comment._id} className="flex justify-between items-center mb-2">
-                <span>{comment.text}</span>
+                <span>{comment.content}</span>
                 <button
                   onClick={() => deleteComment(postId, comment._id)}
                   className="text-sm bg-red-600 text-white py-1 px-2 rounded"

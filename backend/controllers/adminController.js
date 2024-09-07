@@ -1,7 +1,6 @@
 const User = require('../models/User');
 const Post = require('../models/Post');
 const Group = require('../models/Group');
-const Comment = require('../models/Comment');
 const { isValidObjectId } = require('mongoose');
 
 // Suspend User
@@ -48,7 +47,8 @@ const approveGroup = async (req, res) => {
             return res.status(404).json({ message: 'Group not found' });
         }
 
-        group.isApproved = true; 
+        group.isApproved = true;
+        group.status = 'Approved';
         await group.save();
 
         res.json({ message: 'Group approved successfully', group });
@@ -132,7 +132,7 @@ const deleteCommentByAdmin = async (req, res) => {
       }
   
       // Find and delete the comment
-      const comment = await Comment.findByIdAndDelete(commentId);
+      const comment = await Post.updateOne({ _id: postId }, { $pull: { comments: { _id: commentId } } });
       if (!comment) {
         return res.status(404).json({ message: 'Comment not found' });
       }

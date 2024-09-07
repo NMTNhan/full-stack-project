@@ -25,7 +25,7 @@ const ListPopup = ({ post, onEdit, onViewHistory, onDelete, closePopup }) => {
                 user.id === post.author._id &&
                 <button
                     onClick={() => {
-                        onEdit(post._id);
+                        onEdit(post._id, post.content, post.visibility);
                         closePopup(); // Close the popup after action
                     }}
                     className="w-full text-left px-4 py-2 hover:bg-gray-100"
@@ -43,9 +43,9 @@ const ListPopup = ({ post, onEdit, onViewHistory, onDelete, closePopup }) => {
                 View edit History
             </button>
             {
-                user.id === post.author._id && <button
+                (user.id === post.author._id) && <button
                     onClick={() => {
-                        onDelete(post._id);
+                        onDelete(post);
                         closePopup(); // Close the popup after action
                     }}
                     className="w-full text-left px-4 py-2 hover:bg-gray-100 text-red-500"

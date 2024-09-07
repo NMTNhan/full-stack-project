@@ -58,6 +58,7 @@ const postSchema = new mongoose.Schema({
   }],
   groupId: {
     type: String,
+    default: "None",
   },
   createdAt: {
     type: Date,

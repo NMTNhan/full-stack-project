@@ -12,7 +12,7 @@ import "../styles/Group.css";
 
 
 const Group = () => {
-  const { user, posts} = useContext(UserContext);
+  const { user, posts, setPosts} = useContext(UserContext);
   const {groupID}  = useParams(); 
   const [group, setGroup] = useState(null);
   const [error, setError] = useState(null);
@@ -47,7 +47,7 @@ const Group = () => {
 
   const handleRequest = async () => {
     try {
-      const response = await axios.post(`http://localhost:5000/api/groups/${groupID}/requests/${user.id}`);
+      await axios.post(`http://localhost:5000/api/groups/${groupID}/requests/${user.id}`);
       setSentRequest(true);
       setSuccessMessage('Request to join the group has been sent!');
       setError(null);
@@ -64,17 +64,20 @@ const Group = () => {
 
   const createNotification = async () => {
     try {
-      const response = await axios.post(`http://localhost:5000/api/notifications`, {
-        sender: user.id,
-        receiver: group.admin,
-        type: 'Group Request',
+      const response = await fetch(`http://localhost:5000/api/notifications/create/${group.admin}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({senderID: `${user.id}`, type: 'New Join Group Request', message: `${user.username} sent the join group request ${group.name}`})
       });
-    } catch (error) {
-      if (error.response) {
-        setError(error.response.data.message || 'Error sending request. Please try again later.');
+      if (response.ok) {
+        console.log('Add group request successfully');
       } else {
-        setError('Error sending request. Please try again later.');
+        throw new Error('Failed to add group request');
       }
+    } catch (error) {
+      console.error(error)
     }
   }
 
@@ -85,15 +88,16 @@ const Group = () => {
         <>
           <GroupHeaderBox group={group} />
           <div className={'flex place-content-center'}>
-            {sentRequest ? <p className="success">Request to join the group has been sent!</p> :
-                <div>
-                  <button className='returnButton' onClick={() => navigate('/homepage')}>Go Back to Homepage
-                  </button>
-                  &nbsp;
-                  <button onClick={handleRequest} className="requestButton">
-                    Request to Join Group?
-                  </button>
-                </div>
+            {sentRequest && <p className="success">Request to join the group has been sent!</p> }
+            {
+                ((!sentRequest && !group.members.includes(user.id)))&& <div>
+                <button className='returnButton' onClick={() => navigate('/homepage')}>Go Back to Homepage
+                </button>
+                &nbsp;
+                <button onClick={handleRequest} className="requestButton">
+                  Request to Join Group?
+                </button>
+              </div>
             }
           </div>
           <div className="grid grid-cols-12 gap-4 p-4">
@@ -103,7 +107,7 @@ const Group = () => {
                 group.members.includes(user.id) ?
                     <>
                       <PostingArea groupID={`${group._id}`}/>
-                      <UserPosts posts={posts.filter((post) => post.groupId === group._id)}/>
+                      <UserPosts posts={posts.filter((post) => post.groupId === group._id)} setPosts={setPosts}/>
                     </>
                     :
                     <UserPosts posts={posts.filter((post) => post.groupId === group._id)}/>
@@ -121,18 +125,26 @@ const Group = () => {
                 <h2>You cannot view this group.</h2>
                 <p>This group is private, and you are not a member.</p>
                 <div>
-                <button className='returnButton' onClick={() => navigate('/homepage')}>Go Back to Homepage</button>
-                &nbsp;
-                <button onClick={handleRequest} className="requestButton">
-                  Request to Join Group?
-                </button>
+                  <div className={'flex place-content-center'}>
+                    {sentRequest && <p className="success">Request to join the group has been sent!</p>}
+                    {
+                        ((!sentRequest && !group.members.includes(user.id))) && <div>
+                          <button className='returnButton' onClick={() => navigate('/homepage')}>Go Back to Homepage
+                          </button>
+                          &nbsp;
+                          <button onClick={handleRequest} className="requestButton">
+                            Request to Join Group?
+                          </button>
+                        </div>
+                    }
+                  </div>
+                </div>
+                {error && <p className="error">{error}</p>}
+                {successMessage && <p className="success">{successMessage}</p>}
               </div>
-              {error && <p className="error">{error}</p>}
-              {successMessage && <p className="success">{successMessage}</p>}
             </div>
-          </div>
-        </>
-      ) : null} 
+          </>
+      ) : null}
     </div>
   );
 };

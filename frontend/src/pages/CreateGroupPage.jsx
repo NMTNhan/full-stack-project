@@ -21,10 +21,13 @@ const NewGroupForm = () => {
             description,
             visibility,
             adminId: user.id,
+            isApproved: false,
+            status: 'Pending',
         };
 
         try {
-            const response = await axios.post('http://localhost:5000/api/groups/creategroup', newGroup);
+            await axios.post('http://localhost:5000/api/groups/creategroup', newGroup);
+            await createNotification();
             setSuccessMessage('Group created successfully!');
             setError(null); 
             setGroupName('');
@@ -35,6 +38,26 @@ const NewGroupForm = () => {
             setSuccessMessage(null); 
         }
     };
+
+    //Create notification for the post's author when suer reaction on their post.
+    const createNotification = async () => {
+        try {
+            const response = await fetch(`http://localhost:5000/api/notifications/create/66d8107195bef057ee17b514`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({senderID: `${user.id}`, type: 'New Group Creation Request Added', message: `${user.username} sent the create group request`})
+            });
+            if (response.ok) {
+                console.log('Add reaction successfully');
+            } else {
+                throw new Error('Failed to add comment');
+            }
+        } catch (error) {
+            console.error(error)
+        }
+    }
 
     return (
         <div className="createGroupContainer">

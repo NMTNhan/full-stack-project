@@ -104,9 +104,9 @@ const HomePage = () => {
       <NavBar />
       <div className="h-fit grid grid-cols-12 gap-4 p-4 bg-gray-100">
         <div className="col-span-3">
-          <GroupSidebar groups={groups} />
+          <GroupSidebar groups={groups.filter(group => group.isApproved === true)} />
           &nbsp;
-          <NotJoinGroupSideBar groups={notJoinGroups} />
+          <NotJoinGroupSideBar groups={notJoinGroups.filter(group => group.isApproved === true)} />
         </div>
         <div className="col-span-6">
             <PostingArea groupID={null} />
