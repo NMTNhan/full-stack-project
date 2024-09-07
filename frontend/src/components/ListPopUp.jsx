@@ -1,10 +1,11 @@
 import React, {useRef, useEffect, useContext} from 'react';
 import {UserContext} from "../App";
 
-const ListPopup = ({ post, onEdit, onViewHistory, onDelete, closePopup }) => {
+const ListPopup = ({post, onEdit, onViewHistory, onDelete, closePopup}) => {
     const popupRef = useRef(null);
-    const { user } = useContext(UserContext)
+    const {user} = useContext(UserContext)
 
+    // Close the popup when clicking outside
     useEffect(() => {
         const handleClickOutside = (event) => {
             if (popupRef.current && !popupRef.current.contains(event.target)) {

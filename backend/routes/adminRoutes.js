@@ -1,13 +1,22 @@
 const express = require('express');
-const { getPendingGroups, getAllGroups, resumeUser, suspendUser, approveGroup, deletePostByAdmin, deleteCommentByAdmin, deleteGroup } = require('../controllers/adminController');
-const { protect } = require('../middleware/authMiddleware');
-const { isAdmin } = require('../middleware/adminMiddleware');
+const {
+    getPendingGroups,
+    getAllGroups,
+    resumeUser,
+    suspendUser,
+    approveGroup,
+    deletePostByAdmin,
+    deleteCommentByAdmin,
+    deleteGroup
+} = require('../controllers/adminController');
+const {protect} = require('../middleware/authMiddleware');
+const {isAdmin} = require('../middleware/adminMiddleware');
 
 const router = express.Router();
 
 
 // Route to fetch all groups (approved and unapproved)
-router.get('/groups', protect, isAdmin, getAllGroups); 
+router.get('/groups', protect, isAdmin, getAllGroups);
 
 // Route to fetch only unapproved group (pending)
 router.get('/groups/pending', protect, isAdmin, getPendingGroups);

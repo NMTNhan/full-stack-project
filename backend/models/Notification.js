@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 
+// Define the notification schema
 const notificationSchema = new mongoose.Schema({
     senderID: {
         type: mongoose.Schema.Types.ObjectId,

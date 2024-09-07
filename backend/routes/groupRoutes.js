@@ -1,9 +1,22 @@
 const express = require('express');
-const {createGroup, getAllGroup, getGroupsOfUser, getGroupsNotJoinOfUser, getGroupById, addMemberToRequestList, removeMember, addMember, addMemberFromRequestListToGroup,
-  removerUserFromRequestList, getAllMembers, getAllRequest, approveGroup, getAdmin
+const {
+    createGroup,
+    getAllGroup,
+    getGroupsOfUser,
+    getGroupsNotJoinOfUser,
+    getGroupById,
+    addMemberToRequestList,
+    removeMember,
+    addMember,
+    addMemberFromRequestListToGroup,
+    removerUserFromRequestList,
+    getAllMembers,
+    getAllRequest,
+    approveGroup,
+    getAdmin
 } = require("../controllers/groupController");
-const { protect } = require('../middleware/authMiddleware');
-const { isAdmin } = require('../middleware/adminMiddleware');
+const {protect} = require('../middleware/authMiddleware');
+const {isAdmin} = require('../middleware/adminMiddleware');
 
 const router = express.Router();
 

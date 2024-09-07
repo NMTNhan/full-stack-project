@@ -1,16 +1,16 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import "../styles/GroupHeaderBox.css";
-import { UserContext } from '../App';
 
-const GroupHeaderBoxForPrivate = ({ group }) => {
-    const { user } = useContext(UserContext);
+const GroupHeaderBoxForPrivate = ({group}) => {
     if (!group) return null;
 
     return (
         <section className="groupHeaderBox">
             <div>
                 <div className="groupPic">
-                    <img className="groupPicture" src={""} alt="Group Picture" />
+                    <img className="groupPicture"
+                         src={"https://img.freepik.com/free-vector/blue-curve-background_53876-113112.jpg"}
+                         alt="Group Picture"/>
                 </div>
                 <h1 className="groupHeaderBoxTitle">
                     <span className="groupName">{group.name}</span>

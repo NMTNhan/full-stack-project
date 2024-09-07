@@ -1,6 +1,6 @@
 import React from 'react';
 
-const HistoryPopup = ({ historyData, close }) => {
+const HistoryPopup = ({historyData, close}) => {
     return (
         <div className="modal-overlay">
             <div className="modal-content">

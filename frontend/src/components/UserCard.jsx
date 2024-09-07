@@ -1,9 +1,9 @@
 import {useNavigate} from "react-router-dom";
 
 export default function UserCard({ friend }) {
-
     const navigate = useNavigate()
 
+    // Function to handle clicking on a user card
     const handleClick = () => {
         navigate(`/friend/${friend._id}`, {state: {friendProfile: friend}});
     }

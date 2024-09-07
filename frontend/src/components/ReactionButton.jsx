@@ -1,24 +1,26 @@
 import React, {useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
-import { FaThumbsUp, FaHeart, FaLaughBeam, FaSadTear, FaAngry } from 'react-icons/fa';
+import {FaThumbsUp, FaHeart, FaLaughBeam, FaSadTear, FaAngry} from 'react-icons/fa';
 import '../styles/ReactionButtonStyle.css';
 
 const reactionStyles = {
-    like: { text: "Like", color: "text-blue-500", icon: <FaThumbsUp /> },
-    love: { text: "Love", color: "text-red-500", icon: <FaHeart /> },
-    funny: { text: "Funny", color: "text-yellow-500", icon: <FaLaughBeam /> },
-    sad: { text: "Sad", color: "text-blue-300", icon: <FaSadTear /> },
-    angry: { text: "Angry", color: "text-red-700", icon: <FaAngry /> }
+    like: {text: "Like", color: "text-blue-500", icon: <FaThumbsUp/>},
+    love: {text: "Love", color: "text-red-500", icon: <FaHeart/>},
+    funny: {text: "Funny", color: "text-yellow-500", icon: <FaLaughBeam/>},
+    sad: {text: "Sad", color: "text-blue-300", icon: <FaSadTear/>},
+    angry: {text: "Angry", color: "text-red-700", icon: <FaAngry/>}
 };
 
-const ReactionButton = ({ type, onReaction }) => {
+const ReactionButton = ({type, onReaction}) => {
     const [isHovered, setIsHovered] = useState(false);
     const [selectedReaction, setSelectedReaction] = useState(null);
 
+    // Set the selected reaction based on the initial type
     useEffect(() => {
         setSelectedReaction(type);
     }, [type]);
 
+    // Handle the reaction button click
     const handleReactionClick = (reactionType) => {
         if (selectedReaction === reactionType) {
             // Deselect the current reaction
@@ -36,7 +38,11 @@ const ReactionButton = ({ type, onReaction }) => {
     const handleMouseLeave = () => setIsHovered(false);
 
     // Determine the text, color, and icon based on the current selection
-    const { text, color, icon } = reactionStyles[selectedReaction] || { text: "Like", color: "text-gray-500", icon: <FaThumbsUp /> };
+    const {text, color, icon} = reactionStyles[selectedReaction] || {
+        text: "Like",
+        color: "text-gray-500",
+        icon: <FaThumbsUp/>
+    };
 
     return (
         <div
@@ -54,7 +60,7 @@ const ReactionButton = ({ type, onReaction }) => {
 
             {isHovered && (
                 <div className="reaction-popup-menu">
-                    {Object.entries(reactionStyles).map(([key, { icon, color }]) => (
+                    {Object.entries(reactionStyles).map(([key, {icon, color}]) => (
                         <button
                             key={key}
                             onClick={() => handleReactionClick(key)}

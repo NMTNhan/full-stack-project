@@ -1,21 +1,22 @@
-import React, { useState, useContext } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, {useState, useContext} from 'react';
+import {useNavigate} from 'react-router-dom';
 import axios from 'axios';
-import { UserContext } from '../App';
+import {UserContext} from '../App';
 import '../styles/CreateGroupPage.css';
 
 const NewGroupForm = () => {
-    const { user } = useContext(UserContext);
+    const {user} = useContext(UserContext);
     const navigate = useNavigate();
     const [groupName, setGroupName] = useState('');
     const [description, setDescription] = useState('');
-    const [visibility, setVisibility] = useState('Public'); 
+    const [visibility, setVisibility] = useState('Public');
     const [error, setError] = useState(null);
     const [successMessage, setSuccessMessage] = useState(null);
 
+    // Handle form submission
     const handleSubmit = async (e) => {
         e.preventDefault();
-        
+
         const newGroup = {
             name: groupName,
             description,
@@ -29,13 +30,13 @@ const NewGroupForm = () => {
             await axios.post('http://localhost:5000/api/groups/creategroup', newGroup);
             await createNotification();
             setSuccessMessage('Group created successfully!');
-            setError(null); 
+            setError(null);
             setGroupName('');
             setDescription('');
-            setVisibility('Public'); 
+            setVisibility('Public');
         } catch (err) {
             setError(err.response?.data?.message || 'Error creating group');
-            setSuccessMessage(null); 
+            setSuccessMessage(null);
         }
     };
 
@@ -47,7 +48,11 @@ const NewGroupForm = () => {
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({senderID: `${user.id}`, type: 'New Group Creation Request Added', message: `${user.username} sent the create group request`})
+                body: JSON.stringify({
+                    senderID: `${user.id}`,
+                    type: 'New Group Creation Request Added',
+                    message: `${user.username} sent the create group request`
+                })
             });
             if (response.ok) {
                 console.log('Add reaction successfully');

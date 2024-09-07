@@ -9,14 +9,15 @@ import {AddFriendButton} from "../components/AddFriendButton";
 
 export default function FriendProfile() {
     const location = useLocation();
-    const { user, posts } = useContext(UserContext);
-    const { friendProfile } = location.state;
+    const {user, posts} = useContext(UserContext);
+    const {friendProfile} = location.state;
     const [friendsInfo, setFriendsInfo] = useState([]);
     const [isFriend, setIsFriend] = useState(false);
     let button;
 
     const navigate = useNavigate()
 
+    // Fetch friend's information and check if this friend's profile is a friend's information of the current user
     useEffect(() => {
         fetchFriendsInfo();
         checkIsFriend();
@@ -39,7 +40,7 @@ export default function FriendProfile() {
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ userID: user.id})
+                body: JSON.stringify({userID: user.id})
             });
             if (response.ok) {
                 console.log('Unfriend successfully');
@@ -75,7 +76,8 @@ export default function FriendProfile() {
     };
 
     if (user.id !== friendProfile._id) {
-        button = isFriend ? <UnFriendButton handleUnFriend={handleUnFriend}/> : <AddFriendButton friendID={ friendProfile._id } userID={ user.id }/>
+        button = isFriend ? <UnFriendButton handleUnFriend={handleUnFriend}/> :
+            <AddFriendButton friendID={friendProfile._id} userID={user.id}/>
     } else {
         navigate('/userprofile')
     }
@@ -86,7 +88,7 @@ export default function FriendProfile() {
                 <NavBar/>
                 <div className={'bg-white border-b-2 border-gray-300 border-opacity-50'}>
                     {/*Avatar*/}
-                    <div >
+                    <div>
                         <img className=" absolute rounded-full bg-red-500 ml-5 mt-44 w-40 h-40"
                              src="https://img.freepik.com/premium-vector/cute-boy-smiling-cartoon-kawaii-boy-illustration-boy-avatar-happy-kid_1001605-3447.jpg"
                              alt={'img'}
@@ -96,10 +98,11 @@ export default function FriendProfile() {
                     <div>
                         <img className="object-cover w-full h-56 place-items-end justify-end"
                              src="https://png.pngtree.com/thumb_back/fh260/background/20230615/pngtree-landscape-landscape-photo-image_2902263.jpg"
-                            alt={'img'}/>
+                             alt={'img'}/>
                     </div>
                     <div className={'flex justify-between w-full h-32'}>
-                        <div className={'inline-block ml-48 pt-7 font-bold text-black text-4xl'}>{friendProfile.username}</div>
+                        <div
+                            className={'inline-block ml-48 pt-7 font-bold text-black text-4xl'}>{friendProfile.username}</div>
                         <div className={'max-h-24 m-5'}>
                             {button}
                         </div>
@@ -136,7 +139,8 @@ export default function FriendProfile() {
 
                         <div className={'w-full ml-3'}>
                             <div className={'grid grid-cols-1 w-11/12 m-8 rounded-xl'}>
-                                <UserPosts posts={isFriend ? posts.filter(post => post.author._id === friendProfile._id && post.groupId === 'None') : posts.filter(post => post.author._id === friendProfile._id && post.visibility === 'Public' && post.groupId === 'None')}/>
+                                <UserPosts
+                                    posts={isFriend ? posts.filter(post => post.author._id === friendProfile._id && post.groupId === 'None') : posts.filter(post => post.author._id === friendProfile._id && post.visibility === 'Public' && post.groupId === 'None')}/>
                             </div>
                         </div>
                     </div>

@@ -6,8 +6,8 @@ import {useContext, useEffect, useState} from "react";
 import {NotificationCard} from "./NotificationCard";
 
 const NavBar = () => {
-    const { user } = useContext(UserContext);
-    const [notifications, setNotifications]  = useState([]);
+    const {user} = useContext(UserContext);
+    const [notifications, setNotifications] = useState([]);
     const [friendRequests, setFriendRequests] = useState([]);
 
     // Function to fetch all the friend request
@@ -25,6 +25,7 @@ const NavBar = () => {
         }
     }
 
+    // Fetch friend requests on component mount
     useEffect(() => {
         if (user && user.id) {
             fetchFriendRequests();
@@ -34,8 +35,6 @@ const NavBar = () => {
             console.error('User ID is not defined'); // Debug log
         }
     }, [user, notifications])
-
-
 
     return (
         <div className="navbar bg-white px-4 shadow-md">
@@ -51,7 +50,7 @@ const NavBar = () => {
                 {/* Friend Request Icon*/}
                 <div className="dropdown dropdown-end">
                     <div tabIndex={0} className="indicator cursor-pointer">
-                        <FaUserFriends className="text-2xl text-gray-500" />
+                        <FaUserFriends className="text-2xl text-gray-500"/>
                     </div>
                     {/*Friend Request Icon: Dropdown */}
                     <ul
@@ -60,7 +59,8 @@ const NavBar = () => {
                     >
                         {friendRequests.map((friendRequest) => {
                             return (
-                                <FriendRequestCard key={friendRequest._id} friendRequest={friendRequest} notifications={notifications} setNotifications={setNotifications} />
+                                <FriendRequestCard key={friendRequest._id} friendRequest={friendRequest}
+                                                   notifications={notifications} setNotifications={setNotifications}/>
                             );
                         })}
                     </ul>
@@ -70,7 +70,7 @@ const NavBar = () => {
                 <div className="dropdown dropdown-end">
                     <div tabIndex={0} className="indicator cursor-pointer">
                         <span className="indicator-item badge badge-secondary"></span>
-                        <FaBell className="text-2xl text-purple-600" />
+                        <FaBell className="text-2xl text-purple-600"/>
                     </div>
                     {/*Notification Icon: Dropdown */}
                     <div
@@ -80,7 +80,7 @@ const NavBar = () => {
                         {notifications.map((notification) => {
                             if (notification.type !== 'Friend Request') {
                                 return (
-                                    <NotificationCard notification={notification} />
+                                    <NotificationCard notification={notification}/>
                                 )
                             }
                         })}
@@ -91,7 +91,7 @@ const NavBar = () => {
                 <div className="dropdown dropdown-end">
                     <label tabIndex={0} className="btn btn-ghost btn-circle avatar">
                         <div className="w-10 rounded-full">
-                            <FaUserCircle className="text-3xl text-gray-600" />
+                            <FaUserCircle className="text-3xl text-gray-600"/>
                         </div>
                     </label>
                     {/* Profile Picture Icon: Dropdown */}

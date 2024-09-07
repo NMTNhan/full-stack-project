@@ -1,8 +1,7 @@
 import React from 'react';
 import '../styles/AboutUsBox.css';
 
-const AboutUsBox = ({ group }) => {
-
+const AboutUsBox = ({group}) => {
     return (
         <div className="AboutUsBox">
             <h1 className='titleAboutUs'>

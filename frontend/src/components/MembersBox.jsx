@@ -1,22 +1,21 @@
-import React, { useEffect, useState, useContext } from 'react';
+import React, {useEffect, useState, useContext} from 'react';
 import axios from 'axios';
 import '../styles/MembersBox.css';
-import { useParams } from 'react-router-dom';
-import { UserContext } from "../App";
+import {useParams} from 'react-router-dom';
+import {UserContext} from "../App";
 
 const MembersBox = () => {
-    const { user } = useContext(UserContext);
-    const { groupID } = useParams();
+    const {user} = useContext(UserContext);
+    const {groupID} = useParams();
     const [members, setMembers] = useState([]);
     const [isAdmin, setIsAdmin] = useState(false);
     const [error, setError] = useState(null);
 
-    console.log("User in Members Box:", user);
-  
+    // Fetch group members and admin on component mount
     useEffect(() => {
         fetchGroup();
         fetchAdmin();
-    }, [user, groupID]); 
+    }, [user, groupID]);
 
     const fetchGroup = async () => {
         try {
@@ -37,8 +36,8 @@ const MembersBox = () => {
             if (!response.ok) {
                 throw new Error('Admin not found');
             }
-            const { adminId } = await response.json();
-            setIsAdmin(user.id === adminId); 
+            const {adminId} = await response.json();
+            setIsAdmin(user.id === adminId);
         } catch (error) {
             console.error('Error fetching admin:', error.message);
         }
@@ -47,7 +46,7 @@ const MembersBox = () => {
 
     const handleRemoveMember = async (memberId) => {
         try {
-            const response = await axios.delete(`http://localhost:5000/api/groups/${groupID}/members/${memberId}`);
+            await axios.delete(`http://localhost:5000/api/groups/${groupID}/members/${memberId}`);
             setMembers(prevMembers => prevMembers.filter(member => member._id !== memberId));
             window.location.reload();
         } catch (error) {
@@ -64,8 +63,8 @@ const MembersBox = () => {
                         <div key={member._id} className="memberContainer">
                             <p>{member.username}</p>
                             {isAdmin && (
-                                <button 
-                                    className="removeButton1" 
+                                <button
+                                    className="removeButton1"
                                     onClick={() => handleRemoveMember(member._id)}
                                 >
                                     Remove

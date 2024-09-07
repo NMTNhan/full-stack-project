@@ -9,11 +9,13 @@ const RequestListBox = ({ group }) => {
     const [error, setError] = useState(null);
     const [requests, setRequests] = useState([]);
 
+    // Fetch group members and requests on component mount
     useEffect(() => {
         fetchMembers();
         fetchRequests();
     }, [groupID]); 
-  
+
+    // Fetch group members
     const fetchMembers = async () => {
       try {
         const response = await fetch(`http://localhost:5000/api/groups/${groupID}/members`);
@@ -27,6 +29,7 @@ const RequestListBox = ({ group }) => {
       }
     };
 
+    // Fetch group requests
     const fetchRequests = async () => {
         try {
           const response = await fetch(`http://localhost:5000/api/groups/${groupID}/requests`);
@@ -40,17 +43,22 @@ const RequestListBox = ({ group }) => {
         }
     };
 
+    // Function to handle accepting a member request
     const handleAccept = async (userId) => {
         try {
+            // Send a POST request to the server to accept the member
             await axios.post(`http://localhost:5000/api/groups/${groupID}/members/${userId}`);
-            setRequests((prevRequests) => prevRequests.filter((request) => request._id !== userId)); 
+
+            // Remove the accepted member from the requests list
+            setRequests((prevRequests) => prevRequests.filter((request) => request._id !== userId));
             fetchMembers();
             window.location.reload();
         } catch (error) {
             console.error('Error accepting member:', error.response?.data?.message || error.message);
         }
     };
-    
+
+    // Function to handle removing a member request
     const handleRemove = async (userId) => {
         try {
             await axios.delete(`http://localhost:5000/api/groups/${group._id}/requests/${userId}`);

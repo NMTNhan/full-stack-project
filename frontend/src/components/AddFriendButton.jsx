@@ -1,6 +1,6 @@
 import {useEffect, useState} from "react";
 
-export const AddFriendButton = ({ friendID, userID }) => {
+export const AddFriendButton = ({friendID, userID}) => {
     const [isAdded, setIsAdded] = useState(false);
     const [isSentFriendRequest, setIsSentFriendRequest] = useState(false);
 
@@ -8,9 +8,13 @@ export const AddFriendButton = ({ friendID, userID }) => {
         checkIsSentFriendRequest();
     }, []);
 
+    // Check if the friend request is sent
     const checkIsSentFriendRequest = async () => {
         try {
+            // Calling the APIs to check if the friend request is sent
             const response = await fetch(`http://localhost:5000/api/notifications/check/${userID}/${friendID}`);
+
+            // If the response is ok, set the state of isSentFriendRequest
             if (response.ok) {
                 const data = await response.json();
                 if (data.length > 0) {
@@ -26,8 +30,10 @@ export const AddFriendButton = ({ friendID, userID }) => {
         }
     }
 
+    // Handle adding a friend
     const handleAddFriend = async () => {
         try {
+            // Calling the APIs to add a friend
             const response = await fetch(`http://localhost:5000/api/notifications/create/${friendID}`, {
                 method: 'POST',
                 headers: {
@@ -35,6 +41,8 @@ export const AddFriendButton = ({ friendID, userID }) => {
                 },
                 body: JSON.stringify({senderID: `${userID}`, type: 'Friend Request'})
             });
+
+            // If the response is ok, set the state of isAdded
             if (response.ok) {
                 console.log('Add friend successfully');
                 setIsAdded(true);

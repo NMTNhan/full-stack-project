@@ -1,4 +1,4 @@
-export const NotificationCard = ({ notification }) => {
+export const NotificationCard = ({notification}) => {
     return (
         <div className={'rounded-md w-450 bg-gray-200'}>
             <div className={'flex-auto justify-center items-center m-2 w-450'}>

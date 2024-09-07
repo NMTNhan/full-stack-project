@@ -9,7 +9,7 @@ import {Link} from "react-router-dom";
 import {FaThumbsUp, FaHeart, FaLaughBeam, FaSadTear, FaAngry, FaEllipsisH} from 'react-icons/fa';
 import '../styles/ReactionButtonStyle.css';
 
-const UserPosts = ({ posts, setPosts }) => {
+const UserPosts = ({posts, setPosts}) => {
     const [menuVisible, setMenuVisible] = useState(null); // Track visibility of menus
     const [editingPostId, setEditingPostId] = useState(null); // Track the post being edited
     const [editContent, setEditContent] = useState("");
@@ -18,43 +18,54 @@ const UserPosts = ({ posts, setPosts }) => {
     const [showHistoryModal, setShowHistoryModal] = useState(false);
     const [historyData, setHistoryData] = useState([]);
 
-    const { user } = useContext(UserContext)
-    
+    const {user} = useContext(UserContext)
+
+    // Function to toggle the menu visibility
     const toggleMenu = (postId) => {
         setMenuVisible((prevState) => (prevState === postId ? null : postId));
     };
 
+    // Function to handle editing a post
     const handleEdit = (postId, currentContent, currentVisibility) => {
         setEditingPostId(postId); // Set the post ID being edited
         setEditContent(currentContent); // Initialize with current post content
         setVisibility(currentVisibility || '');
     };
 
+    // Function to cancel editing a post
     const handleCancelEdit = () => {
-        setEditingPostId(null); // Reset the editing post ID
-        setEditContent(''); // Clear the content of the editor
-        setVisibility('');}
+            setEditingPostId(null); // Reset the editing post ID
+            setEditContent(''); // Clear the content of the editor
+            setVisibility('');
+        }
     ;
+
+    // Function to handle visibility change
     const handleVisibilityChange = (postId, newVisibility) => {
         setVisibility(newVisibility);
     };
 
+    // Function to fetch history data for a post
     const handleViewHistory = async (postId) => {
         try {
+            // Get the token from local storage
             const token = localStorage.getItem("token");
+
+            // Fetch history data for the post
             const response = await fetch(`http://localhost:5000/api/history/posts/${postId}/history`, {
                 method: "GET",
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
             });
-    
+
+            // Check if the response is successful
             if (!response.ok) {
                 const errorText = await response.text(); // Read the response text for debugging
                 console.error(`HTTP error! Status: ${response.status}. Response text: ${errorText}`);
                 throw new Error(`HTTP error! Status: ${response.status}`);
             }
-    
+
             const data = await response.json();
             setHistoryData(data);
             setShowHistoryModal(true);
@@ -63,10 +74,14 @@ const UserPosts = ({ posts, setPosts }) => {
         }
     };
 
+    // Function to handle deleting a post
     const handleDelete = async (post) => {
 
         try {
+            // Get the token from local storage
             const token = localStorage.getItem("token");
+
+            // Send a DELETE request to the server
             const response = await fetch(`http://localhost:5000/api/posts/${post._id}`, {
                 method: "DELETE",
                 headers: {
@@ -75,24 +90,31 @@ const UserPosts = ({ posts, setPosts }) => {
                 },
             });
 
+            // Check if the response is successful
             if (!response.ok) {
                 throw new Error(`Failed to delete post: HTTP error! status: ${response.status}`);
             }
 
+            // Remove the deleted post from the posts array
             setPosts((prevPosts) => prevPosts.filter((p) => p._id !== post._id));
         } catch (error) {
             console.error(error);
         }
     };
 
+    // Function to save the edited post
     const handleSaveEdit = async (postId) => {
         try {
+            // Get the token from local storage
             const token = localStorage.getItem('token');
+
+            // Prepare the updated data
             const updateData = {
                 content: editContent,
                 visibility: visibility,
             };
 
+            // Send a PUT request to the server
             const response = await fetch(`http://localhost:5000/api/posts/${postId}`, {
                 method: 'PUT',
                 headers: {
@@ -102,31 +124,36 @@ const UserPosts = ({ posts, setPosts }) => {
                 body: JSON.stringify(updateData),
             });
 
+            // Check if the response is successful
             if (!response.ok) {
                 throw new Error(`Failed to save changes: HTTP error! status: ${response.status}`);
             }
 
+            // Prepare the history data
             const historyData = {
                 postId: postId,
                 changes: `Edited content to "${editContent}" and visibility to "${visibility}"`,
-              };
-          
-              const historyResponse = await fetch('http://localhost:5000/api/history/create', {
+            };
+
+            // Send a POST request to save the edit history
+            const historyResponse = await fetch('http://localhost:5000/api/history/create', {
                 method: 'POST',
                 headers: {
-                  'Content-Type': 'application/json',
-                  'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`,
                 },
                 body: JSON.stringify(historyData),
-              });
-          
-              if (!historyResponse.ok) {
-                throw new Error(`Failed to save edit history: HTTP error! status: ${historyResponse.status}`);
-              }
+            });
 
+            // Check if the response is successful
+            if (!historyResponse.ok) {
+                throw new Error(`Failed to save edit history: HTTP error! status: ${historyResponse.status}`);
+            }
+
+            // Update the post in the posts array
             setPosts((prevPosts) =>
                 prevPosts.map((post) =>
-                    post._id === postId ? { ...post, content: editContent, visibility: visibility } : post
+                    post._id === postId ? {...post, content: editContent, visibility: visibility} : post
                 )
             );
 
@@ -137,15 +164,22 @@ const UserPosts = ({ posts, setPosts }) => {
     };
 
     //Create notification for the post's author when suer reaction on their post.
-    const createNotification = async ( postAuthorId ) => {
+    const createNotification = async (postAuthorId) => {
         try {
+            // Send a POST request to the server
             const response = await fetch(`http://localhost:5000/api/notifications/create/${postAuthorId}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({senderID: `${user.id}`, type: 'New Reaction Added', message: `${user.username} react on your post`})
+                body: JSON.stringify({
+                    senderID: `${user.id}`,
+                    type: 'New Reaction Added',
+                    message: `${user.username} react on your post`
+                })
             });
+
+            // Check if the response is successful
             if (response.ok) {
                 console.log('Add reaction successfully');
             } else {
@@ -156,31 +190,37 @@ const UserPosts = ({ posts, setPosts }) => {
         }
     }
 
+    // Function to handle post reactions
     const onReaction = async (postId, reactionType, postAuthorId) => {
         try {
+            // Send a PUT request to the server
             const response = await fetch(`http://localhost:5000/api/posts/reactions/${postId}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
                     Authorization: `Bearer ${localStorage.getItem('token')}`,
                 },
-                body: JSON.stringify({ type: reactionType }),
+                body: JSON.stringify({type: reactionType}),
             });
 
+            // Check if the response is successful
             if (!response.ok) {
                 let queuedReactions = JSON.parse(localStorage.getItem('queuedReactions')) || [];
                 queuedReactions.push({
                     url: `http://localhost:5000/api/posts/reactions/${postId}`,
                     method: 'PUT',
-                    body: { type: reactionType },
+                    body: {type: reactionType},
                 });
                 localStorage.setItem('queuedReactions', JSON.stringify(queuedReactions));
             }
 
+            // Update the post in the posts array
             const updatedPost = await response.json();
             setPosts((prevPosts) =>
                 prevPosts.map((post) => (post._id === postId ? updatedPost : post))
             );
+
+            // Create notification for the post's author
             if (postAuthorId !== user.id) {
                 await createNotification(postAuthorId)
             }
@@ -193,7 +233,7 @@ const UserPosts = ({ posts, setPosts }) => {
         <div className="mt-4 text-black">
             {posts.length > 0 ? (
                 posts.map((post) => {
-                    let type =''; // Initialize type with an empty string
+                    let type = ''; // Initialize type with an empty string
                     if (post.like.includes(user.id)) {
                         type = 'like';
                     } else if (post.love.includes(user.id)) {
@@ -213,7 +253,7 @@ const UserPosts = ({ posts, setPosts }) => {
                     return (
                         <div key={post._id} className="mt-4 h-200 border rounded shadow-sm bg-white">
                             <div className='p-4'>
-                                <div className='flex justify-between' >
+                                <div className='flex justify-between'>
                                     <div className='flex items-center'>
                                         <img
                                             src={post.author.avatar}
@@ -221,7 +261,9 @@ const UserPosts = ({ posts, setPosts }) => {
                                             className="w-12 h-12 rounded-full mr-4"
                                         />
                                         <div>
-                                            <Link className={'hover:underline text-black'} to={`/friend/${post.author._id}`} state={{friendProfile: post.author}}>{post.author?.username}</Link>
+                                            <Link className={'hover:underline text-black'}
+                                                  to={`/friend/${post.author._id}`}
+                                                  state={{friendProfile: post.author}}>{post.author?.username}</Link>
                                         </div>
                                     </div>
                                     {isEditing ? (
@@ -305,13 +347,13 @@ const UserPosts = ({ posts, setPosts }) => {
                                     <div className={'flex text-blue-500 gap-2 place-items-center'}>
                                         <FaThumbsUp/>{post.like.length}</div>
                                     <div className={'flex text-red-500 gap-2 place-items-center'}>
-                                        <FaHeart />{post.love.length}</div>
+                                        <FaHeart/>{post.love.length}</div>
                                     <div className={'flex text-yellow-500 gap-2 place-items-center'}>
-                                        <FaLaughBeam />{post.funny.length}</div>
+                                        <FaLaughBeam/>{post.funny.length}</div>
                                     <div className={'flex text-blue-300 gap-2 place-items-center'}>
-                                        <FaSadTear />{post.sad.length}</div>
+                                        <FaSadTear/>{post.sad.length}</div>
                                     <div className={'flex text-red-700 gap-2 place-items-center'}>
-                                        <FaAngry />{post.angry.length}</div>
+                                        <FaAngry/>{post.angry.length}</div>
                                 </div>
                                 {totalComments > 0 && (
                                     <div className='text-gray-500'>
