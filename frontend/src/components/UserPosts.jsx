@@ -1,7 +1,7 @@
 import React, {useContext, useState} from "react";
 import ReactionButton from './ReactionButton';
 import CommentButton from './CommentButton';
-// import '@fortawesome/fontawesome-free/css/all.min.css';
+import '@fortawesome/fontawesome-free/css/all.min.css';
 import ListPopup from "./ListPopUp";
 import HistoryPopup from '../components/historyPopUp';
 import {UserContext} from "../App";
@@ -255,13 +255,7 @@ const UserPosts = ({ posts, setPosts }) => {
                                             />
                                         )}
 
-                                        {/* HistoryPopup Component */}
-                                        {showHistoryModal && (
-                                            <HistoryPopup
-                                                historyData={historyData}
-                                                close={() => setShowHistoryModal(false)}
-                                            />
-                                        )}
+                                        
                                     </div>
                                 </div>
 
@@ -345,6 +339,17 @@ const UserPosts = ({ posts, setPosts }) => {
                 })
             ) : (
                 <p className='text-center'>No posts yet. Be the first to post something!</p>
+            )}
+
+            {/* HistoryPopup Component */}
+            {showHistoryModal && (
+                <HistoryPopup
+                    historyData={historyData}
+                    close={() => {
+                        setShowHistoryModal(false);
+                        setHistoryData([])
+                    }}
+                />
             )}
         </div>
     );
