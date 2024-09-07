@@ -19,7 +19,7 @@ const ListPopup = ({ post, onEdit, onViewHistory, onDelete, closePopup }) => {
     return (
         <div
             ref={popupRef}
-            className="absolute right-0 mt-2 w-32 bg-white border border-gray-300 rounded shadow-lg"
+            className="absolute right-0 mt-2 w-52 bg-white border border-gray-300 rounded shadow-lg"
         >
             {
                 user.id === post.author._id &&
@@ -30,7 +30,7 @@ const ListPopup = ({ post, onEdit, onViewHistory, onDelete, closePopup }) => {
                     }}
                     className="w-full text-left px-4 py-2 hover:bg-gray-100"
                 >
-                    Edit
+                    Edit Post
                 </button>
             }
             <button
@@ -40,7 +40,7 @@ const ListPopup = ({ post, onEdit, onViewHistory, onDelete, closePopup }) => {
                 }}
                 className="w-full text-left px-4 py-2 hover:bg-gray-100"
             >
-                View edit History
+                View Edit History
             </button>
             {
                 user.id === post.author._id && <button
@@ -50,7 +50,7 @@ const ListPopup = ({ post, onEdit, onViewHistory, onDelete, closePopup }) => {
                     }}
                     className="w-full text-left px-4 py-2 hover:bg-gray-100 text-red-500"
                 >
-                    Delete
+                    Delete Post
                 </button>
             }
         </div>
