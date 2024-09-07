@@ -8,6 +8,9 @@ const router = express.Router();
 // Route to get all users
 router.get('/users', protect, isAdmin, getUsers); // Get all users (admin only)
 
+// Route to get all users
+router.get('/users/byuser', protect, getUsers);
+
 // Route to get the profile of the logged-in user
 router.get('/profile', protect, getUserProfile); // Get the profile of the logged-in user
 

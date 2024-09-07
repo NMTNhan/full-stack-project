@@ -25,7 +25,9 @@ const MembersPage = () => {
         try {
             // Fetch group information
             const response = await fetch(`http://localhost:5000/api/groups/get/${groupID}`, {
-                Authorization: `Bearer ${localStorage.getItem('token')}`,
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('token')}`,
+                }
             });
 
             // Check if group is not found
@@ -45,7 +47,11 @@ const MembersPage = () => {
     const fetchAdmin = async () => {
         try {
             // Fetch admin information
-            const response = await fetch(`http://localhost:5000/api/groups/admin/${groupID}`);
+            const response = await fetch(`http://localhost:5000/api/groups/admin/${groupID}`, {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('token')}`,
+                }
+            });
 
             // Check if admin is not found
             if (!response.ok) {

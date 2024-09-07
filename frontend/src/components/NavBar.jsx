@@ -73,8 +73,7 @@ const NavBar = () => {
                 {/* Notification Icon */}
                 <div className="dropdown dropdown-end">
                     <div tabIndex={0} className="indicator cursor-pointer">
-                        <span className="indicator-item badge badge-secondary"></span>
-                        <FaBell className="text-2xl text-purple-600"/>
+                        <FaBell className="text-2xl text-gray-500"/>
                     </div>
                     {/*Notification Icon: Dropdown */}
                     <div

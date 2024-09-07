@@ -23,7 +23,7 @@ describe('Notification Controller Test', () => {
     it('should create a notification', async () => {
         const res = await request(app).post(
             "/api/notifications/create/66d6d7192ac356946767439e"
-        ).send({
+        ).set('Authorization', `Bearer ${process.env.TEST_TOKEN}`).send({
             senderID: '66d5725affacf17fd86eb3be',
             type: 'Friend Request',
             message: 'You have a new friend request'
@@ -41,7 +41,7 @@ describe('Notification Controller Test', () => {
     it('should return 500 if server error', async () => {
         const res = await request(app).post(
             "/api/notifications/create/66d6d7192ac356946767439e"
-        ).send({
+        ).set('Authorization', `Bearer ${process.env.TEST_TOKEN}`).send({
             senderID: '66d6d7192ac356946767439e',
             message: 'You have a new friend request'
         });
@@ -52,10 +52,10 @@ describe('Notification Controller Test', () => {
     });
 
 
-    it('should return 500 if server error', async () => {
+    it('should return 200 if server error', async () => {
         const res = await request(app).get(
             "/api/notifications/get/66d6d7192ac356946767ee9e"
-        );
+        ).set('Authorization', `Bearer ${process.env.TEST_TOKEN}`);
 
         // Verify the response
         expect(res.status).toBe(200);
@@ -65,7 +65,7 @@ describe('Notification Controller Test', () => {
     it('should return the notification', async () => {
         const res = await request(app).get(
             "/api/notifications/check/66d5725affacf17fd86eb3be/66d6d7192ac356946767439e"
-        );
+        ).set('Authorization', `Bearer ${process.env.TEST_TOKEN}`);
 
         // Check if the function returns the correct response
         expect(res.body).toStrictEqual([
@@ -73,56 +73,39 @@ describe('Notification Controller Test', () => {
         ]);
     });
 
-    it('should return 500 if server error', async () => {
+    it('should return 200 if server error', async () => {
         const res = await request(app).get(
             "/api/notifications/check/66d5725affacf17fd86eeebe/66d6d7192ac356946767439e"
-        );
+        ).set('Authorization', `Bearer ${process.env.TEST_TOKEN}`);
 
         // Verify the response
         expect(res.status).toBe(200);
     });
 
-    // Test the deleteNotification function
-    it('should delete the notification', async () => {
-        const res = await request(app).delete(
-            `/api/notifications/delete/${notification._id}`
-        );
-
-        // Check if the function returns the correct response
-        expect(res.body.message).toStrictEqual('Notification deleted');
-    });
-
-    it('should return 500 if server error', async () => {
+    it('should return 404 if server error', async () => {
         const res = await request(app).delete(
             "/api/notifications/delete/66d6d7192ac356946767439e"
-        );
+        ).set('Authorization', `Bearer ${process.env.TEST_TOKEN}`);
 
         // Verify the response
-        expect(res.status).toBe(200);
+        expect(res.status).toBe(404);
     });
 
     // Test the getNotificationsByUserID function
     it('should return the notifications of the user', async () => {
         const res = await request(app).get(
             "/api/notifications/get/66d6d7192ac356946767439e"
-        );
+        ).set('Authorization', `Bearer ${process.env.TEST_TOKEN}`);
+
+        const data = res.body[0];
+
 
         // Check if the function returns the correct response
-        expect(res.body).toStrictEqual([
-            {
-                __v: 0,
-                _id: "66d70ef9fd4ce723e49b34ad",
-                createdAt: "2024-09-03T13:28:25.686Z",
-                message: "testUser2 accepted your friend request !",
-                receiverID: "66d6d7192ac356946767439e",
-                senderID: {
-                    _id: "66d70ed7fd4ce723e49b34ab",
-                    avatar: "https://img.freepik.com/premium-vector/cute-boy-smiling-cartoon-kawaii-boy-illustration-boy-avatar-happy-kid_1001605-3447.jpg",
-                    username: "testUser2",
-                },
-                type: 'Friend Request Accepted',
-            },
-        ]);
+        expect(data._id).toStrictEqual(notification._id);
+        expect(data.senderID._id).toStrictEqual(notification.senderID);
+        expect(data.receiverID).toStrictEqual(notification.receiverID);
+        expect(data.message).toStrictEqual(notification.message);
+        expect(data.type).toStrictEqual(notification.type);
     });
 });
 

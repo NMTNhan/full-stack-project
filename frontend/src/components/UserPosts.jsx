@@ -1,7 +1,7 @@
 import React, {useContext, useState} from "react";
 import ReactionButton from './ReactionButton';
 import CommentButton from './CommentButton';
-// import '@fortawesome/fontawesome-free/css/all.min.css';
+import '@fortawesome/fontawesome-free/css/all.min.css';
 import ListPopup from "./ListPopUp";
 import HistoryPopup from '../components/historyPopUp';
 import {UserContext} from "../App";
@@ -301,7 +301,10 @@ const UserPosts = ({posts, setPosts}) => {
                                         {showHistoryModal && (
                                             <HistoryPopup
                                                 historyData={historyData}
-                                                close={() => setShowHistoryModal(false)}
+                                                close={() => {
+                                                    setShowHistoryModal(false);
+                                                    setHistoryData([])
+                                                }}
                                             />
                                         )}
                                     </div>

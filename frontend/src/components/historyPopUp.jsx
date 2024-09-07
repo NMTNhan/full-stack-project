@@ -1,25 +1,29 @@
 import React from 'react';
+import '../styles/HistoryPopupStyle.css'; // Optional: Include a CSS file for styling
 
-const HistoryPopup = ({historyData, close}) => {
+const HistoryPopup = ({ historyData, close }) => {
     return (
-        <div className="modal-overlay">
-            <div className="modal-content">
-                <h2>Edit History</h2>
-                <ul>
+        <div className="history-popup-overlay">
+            <div className="history-popup-content">
+                <       div className="inline-flex justify-between items-center w-full">
+                    <h2 className='flex-grow text-center font-bold'>Edit History</h2>
+                    <button onClick={close} className="close-button">X</button>
+                </div>
+
+                <div className="history-list">
                     {historyData.length > 0 ? (
                         historyData.map((entry, index) => (
-                            <li key={index} className="mb-2">
-                                <strong>{new Date(entry.timestamp).toLocaleString()}:</strong> {entry.changes}
-                            </li>
+                            <div key={index} className="history-entry">
+                                <p><strong>Changes:</strong> {entry.changes}</p>
+                            </div>
                         ))
                     ) : (
-                        <p>No history available</p>
+                        <p>No history available for this post.</p>
                     )}
-                </ul>
-                <button onClick={close}>Close</button>
+                </div>
             </div>
         </div>
-    )
+    );
 };
 
 export default HistoryPopup;

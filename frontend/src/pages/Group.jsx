@@ -6,7 +6,6 @@ import UserPosts from '../components/UserPosts';
 import GroupHeaderBox from '../components/GroupHeaderBox';
 import {useContext} from 'react';
 import {UserContext} from '../App';
-import axios from 'axios';
 import GroupHeaderBoxForPrivate from '../components/GroupHeaderBoxForPrivate.jsx';
 import "../styles/Group.css";
 
@@ -64,6 +63,7 @@ const Group = () => {
         try {
             // Send request to join group
             await fetch(`http://localhost:5000/api/groups/${groupID}/requests/${user.id}`, {
+                method: 'POST',
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem('token')}`,
                 },

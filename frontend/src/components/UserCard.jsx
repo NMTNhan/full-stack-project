@@ -9,7 +9,7 @@ export default function UserCard({ friend }) {
     }
 
     return (
-        <div key={friend.id} className={'flex flex-col justify-center items-center hover:bg-gray-300 max-h-170 max-w-24'} onClick={() => handleClick()}>
+        <div key={friend._id} className={'flex flex-col justify-center items-center hover:bg-gray-300 max-h-170 max-w-24'} onClick={() => handleClick()}>
             {/*Avatar*/}
             <div>
                 <img className={'h-170 w-24 rounded-lg'} src={`${friend.avatar}`} alt={'img'}/>

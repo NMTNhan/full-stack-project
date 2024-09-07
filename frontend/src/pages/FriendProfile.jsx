@@ -38,6 +38,7 @@ export default function FriendProfile() {
             const response = await fetch(`http://localhost:5000/api/friends/unfriend/${friendProfile._id}`, {
                 method: 'PUT',
                 headers: {
+                    Authorization: `Bearer ${localStorage.getItem('token')}`,
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({userID: user.id})
@@ -60,7 +61,11 @@ export default function FriendProfile() {
         try {
             const friendsData = await Promise.all(
                 friendProfile.friends.map(async (friendId) => {
-                    const response = await fetch(`http://localhost:5000/api/friends/${friendId}`);
+                    const response = await fetch(`http://localhost:5000/api/friends/${friendId}`, {
+                        headers: {
+                            Authorization: `Bearer ${localStorage.getItem('token')}`,
+                        },
+                    });
                     if (response.ok) {
                         const data = await response.json()
                         return data.friend;

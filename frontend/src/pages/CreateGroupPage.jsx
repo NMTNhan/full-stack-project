@@ -1,6 +1,5 @@
 import React, {useState, useContext} from 'react';
 import {useNavigate} from 'react-router-dom';
-import axios from 'axios';
 import {UserContext} from '../App';
 import '../styles/CreateGroupPage.css';
 
@@ -27,7 +26,14 @@ const NewGroupForm = () => {
         };
 
         try {
-            await axios.post('http://localhost:5000/api/groups/creategroup', newGroup);
+            await fetch('http://localhost:5000/api/groups/creategroup',  {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${localStorage.getItem('token')}`,
+                },
+                body: JSON.stringify(newGroup)
+            });
             await createNotification();
             setSuccessMessage('Group created successfully!');
             setError(null);
@@ -46,7 +52,8 @@ const NewGroupForm = () => {
             const response = await fetch(`http://localhost:5000/api/notifications/create/66d8107195bef057ee17b514`, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${localStorage.getItem('token')}`,
                 },
                 body: JSON.stringify({
                     senderID: `${user.id}`,
@@ -55,7 +62,7 @@ const NewGroupForm = () => {
                 })
             });
             if (response.ok) {
-                console.log('Add reaction successfully');
+                console.log('Add group successfully');
             } else {
                 throw new Error('Failed to add comment');
             }

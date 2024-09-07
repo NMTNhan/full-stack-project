@@ -12,6 +12,7 @@ const HomePage = () => {
     const [groups, setGroups] = useState([]);
     const [notJoinGroups, setNotJoinGroups] = useState([]);
     const [friendsInfo, setFriendsInfo] = useState([]);
+    const [users , setUsers] = useState([])
 
     // Fetch friends info on component mount
     useEffect(() => {
@@ -22,7 +23,31 @@ const HomePage = () => {
     useEffect(() => {
         fetchGroups();
         fetchNotJoinGroups();
+        fetchAllUsers();
     }, [user]);
+
+
+    //Fetch user
+    const fetchAllUsers = async () => {
+        try {
+            const response = await fetch(`http://localhost:5000/api/users/byuser`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${localStorage.getItem('token')}`,
+                },
+            });
+            if (response.ok) {
+                const data = await response.json();
+                const usersNotFriends = data.filter(us => !user.friends.includes(us._id))
+                setUsers(usersNotFriends);
+            } else {
+                throw new Error('Failed to fetch user');
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    }
 
     // Fetch groups
     const fetchGroups = async () => {
@@ -140,7 +165,7 @@ const HomePage = () => {
                         setPosts={setPosts}/>
                 </div>
                 <div className="col-span-3">
-                    <FriendSidebar friends={friendsInfo}/>
+                    <FriendSidebar friends={friendsInfo} userNotFriends={users}/>
                 </div>
             </div>
         </div>
