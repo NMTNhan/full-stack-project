@@ -30,10 +30,12 @@ https://rmiteduau-my.sharepoint.com/:v:/g/personal/s3988412_rmit_edu_vn/ETd6gOgn
     1. Account 1:
         Email: finalUser3@gmail.com
         Pass: test123
+        
 ### * User Feature:
     1. Account 1:
         Email: finalUser3@gmail.com
         Pass: test123
+        
 ### * Post Feature:
     1. Account 1:
         Email: ngo123@gmail.com
@@ -44,6 +46,7 @@ https://rmiteduau-my.sharepoint.com/:v:/g/personal/s3988412_rmit_edu_vn/ETd6gOgn
     3. Account 3:
         Email: ngo12345@gmail.com
         Pass: 123
+        
 ### * Group Feature:
     1. Account 1:
         Email: thanhthe10@gmail.com
@@ -51,6 +54,7 @@ https://rmiteduau-my.sharepoint.com/:v:/g/personal/s3988412_rmit_edu_vn/ETd6gOgn
     2. Account 2:
         Email: brian12@gmail.com
         Pass: brian12@12
+        
 ### * Admin Feature:
     1. Account 1:
         Email: admin@example.com
