@@ -53,7 +53,7 @@ const CommentButton = ({post, onNewComment}) => {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    Authorization: `Bearer ${localStorage.getItem('token')}`,
+                    Authorization: `Bearer ${token}`,
                 },
                 body: JSON.stringify({content: newComment}), // Send the new comment as a JSON object
             });
