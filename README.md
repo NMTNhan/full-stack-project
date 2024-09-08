@@ -22,7 +22,8 @@
 
     4. Nguyen Minh Trong Nhan (s3924462): 5 points
 
-## * Video Presentation Link: https://rmiteduau-my.sharepoint.com/:v:/g/personal/s3988412_rmit_edu_vn/ETd6gOgnsWRFhpHs3ckCNv0BYnXfkN8YKJ0r8o-8RTcb9Q?e=THhTc9&nav=eyJyZWZlcnJhbEluZm8iOnsicmVmZXJyYWxBcHAiOiJTdHJlYW1XZWJBcHAiLCJyZWZlcnJhbFZpZXciOiJTaGFyZURpYWxvZy1MaW5rIiwicmVmZXJyYWxBcHBQbGF0Zm9ybSI6IldlYiIsInJlZmVycmFsTW9kZSI6InZpZXcifX0%3D
+## * Video Presentation Link: 
+    https://rmiteduau-my.sharepoint.com/:v:/g/personal/s3988412_rmit_edu_vn/ETd6gOgnsWRFhpHs3ckCNv0BYnXfkN8YKJ0r8o-8RTcb9Q?e=THhTc9&nav=eyJyZWZlcnJhbEluZm8iOnsicmVmZXJyYWxBcHAiOiJTdHJlYW1XZWJBcHAiLCJyZWZlcnJhbFZpZXciOiJTaGFyZURpYWxvZy1MaW5rIiwicmVmZXJyYWxBcHBQbGF0Zm9ybSI6IldlYiIsInJlZmVycmFsTW9kZSI6InZpZXcifX0%3D
 
 ## * Account for testing in the video:
 ### * Login Feature:
