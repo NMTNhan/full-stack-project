@@ -14,13 +14,13 @@
     Step 4. npm start
 
 ## * Contribution
-    1. Pham Thanh The (s3981133): 5 points
+    1. Pham Thanh The (s3981133): 5 points (Group component)
 
-    2. Dang Thai Hoang (s3988412): 5 points
+    2. Dang Thai Hoang (s3988412): 5 points (User components)
 
-    3. Nguyen Tuan Thang (s3877039): 5 points
+    3. Nguyen Tuan Thang (s3877039): 5 points (Posts components)
 
-    4. Nguyen Minh Trong Nhan (s3924462): 5 points
+    4. Nguyen Minh Trong Nhan (s3924462): 5 points (Admin components)
 
 ## * Video Presentation Link: 
 https://rmiteduau-my.sharepoint.com/:v:/g/personal/s3988412_rmit_edu_vn/ETd6gOgnsWRFhpHs3ckCNv0BYnXfkN8YKJ0r8o-8RTcb9Q?e=THhTc9&nav=eyJyZWZlcnJhbEluZm8iOnsicmVmZXJyYWxBcHAiOiJTdHJlYW1XZWJBcHAiLCJyZWZlcnJhbFZpZXciOiJTaGFyZURpYWxvZy1MaW5rIiwicmVmZXJyYWxBcHBQbGF0Zm9ybSI6IldlYiIsInJlZmVycmFsTW9kZSI6InZpZXcifX0%3D
