@@ -1,5 +1,7 @@
 # COSC2769|COSC2808_GroupProject_Group3
 
+## Link our project on GitHub: https://github.com/NMTNhan/full-stack-project.git
+
 ## How to install and run our project:
 ### * Front-end:
     Step 1. Open new terminal
