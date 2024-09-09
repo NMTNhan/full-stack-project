@@ -15,16 +15,20 @@
 
 ## * Contribution
     1. Pham Thanh The (s3981133): 5 points (Group component)
-    Report: Low-level design (Group View) and Implementation
+    Report: Low-level design (Group View) and Implementation.
+    Presentation video: Development, demo Group features.
 
     2. Dang Thai Hoang (s3988412): 5 points (User components)
-    Report: Low-level design (Login, Registration and User View) and High-level design
+    Report: Low-level design (Login, Registration and User View) and High-level design.
+    Presentation video: Application design, demo User features.
 
     3. Nguyen Tuan Thang (s3877039): 5 points (Posts components)
-    Report: Low-level design (Post View) and Introduction
+    Report: Low-level design (Post View) and Introduction.
+    Presentation video: Introduction, demo Post features.
 
     4. Nguyen Minh Trong Nhan (s3924462): 5 points (Admin components)
-    Report: Low-level design (Admin View) and Testing
+    Report: Low-level design (Admin View) and Testing.
+    Presentation video: Testing, demo Admin features.
 
 ## * Video Presentation Link: 
 https://rmiteduau-my.sharepoint.com/:v:/g/personal/s3988412_rmit_edu_vn/ETd6gOgnsWRFhpHs3ckCNv0BYnXfkN8YKJ0r8o-8RTcb9Q?e=THhTc9&nav=eyJyZWZlcnJhbEluZm8iOnsicmVmZXJyYWxBcHAiOiJTdHJlYW1XZWJBcHAiLCJyZWZlcnJhbFZpZXciOiJTaGFyZURpYWxvZy1MaW5rIiwicmVmZXJyYWxBcHBQbGF0Zm9ybSI6IldlYiIsInJlZmVycmFsTW9kZSI6InZpZXcifX0%3D
